@@ -1,0 +1,80 @@
+﻿#,letter,char,dots,braille,status
+1,ا,a,1,⠁,from his chart; unchanged
+2,ب,b,12,⠃,from his chart; unchanged
+3,ٻ,B,26,⠢,"Riaz — CONFIRM: he said ""2 6"" first, ""2 3"" second; 2 3 is ڀ"
+4,ڀ,v,23,⠆,from his chart; unchanged
+5,ت,t,2345,⠞,from his chart; unchanged
+6,ٿ,y,1256,⠳,from his chart; unchanged
+7,ٽ,T,246,⠪,from his chart; unchanged
+8,ٺ,|,135,⠕,from his chart; unchanged
+9,ث,Y,1456,⠹,from his chart; unchanged
+10,پ,p,1234,⠏,from his chart; unchanged
+11,ج,j,245,⠚,from his chart; unchanged
+12,ڄ,{,356,⠴,from his chart; unchanged
+13,جھ,J,245+236,⠚⠦,Riaz — two cells: ج + aspirate
+14,ڃ,},35,⠔,Riaz confirmed twice
+15,چ,],14,⠉,from his chart; unchanged
+16,ڇ,[,16,⠡,from his chart; unchanged
+17,ح,H,156,⠱,from his chart; unchanged
+18,خ,x,1346,⠭,from his chart; unchanged
+19,د,d,145,⠙,from his chart; unchanged
+20,ڌ,+,1236,⠧,from his chart; unchanged
+21,ڏ,_,34,⠌,from his chart; unchanged
+22,ڊ,D,346,⠬,from his chart; unchanged
+23,ڍ,\,256,⠲,from his chart; unchanged
+24,ذ,Z,2346,⠮,from his chart; unchanged
+25,ر,r,1235,⠗,from his chart; unchanged
+26,ڙ,R,12456,⠻,from his chart; unchanged
+27,ز,z,1356,⠵,from his chart; unchanged
+28,س,s,234,⠎,from his chart; unchanged
+29,ش,S,146,⠩,from his chart; unchanged
+30,ص,w,12346,⠯,from his chart; unchanged
+31,ض,W,1246,⠫,from his chart; unchanged
+32,ط,c,23456,⠾,from his chart; unchanged
+33,ظ,C,123456,⠿,from his chart; unchanged
+34,ع,u,12356,⠷,from his chart; unchanged
+35,غ,U,126,⠣,from his chart; unchanged
+36,ف,f,124,⠋,from his chart; unchanged
+37,ڦ,F,235,⠖,from his chart; unchanged
+38,ق,q,12345,⠟,from his chart; unchanged
+39,ڪ,k,13,⠅,from his chart; unchanged
+40,ک,;,13+236,⠅⠦,Riaz — two cells: ڪ + aspirate
+41,گ,g,1245,⠛,from his chart; unchanged
+42,ڳ,i,13456,⠽,from his chart; unchanged
+43,گھ,G,1245+236,⠛⠦,Riaz — two cells: گ + aspirate
+44,ڱ,’,2356,⠶,Riaz
+45,ل,l,123,⠇,from his chart; unchanged
+46,م,m,134,⠍,from his chart; unchanged
+47,ن,n,1345,⠝,from his chart; unchanged
+48,ڻ,N,3456,⠼,from his chart; unchanged
+49,و,o,2456,⠺,from his chart; unchanged
+50,هه,h,125,⠓,from his chart; unchanged
+51,ء,/,3,⠄,from his chart; unchanged
+52,ي,e,24,⠊,from his chart; unchanged
+
+,"SIGNS, DIACRITICS AND PUNCTUATION",,,,
+,آ,,345,⠜,Riaz
+,ء,,3,⠄,chart
+,ه  (standalone),,125,⠓,Riaz confirmed
+,ھ  (aspirate),,236,⠦,Riaz confirmed
+,زبر  zabar,,2,⠂,Riaz
+,زير  zer,,15,⠑,Riaz
+,پيش  pesh,,136,⠥,Riaz
+,شد/نقطو  shad,,6,⠠,Riaz
+,جزم  jazam,,25,⠒,Riaz
+,ختمي نشاني  full stop,,256,⠲,Riaz
+,ڪاما  comma,,2,⠂,Riaz
+,سواليه  question,,236,⠦,Riaz
+,ندائيه  exclamation,,235,⠖,Riaz
+,وڏو اکر  ڳانڊڙا group prefix,,46,⠨,"Riaz 15 Aug 2026: this is the ڳانڊڙا group prefix, the same in both grades. The earlier reading of it as a capital sign was wrong; Sindhi has no upper and lower case."
+,انگ  number sign,,3456,⠼,Riaz
+,شعر  poetry open,,12356 12356,⠷⠷,"Riaz 15 Aug 2026: twice at the head of a stanza, standing alone with a space after. An earlier note here said no space."
+
+,SHARED CELLS — how the computer tells them apart,,,,
+,dots,rule,evidence,,
+,3456,number sign at the start of a word; ڻ everywhere else,"No ordinary Sindhi word begins with ڻ. The aspirate ڻھ does, and its cells are also the fraction 1/8. The 21,445 figure once quoted here was wrong: the list holds 2,704 spellings, 23,432 counting how often each occurs.",,
+,2,زبر when it follows a letter inside a word; ڪاما after a completed word,"Riaz: ""a letter written first and then zer, zabar or pesh"" — diacritics always follow their letter. OPEN: this conflicts with his 15 Aug 2026 instruction that the shadda in الله falls between the two lams, and with Urdu braille, which writes the shadda before the letter it doubles. On sheet 4.",,
+,256,ڍ inside a word; full stop at the end of a sentence,Riaz confirmed both,,
+,235,ڦ inside a word; ندائيه at the end,Riaz confirmed both,,
+,236,ھ when it follows a consonant (جھ گھ ک); سواليه at the end,Riaz confirmed both,,
+,12356,ع as a letter; doubled with no space = start of poetry,Riaz,,

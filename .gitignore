@@ -1,0 +1,22 @@
+# Nobody else's work goes in this repository.
+#
+# official-code/source/ holds Riaz Hussain Memon's own books and the Sindhi
+# Language Authority's printed guide. photos/ holds photographs of those books,
+# of a class-6 textbook and of the 2016 approval certificate. None of it is ours
+# to republish, and none of it is needed to run or check the software. The CSV
+# tables in official-code/ are the machine-readable record of the code and they
+# do go in.
+official-code/source/
+photos/
+
+# working files
+_to_delete/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# scratch output
+test-sheets/*.tmp
+website/src/*.tmp

@@ -1,0 +1,72 @@
+# Sindhi (Pakistan) 6-dot Grade 1 braille table
+#
+#-index-name: Sindhi, Pakistan, uncontracted
+#-display-name: Sindhi uncontracted braille (Pakistan, Perso-Arabic)
+#
+#+language:sd
+#+region:pk
+#+type:literary
+#+contraction:no
+#+grade:1
+#+direction:both
+#
+#  Copyright (C) 2026
+#
+#  This file is part of liblouis.
+#
+#  liblouis is free software: you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as
+#  published by the Free Software Foundation, either version 2.1 of the
+#  License, or (at your option) any later version.
+#
+#  liblouis is distributed in the hope that it will be useful, but
+#  WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+#  Lesser General Public License for more details.
+#
+# ---------------------------------------------------------------------------
+# THE BRAILLE CODE IMPLEMENTED HERE
+#
+# Standard Sindhi Braille, given final form on 7 November 2016 under the
+# patronage of the SINDHI LANGUAGE AUTHORITY (an autonomous institution of the
+# Government of Sindh, established under the Use of Sindhi Language Act 1972 and
+# the Teaching, Promotion and Use of Sindhi Language (Amendment) Act 1990), by
+# the unanimous agreement of a committee of six:
+#
+#   Prof. Dr Abdul Ghafoor Memon  - Chairman, Sindhi Language Authority
+#   Shahid Ahmed Memon            - Convener
+#   Riaz Hussain Memon            - Member  (blind teacher; President, Pakistan
+#                                            Association of the Blind, Sindh)
+#   Prof. Mehrab Ali Lakho        - Member
+#   Dr Saira Saleem Khan          - Member
+#   Shamsuddin Shaikh             - Member
+#
+# Certified by Haroon Inayat Abbasi, Secretary.  The certificate is printed on
+# page 23 of the committee's book, "مڪمل سنڌي بريل درجو II".
+#
+# The Government of Sindh has printed school textbooks in this code through the
+# DEPD Braille Press, Karachi.
+#
+# NOTE ON SCOPE.  This table is for Sindhi in its PERSO-ARABIC orthography, the
+# script used in Pakistan.  It is not the same code as the existing Devanagari
+# Sindhi table (sd.tbl -> si-in-g1.utb, Braille Council of India), and the two
+# cannot substitute for one another: about a dozen Arabic-origin letters
+# (ث ذ ص ض ط ظ ع غ ح خ ق) have no Devanagari counterpart.
+#
+# Verified: every letter confirmed in person by Riaz Hussain Memon on
+# 12 August 2026; embossed on an Index Everest-D V5 and read by touch without
+# error; and measured independently off the printed Grade 2 book.
+# ---------------------------------------------------------------------------
+
+include sd-pk-g1-core.uti
+
+# --- the two Sindhi signs, spelled as the committee's guide spells them ------
+# ۾ is written م ي ن and ۽ is written ا ء ي ن.  Neither has a cell of its own,
+# so these are one-way: back-translation returns مين and ائين.
+#
+# This is the only difference between this table and sd-pk-g2.ctb, and it is
+# why the shared rules live in sd-pk-g1-core.uti: an included rule cannot be
+# overridden later, so the two tables have to include the core and then each
+# state its own.
+noback always \x06FE 134-24-1345
+noback always \x06FD 1-3-24-1345

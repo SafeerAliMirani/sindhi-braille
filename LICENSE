@@ -1,0 +1,38 @@
+MIT License
+
+Copyright (c) 2026 Safeer Ali Mirani
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+WHAT THIS LICENCE DOES AND DOES NOT COVER
+
+This licence covers the software in this repository: the translator, the
+liblouis tables, the verification tools, the website and the documentation.
+
+It does not cover Standard Sindhi Braille itself. That code was authored and
+ratified on 7 November 2016 by a committee of the Sindhi Language Authority,
+Government of Sindh, Pakistan, and it belongs to them. Nothing here alters it.
+The letter-to-cell tables in official-code/ are a machine-readable record of
+that standard, published so the software can be checked against it.
+
+The reference tables in brailleTables/reference/ are liblouis's own work by
+other authors and carry their own copyright notices and licences. See
+brailleTables/reference/NOTICE.md.

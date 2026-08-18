@@ -1,0 +1,224 @@
+# liblouis test suite for Sindhi (Pakistan), sd-pk-g1.utb
+#
+# The code of the Sindhi Language Authority committee, 7 November 2016.
+# Expected values were produced by this table and independently confirmed,
+# cell for cell, by a separate implementation written from the same source
+# documents (sindhi_braille.py in the project repository).
+
+display: unicode.dis
+table: sd-pk-g1.utb
+tests:
+
+  - - ا
+    - ⠁
+  - - آ
+    - ⠜
+  - - ب
+    - ⠃
+  - - ٻ
+    - ⠢
+  - - ڀ
+    - ⠆
+  - - پ
+    - ⠏
+  - - ت
+    - ⠞
+  - - ٿ
+    - ⠳
+  - - ٽ
+    - ⠪
+  - - ٺ
+    - ⠕
+  - - ث
+    - ⠹
+  - - ج
+    - ⠚
+  - - ڄ
+    - ⠴
+  - - ڃ
+    - ⠔
+  - - چ
+    - ⠉
+  - - ڇ
+    - ⠡
+  - - ح
+    - ⠱
+  - - خ
+    - ⠭
+  - - د
+    - ⠙
+  - - ڌ
+    - ⠧
+  - - ڏ
+    - ⠌
+  - - ڊ
+    - ⠬
+  - - ڍ
+    - ⠲
+  - - ذ
+    - ⠮
+  - - ر
+    - ⠗
+  - - ڙ
+    - ⠻
+  - - ز
+    - ⠵
+  - - س
+    - ⠎
+  - - ش
+    - ⠩
+  - - ص
+    - ⠯
+  - - ض
+    - ⠫
+  - - ط
+    - ⠾
+  - - ظ
+    - ⠿
+  - - ع
+    - ⠷
+  - - غ
+    - ⠣
+  - - ف
+    - ⠋
+  - - ڦ
+    - ⠖
+  - - ق
+    - ⠟
+  - - ڪ
+    - ⠅
+  - - ک
+    - ⠅⠦
+  - - گ
+    - ⠛
+  - - ڳ
+    - ⠽
+  - - ڱ
+    - ⠶
+  - - ل
+    - ⠇
+  - - م
+    - ⠍
+  - - ن
+    - ⠝
+  - - ڻ
+    - ⠼
+  - - و
+    - ⠺
+  - - ه
+    - ⠓
+  - - ھ
+    - ⠦
+  - - ي
+    - ⠊
+  - - ء
+    - ⠄
+  - - جھ
+    - ⠚⠦   # two cells
+  - - گھ
+    - ⠛⠦   # two cells
+  - - ڙھ
+    - ⠻⠦   # aspirate
+  - - لھ
+    - ⠇⠦   # aspirate
+  - - مھ
+    - ⠍⠦   # aspirate
+  - - نھ
+    - ⠝⠦   # aspirate
+  - - ڻھ
+    - ⠼⠦   # aspirate
+  - - 1
+    - ⠼⠁
+  - - 2
+    - ⠼⠃
+  - - 3
+    - ⠼⠉
+  - - 4
+    - ⠼⠙
+  - - 5
+    - ⠼⠑
+  - - 6
+    - ⠼⠋
+  - - 7
+    - ⠼⠛
+  - - 8
+    - ⠼⠓
+  - - 9
+    - ⠼⠊
+  - - 0
+    - ⠼⠚
+  - - سنڌي ٻولي هڪ شاهوڪار ٻولي آهي.
+    - ⠎⠝⠧⠊⠀⠢⠺⠇⠊⠀⠓⠅⠀⠩⠁⠓⠺⠅⠁⠗⠀⠢⠺⠇⠊⠀⠜⠓⠊⠲
+  - - واه واه گھوڙو ڏاڍو ڀلو آهي.
+    - ⠺⠁⠓⠀⠺⠁⠓⠀⠛⠦⠺⠻⠺⠀⠌⠁⠲⠺⠀⠆⠇⠺⠀⠜⠓⠊⠲
+  - - ڪبوتر جھرڪي ڳيرو وغيره.
+    - ⠅⠃⠺⠞⠗⠀⠚⠦⠗⠅⠊⠀⠽⠊⠗⠺⠀⠺⠣⠊⠗⠓⠲
+  - - سنڌ جي عظيم اڳواڻ ذوالفقار ڀٽي جو تعلق لاڙڪاڻي ضلعي سان آهي.
+    - ⠎⠝⠧⠀⠚⠊⠀⠷⠿⠊⠍⠀⠁⠽⠺⠁⠼⠀⠮⠺⠁⠇⠋⠟⠁⠗⠀⠆⠪⠊⠀⠚⠺⠀⠞⠷⠇⠟⠀⠇⠁⠻⠅⠁⠼⠊⠀⠫⠇⠷⠊⠀⠎⠁⠝⠀⠜⠓⠊⠲
+  - - اسان جي صوبي جو نالو ڇا آهي؟
+    - ⠁⠎⠁⠝⠀⠚⠊⠀⠯⠺⠃⠊⠀⠚⠺⠀⠝⠁⠇⠺⠀⠡⠁⠀⠜⠓⠊⠦
+  - - لاڙڪاڻي جي وڏي کان وڏي پبلڪ لائبريري آهي.
+    - ⠇⠁⠻⠅⠁⠼⠊⠀⠚⠊⠀⠺⠌⠊⠀⠅⠦⠁⠝⠀⠺⠌⠊⠀⠏⠃⠇⠅⠀⠇⠁⠄⠃⠗⠊⠗⠊⠀⠜⠓⠊⠲
+  - - هن ڊڄندي ڊڄندي ورندي ڏني.
+    - ⠓⠝⠀⠬⠴⠝⠙⠊⠀⠬⠴⠝⠙⠊⠀⠺⠗⠝⠙⠊⠀⠌⠝⠊⠲
+  - - ٿورو ٿورو پاڻي.
+    - ⠳⠺⠗⠺⠀⠳⠺⠗⠺⠀⠏⠁⠼⠊⠲
+  - - رات و ڏينهن محنت.
+    - ⠗⠁⠞⠀⠺⠀⠌⠊⠝⠓⠝⠀⠍⠱⠝⠞⠲
+  - - ڪتاب جو قيمت 250 روپيا آهي.
+    - ⠅⠞⠁⠃⠀⠚⠺⠀⠟⠊⠍⠞⠀⠼⠃⠑⠚⠀⠗⠺⠏⠊⠁⠀⠜⠓⠊⠲
+  - - صفحو 4.
+    - ⠯⠋⠱⠺⠀⠼⠙⠠⠲
+  - - اڄ 7 نومبر 2016 آهي.
+    - ⠁⠴⠀⠼⠛⠀⠝⠺⠍⠃⠗⠀⠼⠃⠚⠁⠋⠀⠜⠓⠊⠲
+  - - ڇا اهو صحيح آهي؟ ها!
+    - ⠡⠁⠀⠁⠓⠺⠀⠯⠱⠊⠱⠀⠜⠓⠊⠦⠀⠓⠁⠖
+  - - لاڙڪاڻي جي پبلڪ لائبريري.
+    - ⠇⠁⠻⠅⠁⠼⠊⠀⠚⠊⠀⠏⠃⠇⠅⠀⠇⠁⠄⠃⠗⠊⠗⠊⠲
+  - - اسين سنڌ ۾ رهون ٿا.
+    - ⠁⠎⠊⠝⠀⠎⠝⠧⠀⠍⠊⠝⠀⠗⠓⠺⠝⠀⠳⠁⠲
+  - - رات ۽ ڏينهن.
+    - ⠗⠁⠞⠀⠁⠄⠊⠝⠀⠌⠊⠝⠓⠝⠲
+  - - صفحو 4.
+    - ⠯⠋⠱⠺⠀⠼⠙⠠⠲   # dot 6 closes the number
+  - - ٿورو؛ ٻيو
+    - ⠳⠺⠗⠺⠆⠀⠢⠊⠺   # semicolon = 23 (guide p.35)
+
+# --- word-final ھ (aspirate) must not be read as a question mark ------------
+# ھ shares cell 236 with ؟.  Sindhi forms aspirates with ھ and many ordinary
+# words end that way, so back-translation resolves 236 to the letter.
+  - - پڙھ
+    - ⠏⠻⠦
+  - - تھ
+    - ⠞⠦
+  - - ڏوھ
+    - ⠌⠺⠦
+  - - اولھ
+    - ⠁⠺⠇⠦
+  - - ڳالھ
+    - ⠽⠁⠇⠦
+
+# --- the letter sign, Roman numerals and arithmetic (guide pp.42, 48-51) ----
+  - - VIII
+    - ⠰⠧⠊⠊⠊
+  - - IX
+    - ⠰⠊⠭
+  - - حضرت
+    - ⠱⠫⠲
+
+# --- the Latin alphabet inside Sindhi (guide p.46) --------------------------
+# The guide's own example: Thanks is 6 2345 125 1 1345 13 234.  The pair of
+# marks around a whole foreign RUN spans several words and is not emitted here;
+# sindhi_braille.py does emit it.
+  - - Thanks
+    - ⠠⠞⠓⠁⠝⠅⠎
+  - - word
+    - ⠺⠕⠗⠙
+  - - Computer
+    - ⠠⠉⠕⠍⠏⠥⠞⠑⠗
+
+# --- per cent (guide p.51) -------------------------------------------------
+# The two cells are right; the guide prints them before the number and liblouis
+# cannot move them there.  A documented divergence from sindhi_braille.py.
+  - - 50%
+    - ⠼⠑⠚⠒⠏

@@ -1,0 +1,13 @@
+# Deploying the site from the command line, if you would rather not connect the
+# repository to Cloudflare:
+#
+#   npm install -g wrangler
+#   wrangler login
+#   wrangler pages deploy website --project-name sindhi-braille
+#
+# Connecting the repository in the Cloudflare dashboard is simpler and rebuilds
+# on every push. Either way the settings are the same: no build command, and the
+# output directory is `website`.
+
+name = "sindhi-braille"
+pages_build_output_dir = "website"

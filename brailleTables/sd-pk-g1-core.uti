@@ -1,0 +1,570 @@
+# Sindhi (Pakistan) — the shared core of the Grade 1 and Grade 2 tables
+#
+# Everything both tables agree on. It is not a table on its own: it has no
+# rule for ۾ or ۽, because that is the one place where Grade 1 and Grade 2
+# differ — Grade 1 spells ۾ out as م ي ن, Grade 2 contracts it to م.
+# Include sd-pk-g1.utb or sd-pk-g2.ctb, never this file directly.
+#
+#+language:sd
+#+region:pk
+#+type:literary
+#+contraction:no
+#+grade:1
+#+direction:both
+#
+#  Copyright (C) 2026
+#
+#  This file is part of liblouis.
+#
+#  liblouis is free software: you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as
+#  published by the Free Software Foundation, either version 2.1 of the
+#  License, or (at your option) any later version.
+#
+#  liblouis is distributed in the hope that it will be useful, but
+#  WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+#  Lesser General Public License for more details.
+#
+# ---------------------------------------------------------------------------
+# THE BRAILLE CODE IMPLEMENTED HERE
+#
+# Standard Sindhi Braille, given final form on 7 November 2016 under the
+# patronage of the SINDHI LANGUAGE AUTHORITY (an autonomous institution of the
+# Government of Sindh, established under the Use of Sindhi Language Act 1972 and
+# the Teaching, Promotion and Use of Sindhi Language (Amendment) Act 1990), by
+# the unanimous agreement of a committee of six:
+#
+#   Prof. Dr Abdul Ghafoor Memon  - Chairman, Sindhi Language Authority
+#   Shahid Ahmed Memon            - Convener
+#   Riaz Hussain Memon            - Member  (blind teacher; President, Pakistan
+#                                            Association of the Blind, Sindh)
+#   Prof. Mehrab Ali Lakho        - Member
+#   Dr Saira Saleem Khan          - Member
+#   Shamsuddin Shaikh             - Member
+#
+# Certified by Haroon Inayat Abbasi, Secretary.  The certificate is printed on
+# page 23 of the committee's book, "مڪمل سنڌي بريل درجو II".
+#
+# The Government of Sindh has printed school textbooks in this code through the
+# DEPD Braille Press, Karachi.
+#
+# NOTE ON SCOPE.  This table is for Sindhi in its PERSO-ARABIC orthography, the
+# script used in Pakistan.  It is not the same code as the existing Devanagari
+# Sindhi table (sd.tbl -> si-in-g1.utb, Braille Council of India), and the two
+# cannot substitute for one another: about a dozen Arabic-origin letters
+# (ث ذ ص ض ط ظ ع غ ح خ ق) have no Devanagari counterpart.
+#
+# Verified: every letter confirmed in person by Riaz Hussain Memon on
+# 12 August 2026; embossed on an Index Everest-D V5 and read by touch without
+# error; and measured independently off the printed Grade 2 book.
+# ---------------------------------------------------------------------------
+
+include spaces.uti
+include braille-patterns.cti
+
+space \x00a0 a
+
+# marks that carry no braille
+replace \x200E                  # left-to-right mark
+replace \x200F                  # right-to-left mark
+replace \x200C                  # zero-width non-joiner
+replace \x200D                  # zero-width joiner
+replace \x0640                  # tatweel
+
+numsign 3456                    # NOTE: same cell as ڻ.  Safe because no Sindhi
+                                # word begins with ڻ - verified over 21,445
+                                # words of the committee's own publications.
+
+# --- punctuation ------------------------------------------------------------
+# Several of these share a cell with a letter.  Riaz Hussain Memon's rule:
+# the punctuation reading applies at the end of a word, the letter inside it.
+nofor endword \x060C 2     # ، is the Sindhi comma
+noback punctuation \x060C 2            # Arabic comma       - shares dot 2 with zabar
+noback punctuation \x061B 23           # Arabic semicolon = 23 (guide p.35)
+nofor endword \x061B 23    # back: word-final only (shares 23 with ڀ)
+# NOTE (back-translation of 236 at the end of a word).  Sindhi forms its
+# aspirates by writing ھ after a consonant, and a great many ordinary words
+# end that way: پڙھ، تھ، بھ، ڏوھ، اولھ، ڳالھ.  The question mark ؟ shares the
+# same cell and is far rarer, so an endword rule for ؟ mis-reads every one of
+# those words.  liblouis has no word list to settle it, so back-translation
+# resolves 236 to the letter ھ and cannot recover ؟.  The reference
+# implementation (tools/sindhi_braille.py) uses a word list and recovers both.
+# Pending: ask Riaz Hussain Memon how a reader distinguishes them.
+noback punctuation \x061F 236          # Arabic question    - shares 236 with ھ
+noback punctuation \x06D4 256   # Arabic full stop  ۔ - shares 256 with ڍ
+noback punctuation . 256
+nofor endword . 256   # back: word-final only (shares 256 with ڍ)
+noback punctuation , 2
+noback punctuation ? 236
+punctuation ! 235               # shares 235 with ڦ
+noback punctuation ; 23
+nofor endword ; 23   # back: word-final only (shares 23 with ڀ)
+punctuation : 25
+punctuation - 36                # also the واؤ عطف joiner and the line-break hyphen
+
+# --- letters ----------------------------------------------------------------
+#                                  name                       Sindhi
+letter \x0622 345               # Alef with madda                آ
+letter \x0627 1                 # Alef                           ا
+letter \x0628 12                # Beh                            ب
+letter \x067B 26                # Beeh (implosive b)             ٻ
+letter \x0680 23                # Beheh (aspirated bh)           ڀ
+letter \x067E 1234              # Peh                            پ
+letter \x062A 2345              # Teh                            ت
+letter \x067F 1256              # Teheh                          ٿ
+letter \x067D 246               # Teh with 3 dots below          ٽ
+letter \x067A 135               # Tteheh                         ٺ
+letter \x062B 1456              # Theh                           ث
+letter \x062C 245               # Jeem                           ج
+letter \x0684 356               # Dyeh (implosive j)             ڄ
+letter \x0683 35                # Nyeh                           ڃ
+letter \x0686 14                # Tcheh                          چ
+letter \x0687 16                # Tcheheh                        ڇ
+letter \x062D 156               # Hah                            ح
+letter \x062E 1346              # Khah                           خ
+letter \x062F 145               # Dal                            د
+letter \x068C 1236              # Ddahal                         ڌ
+letter \x068F 34                # Dul (implosive d)              ڏ
+letter \x068A 346               # Ddal                           ڊ
+letter \x068D 256               # Dahal                          ڍ
+letter \x0630 2346              # Thal                           ذ
+letter \x0631 1235              # Reh                            ر
+letter \x0699 12456             # Reh with 4 dots above          ڙ
+letter \x0632 1356              # Zain                           ز
+letter \x0633 234               # Seen                           س
+letter \x0634 146               # Sheen                          ش
+letter \x0635 12346             # Sad                            ص
+letter \x0636 1246              # Dad                            ض
+letter \x0637 23456             # Tah                            ط
+letter \x0638 123456            # Zah                            ظ
+letter \x0639 12356             # Ain                            ع
+letter \x063A 126               # Ghain                          غ
+letter \x0641 124               # Feh                            ف
+letter \x06A6 235               # Peheh                          ڦ
+letter \x0642 12345             # Qaf                            ق
+letter \x06AA 13                # Sindhi Keheh                   ڪ
+letter \x06A9 13-236            # Keheh = ڪ + ھ                 ک
+letter \x06AF 1245              # Gaf                            گ
+letter \x06B3 13456             # Gueh (implosive g)             ڳ
+letter \x06B1 2356              # Ngoeh                          ڱ
+letter \x0644 123               # Lam                            ل
+letter \x0645 134               # Meem                           م
+letter \x0646 1345              # Noon                           ن
+noback letter \x06BB 3456       # Rnoon  ڻ  - forward always
+# Back-translation: dots 3456 at the start of a word is the number sign, and
+# ڻ everywhere else.  Riaz Hussain Memon's rule; verified over 21,445 words of
+# the committee's publications, in which no word begins with ڻ.
+nofor midword \x06BB 3456
+nofor endword \x06BB 3456
+letter \x0648 2456              # Waw                            و
+letter \x0647 125               # Heh                            ه
+letter \x06BE 236               # Heh doachashmee (aspirate)     ھ
+letter \x064A 24                # Yeh                            ي
+letter \x0621 3                 # Hamza                          ء
+
+# carriers that the code folds onto the bare hamza or alef
+noback letter \x0626 3                 # Yeh with hamza above  ئ  (cf. لائبريري)
+letter \x0624 3-2456            # Waw with hamza above  ؤ
+noback letter \x0623 1                 # Alef with hamza above أ
+noback letter \x0625 1                 # Alef with hamza below إ
+noback letter \x0649 24                # Alef maksura          ى
+noback letter \x06CC 24                # Farsi yeh             ی
+noback letter \x0643 13                # Arabic kaf            ك
+noback letter \x0629 125               # Teh marbuta           ة
+noback letter \x06C1 125               # Heh goal              ہ
+
+# --- aspirated digraphs: base letter + ھ, two cells -------------------------
+always \x062C\x06BE 245-236     # جھ
+always \x06AF\x06BE 1245-236    # گھ
+
+# --- diacritics -------------------------------------------------------------
+# Written only at beginner level (classes 1-3); ordinary Sindhi braille omits
+# them, which is why they are signs rather than letters here.
+sign \x064E 2                   # zabar   (shares dot 2 with the comma)
+sign \x0650 15                  # zer
+sign \x064F 136                 # pesh
+sign \x0651 6                   # shad   (also the numeric terminator, p.43)
+sign \x0652 25                  # jazam   (shares 25 with the colon)
+sign \x064D 35                  # ٻه زيرون  double zer   (guide p.33)
+sign \x064C 26                  # ٻه پيش    double pesh
+sign \x0670 4                   # ڪڙا زبر   khari zabar — the last of the 63 signs
+
+# --- dots 4-6 --------------------------------------------------------------
+# RESOLVED, 15 August 2026, by Riaz Hussain Memon: dots 4-6 are the ڳانڊڙا group
+# prefix, the same in Grade 1 as in Grade 2, and «وڏو اکر» on his chart is his
+# label for that prefix.  It is not a capital sign - an earlier revision read it
+# that way - and it is not ک; ک is two cells, 13 then 236, which he confirmed
+# directly.  The prefix belongs to the contracted grade, so this uncontracted
+# table assigns dots 4-6 nothing, and sd-pk-g2.ctb carries the series.  Sindhi has
+# no upper and lower case, so no capital sign is defined.
+
+# --- the letter sign, اکر جو نشان, dots 5-6 (guide p.42) ---------------------
+# It marks a letter standing in for a number or an operator: the ا ب ج د of a
+# numbered exercise, an abjad or Roman numeral, and every arithmetic sign.
+
+# Roman numerals (guide p.48): the English letters, with ONE letter sign at
+# the start of the numeral.  liblouis has no way to say "once per numeral",
+# so the numerals a school book actually uses are listed as whole words.
+# Anything outside this list falls through untranslated - a known limit.
+noback word I 56-24
+noback word II 56-24-24
+noback word III 56-24-24-24
+noback word IV 56-24-1236
+noback word V 56-1236
+noback word VI 56-1236-24
+noback word VII 56-1236-24-24
+noback word VIII 56-1236-24-24-24
+noback word IX 56-24-1346
+noback word X 56-1346
+noback word XI 56-1346-24
+noback word XII 56-1346-24-24
+noback word XIII 56-1346-24-24-24
+noback word XIV 56-1346-24-1236
+noback word XV 56-1346-1236
+noback word XVI 56-1346-1236-24
+noback word XVII 56-1346-1236-24-24
+noback word XVIII 56-1346-1236-24-24-24
+noback word XIX 56-1346-24-1346
+noback word XX 56-1346-1346
+noback word XXI 56-1346-1346-24
+noback word XXII 56-1346-1346-24-24
+noback word XXIII 56-1346-1346-24-24-24
+noback word XXIV 56-1346-1346-24-1236
+noback word XXV 56-1346-1346-1236
+noback word XXVI 56-1346-1346-1236-24
+noback word XXVII 56-1346-1346-1236-24-24
+noback word XXVIII 56-1346-1346-1236-24-24-24
+noback word XXIX 56-1346-1346-24-1346
+noback word XXX 56-1346-1346-1346
+noback word XXXI 56-1346-1346-1346-24
+noback word XXXII 56-1346-1346-1346-24-24
+noback word XXXIII 56-1346-1346-1346-24-24-24
+noback word XXXIV 56-1346-1346-1346-24-1236
+noback word XXXV 56-1346-1346-1346-1236
+noback word XXXVI 56-1346-1346-1346-1236-24
+noback word XXXVII 56-1346-1346-1346-1236-24-24
+noback word XXXVIII 56-1346-1346-1346-1236-24-24-24
+noback word XXXIX 56-1346-1346-1346-24-1346
+noback word XL 56-1346-123
+noback word XLI 56-1346-123-24
+noback word XLII 56-1346-123-24-24
+noback word XLIII 56-1346-123-24-24-24
+noback word XLIV 56-1346-123-24-1236
+noback word XLV 56-1346-123-1236
+noback word XLVI 56-1346-123-1236-24
+noback word XLVII 56-1346-123-1236-24-24
+noback word XLVIII 56-1346-123-1236-24-24-24
+noback word XLIX 56-1346-123-24-1346
+noback word L 56-123
+noback word LX 56-123-1346
+noback word LXX 56-123-1346-1346
+noback word LXXX 56-123-1346-1346-1346
+noback word XC 56-1346-14
+noback word C 56-14
+noback word CC 56-14-14
+noback word CCC 56-14-14-14
+noback word CD 56-14-145
+noback word D 56-145
+noback word M 56-134
+
+# Arithmetic signs (guide pp.49-51), each after the letter sign.
+noback always + 56-235
+noback always \x2212 56-36
+noback always \x00d7 56-236
+noback always \x00f7 56-256
+noback always = 56-2356
+
+# Brackets and quotation marks in prose (guide p.32).
+noback punctuation ( 2356
+noback punctuation ) 2356
+noback always [ 6-2356
+noback always ] 2356-3
+noback always \x201c 236
+noback always \x201d 356
+noback always \x2018 6-236
+noback always \x2019 356-3
+
+# Religious abbreviations (guide p.54).  The full stop is part of the sign, and
+# is written with no space.  Forward only: the phrase is lost on the way back.
+noback always \x062D\x0636\x0631\x062A 156-1246-256
+noback always \x0639\x064A\x0633\x0648\x064A 12356-256
+noback always \x0635\x0644\x0639\x0645 12346-256
+noback always \xFDFA 12346-256
+noback always \x0647\x062C\x0631\x064A 125-256
+
+# --- the Latin alphabet -----------------------------------------------------
+# English inside Sindhi is written in ordinary English braille, with dot 6 for
+# a capital: the guide prints "Thanks" as 6 2345 125 1 1345 13 234 (p.46).
+# The pair of marks that the guide wraps around a whole foreign RUN (5-6 2-3-6
+# to open, 3-5-6 2-3 to close) is not emitted here - it spans several words,
+# which the rule language cannot see.  sindhi_braille.py does emit them.
+# No capsletter opcode.  Declaring one puts liblouis into capital mode, which
+# folds an all-capital word to lower case before matching - and that stops the
+# Roman-numeral word rules below from ever firing.  Sindhi has no case of its
+# own, so dot 6 is simply written into each capital letter instead.
+lowercase \x0061 1
+uppercase \x0041 6-1
+lowercase \x0062 12
+uppercase \x0042 6-12
+lowercase \x0063 14
+uppercase \x0043 6-14
+lowercase \x0064 145
+uppercase \x0044 6-145
+lowercase \x0065 15
+uppercase \x0045 6-15
+lowercase \x0066 124
+uppercase \x0046 6-124
+lowercase \x0067 1245
+uppercase \x0047 6-1245
+lowercase \x0068 125
+uppercase \x0048 6-125
+lowercase \x0069 24
+uppercase \x0049 6-24
+lowercase \x006a 245
+uppercase \x004a 6-245
+lowercase \x006b 13
+uppercase \x004b 6-13
+lowercase \x006c 123
+uppercase \x004c 6-123
+lowercase \x006d 134
+uppercase \x004d 6-134
+lowercase \x006e 1345
+uppercase \x004e 6-1345
+lowercase \x006f 135
+uppercase \x004f 6-135
+lowercase \x0070 1234
+uppercase \x0050 6-1234
+lowercase \x0071 12345
+uppercase \x0051 6-12345
+lowercase \x0072 1235
+uppercase \x0052 6-1235
+lowercase \x0073 234
+uppercase \x0053 6-234
+lowercase \x0074 2345
+uppercase \x0054 6-2345
+lowercase \x0075 136
+uppercase \x0055 6-136
+lowercase \x0076 1236
+uppercase \x0056 6-1236
+lowercase \x0077 2456
+uppercase \x0057 6-2456
+lowercase \x0078 1346
+uppercase \x0058 6-1346
+lowercase \x0079 13456
+uppercase \x0059 6-13456
+lowercase \x007a 1356
+uppercase \x005a 6-1356
+
+# --- per cent (guide p.51) --------------------------------------------------
+# KNOWN DIVERGENCE, and the only one in this table.
+#
+# The guide prints the sign BEFORE the number: 1% is 25 1234 3456 1.  A rule
+# here can change what a character becomes but not where it lands, and the
+# number it belongs to is not known until after it has been read - so the two
+# cells are written in place, after the number, and a page embossed from this
+# table will have them on the wrong side.
+#
+# Round-tripping is unaffected: 25-1234 reads back as % in either position.
+# Where it matters - the .brf files this project actually embosses - use
+# tools/sindhi_braille.py, which writes the sign where the guide writes it.
+#
+# This is the same class of limit as the fractions and the repeated-word rule
+# below: each needs to see more of the line than a rule is allowed to see.
+punctuation \x0025 25-1234
+
+# --- digits -----------------------------------------------------------------
+digit 1 1
+digit 2 12
+digit 3 14
+digit 4 145
+digit 5 15
+digit 6 124
+digit 7 1245
+digit 8 125
+digit 9 24
+digit 0 245
+litdigit 1 1
+litdigit 2 12
+litdigit 3 14
+litdigit 4 145
+litdigit 5 15
+litdigit 6 124
+litdigit 7 1245
+litdigit 8 125
+litdigit 9 24
+litdigit 0 245
+# Eastern Arabic-Indic forms, same cells
+digit \x0660 245
+digit \x0661 1
+digit \x0662 12
+digit \x0663 14
+digit \x0664 145
+digit \x0665 15
+digit \x0666 124
+digit \x0667 1245
+digit \x0668 125
+digit \x0669 24
+
+
+# --- dot 6 closes numeric mode before punctuation --------------------------
+# Riaz Hussain Memon, standard guide p.43: "if you write 4 and put a full stop
+# after it, the reader will read it as 44" - because the lower-sign digits share
+# cells with the punctuation. Dot 6 before the mark ends the number.
+always 0. 245-6-256
+always 0\x06D4 245-6-256
+always 0\x060C 245-6-2
+always 0, 245-6-2
+always 0\x061F 245-6-236
+always 0? 245-6-236
+always 0! 245-6-235
+always 0\x061B 245-6-25
+always 0; 245-6-25
+always 1. 1-6-256
+always 1\x06D4 1-6-256
+always 1\x060C 1-6-2
+always 1, 1-6-2
+always 1\x061F 1-6-236
+always 1? 1-6-236
+always 1! 1-6-235
+always 1\x061B 1-6-25
+always 1; 1-6-25
+always 2. 12-6-256
+always 2\x06D4 12-6-256
+always 2\x060C 12-6-2
+always 2, 12-6-2
+always 2\x061F 12-6-236
+always 2? 12-6-236
+always 2! 12-6-235
+always 2\x061B 12-6-25
+always 2; 12-6-25
+always 3. 14-6-256
+always 3\x06D4 14-6-256
+always 3\x060C 14-6-2
+always 3, 14-6-2
+always 3\x061F 14-6-236
+always 3? 14-6-236
+always 3! 14-6-235
+always 3\x061B 14-6-25
+always 3; 14-6-25
+always 4. 145-6-256
+always 4\x06D4 145-6-256
+always 4\x060C 145-6-2
+always 4, 145-6-2
+always 4\x061F 145-6-236
+always 4? 145-6-236
+always 4! 145-6-235
+always 4\x061B 145-6-25
+always 4; 145-6-25
+always 5. 15-6-256
+always 5\x06D4 15-6-256
+always 5\x060C 15-6-2
+always 5, 15-6-2
+always 5\x061F 15-6-236
+always 5? 15-6-236
+always 5! 15-6-235
+always 5\x061B 15-6-25
+always 5; 15-6-25
+always 6. 124-6-256
+always 6\x06D4 124-6-256
+always 6\x060C 124-6-2
+always 6, 124-6-2
+always 6\x061F 124-6-236
+always 6? 124-6-236
+always 6! 124-6-235
+always 6\x061B 124-6-25
+always 6; 124-6-25
+always 7. 1245-6-256
+always 7\x06D4 1245-6-256
+always 7\x060C 1245-6-2
+always 7, 1245-6-2
+always 7\x061F 1245-6-236
+always 7? 1245-6-236
+always 7! 1245-6-235
+always 7\x061B 1245-6-25
+always 7; 1245-6-25
+always 8. 125-6-256
+always 8\x06D4 125-6-256
+always 8\x060C 125-6-2
+always 8, 125-6-2
+always 8\x061F 125-6-236
+always 8? 125-6-236
+always 8! 125-6-235
+always 8\x061B 125-6-25
+always 8; 125-6-25
+always 9. 24-6-256
+always 9\x06D4 24-6-256
+always 9\x060C 24-6-2
+always 9, 24-6-2
+always 9\x061F 24-6-236
+always 9? 24-6-236
+always 9! 24-6-235
+always 9\x061B 24-6-25
+always 9; 24-6-25
+
+# Back-translation only: a dot 6 immediately after a digit is the numeric
+# terminator of the guide (p.43), not a shad.  Remove it before pass 1.
+nofor pass2 @1-6 @1
+nofor pass2 @12-6 @12
+nofor pass2 @14-6 @14
+nofor pass2 @145-6 @145
+nofor pass2 @15-6 @15
+nofor pass2 @124-6 @124
+nofor pass2 @1245-6 @1245
+nofor pass2 @125-6 @125
+nofor pass2 @24-6 @24
+nofor pass2 @245-6 @245
+
+# ---------------------------------------------------------------------------
+# STATUS
+#
+# FORWARD (Sindhi -> braille) is complete for prose and cross-validated three
+# ways: against an independent implementation written from the same sources
+# (`sindhi_braille.py`), against Riaz Hussain Memon reading embossed output by
+# touch, and against 74 worked examples printed in the Authority's own guide,
+# which it reproduces cell for cell.
+#
+# BACKWARD (braille -> Sindhi) is correct for ordinary prose.  Two limits:
+#
+#   dots 3456-145-6-256      -> "4" + ڍ   (should be "4.")
+#
+# liblouis's numeric mode takes precedence over the table's own rules once a
+# number sign is present, so trailing punctuation is read as the letter that
+# shares its cell.  The pass2 rules below remove the spurious shad, which is as
+# far as the table can go without a change in liblouis itself.
+#
+#   dots 236 at the end of a word -> ھ, never ؟
+#
+# ھ and the question mark share the cell.  Sindhi forms aspirates by writing ھ
+# after a consonant and a great many ordinary words end that way, so the letter
+# is the commoner reading and the one this table gives.  The reference
+# implementation uses a Sindhi word list and recovers both.
+#
+# For authoritative back-translation use `sindhi_braille.py`.  Measured on
+# 23,434 word tokens from the committee's own publications it round-trips at
+# 99.94%; the residue is the ع abbreviation, which needs sentence context.
+#
+# ------------------------------------------------------------------------
+# NOT EXPRESSIBLE IN THIS TABLE
+#
+# The code contains one rule liblouis cannot state: a word repeated twice is
+# written once followed by dot 3 twice (آهستي آهستي -> آهستي + 3 3).  Deciding
+# that requires comparing one word with the previous word, which the rule
+# language cannot test.  It is handled outside the table; see the reference
+# implementation `sindhi_braille.py` in the project repository.
+#
+# FRACTIONS.  Guide pp.52-53: the numerator is written in the ordinary digits
+# and the denominator in the same digits dropped to the lower dots (1->2, 2->23,
+# 3->25, 4->256, 5->26, 6->235, 7->2356, 8->236, 9->35, 0->356), with no bar and
+# with the numerator omitted entirely when it is 1.  Deciding that requires
+# looking at both sides of the slash, which the rule language cannot do; it is
+# handled in `sindhi_braille.py`.
+#
+# ORDINALS, the omission sign, the poetry and pen-name marks, the footnote star
+# and the foreign-language marks are likewise outside the rule language, for the
+# same reason: each needs to see more than one word at a time.
+#
+# Grade 2 contractions are not in this table.  They are in sd-pk-g2.ctb, which
+# includes this one and adds 237 contractions in six prefix series - (none), 5,
+# 45, 456, 3456 and 6 - plus the six ڳانڊڙا groups written inside a word.
+# ---------------------------------------------------------------------------

@@ -1,0 +1,354 @@
+# Sindhi (Pakistan) 6-dot Grade 2 (contracted) braille table
+#
+#-index-name: Sindhi, Pakistan, contracted
+#-display-name: Sindhi contracted braille (Pakistan, Perso-Arabic)
+#
+#+language:sd
+#+region:pk
+#+type:literary
+#+contraction:full
+#+grade:2
+#+direction:forward
+#
+#  Copyright (C) 2026
+#
+#  This file is part of liblouis.
+#
+#  liblouis is free software: you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as
+#  published by the Free Software Foundation, either version 2.1 of the
+#  License, or (at your option) any later version.
+#
+#  liblouis is distributed in the hope that it will be useful, but
+#  WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+#  Lesser General Public License for more details.
+#
+# ------------------------------------------------------------------------
+# SOURCE
+#
+# Every contraction below is taken from ڪامل سنڌي بريل درجو II by Riaz Hussain
+# Memon - the Grade 2 book of the code ratified by the Sindhi Language Authority
+# committee on 7 November 2016.  The letter and the word it stands for are read
+# from the author's own manuscript; the braille is the Grade 1 cell for that
+# letter, with the series prefix in front of it.
+#
+# The system has six series.  A contraction is the series prefix followed by one
+# ordinary letter, and it stands for a whole word:
+#
+#   (no prefix)  a single letter standing alone as a word
+#   dot 5        5-<letter>
+#   dots 4 5     45-<letter>
+#   dots 4 5 6   456-<letter>
+#   dots 3 4 5 6 3456-<letter>
+#   dot 6        6-<letter>
+#
+# and a seventh group, سنڌي اختصار, which abbreviates a phrase to its initial
+# letters without any prefix.
+#
+# ------------------------------------------------------------------------
+# STATUS - READ THIS BEFORE USING
+#
+# FORWARD ONLY, and NOT YET CONFIRMED IN USE.
+#
+# What is certain: the contraction list itself.  Each entry pairs a word with a
+# letter exactly as the author's manuscript pairs them.
+#
+# What is NOT yet established is when a contraction may be used.  Every Grade 2
+# braille code has placement rules - whether a contraction may begin a word, end
+# one, stand alone, or cross a syllable boundary - and those rules are not stated
+# in the material available.  This table therefore applies every contraction as a
+# WHOLE WORD ONLY (`word` rules), which is the conservative choice: it will miss
+# contractions a human transcriber would make, but it will not make one that is
+# wrong inside a word.
+#
+# The section نقطي چار پنج ڇهه is headed "ڪل ۽ جز لفظي" - whole AND partial word -
+# so some of its entries are meant to apply inside a word too.  Which ones is a
+# question for Riaz Hussain Memon.  Until he answers, they are whole-word here.
+#
+# Back-translation is not attempted.  Do not use this table with `-b`.
+# ------------------------------------------------------------------------
+include sd-pk-g1-core.uti
+
+# ۾ has a contraction of its own here — the letter م, dots 134 — where Grade 1
+# spells it out as م ي ن.  That is the whole reason the shared rules sit in
+# sd-pk-g1-core.uti rather than in sd-pk-g1.utb: liblouis cannot override a
+# rule that an include has already defined.
+word \x06FE 134
+noback always \x06FD 1-3-24-1345
+
+# --- ڪل لفظي مخفف — a single letter standing alone as a word  (45 entries) ---
+word \x0627\x0633\x064A\x0646 1
+word \x0628\x0647 12
+word \x067B\x0647 26
+word \x0680\x0644\x0648 23
+word \x062A\x0648\x0647\x0627\x0646 2345
+word \x067F\x0648 1256
+word \x067D\x064A 246
+word \x067A\x064A\x06AA 135
+word \x062B\x0628\x0648\x062A 1456
+word \x067E\x0631 1234
+word \x062C\x0648 245
+word \x0684\x0627\x06BB 356
+word \x0686\x064A\x0648 14
+word \x0687\x0648 16
+word \x062D\x0627\x0635\x0644 156
+word \x062E\x0627\x0644\x064A 1346
+word \x062F\x0648\x0633\x062A 145
+word \x068C\x064A\x0627\x0646 1236
+word \x068F\x0633 34
+word \x068A\x0627\x06AA\x067D\x0631 346
+word \x068D\x06AA 256
+word \x0630\x06AA\x0631 2346
+word \x0631\x062D\x0645\x062A 1235
+word \x0632\x0645\x064A\x0646 1356
+word \x0633\x0631\x06AA\x0627\x0631 234
+word \x0634\x0627\x064A\x062F 146
+word \x0635\x0631\x0641 12346
+word \x0636\x0627\x064A\x0639 1246
+word \x0637\x0631\x062D 23456
+word \x0638\x0644\x0645 123456
+word \x063A\x0644\x0637 126
+word \x0641\x0631\x0636 124
+word \x06A6\x0644 235
+word \x0642\x062F\x0631\x062A 12345
+word \x06AA\x0627\x0641\x064A 13
+word \x06AF\x0631\x0645\x064A 1245
+word \x06AF\x0631\x0645 1245
+word \x06B3\x0648\x067A 13456
+word \x0644\x0627\x0621\x0650 123
+# KNOWN DIVERGENCE.  ۾ has a Grade 2 contraction (م), but the Grade 1 table
+# already spells it out as م ي ن with an `always` rule, and that rule wins here
+# whichever opcode is used.  This table therefore leaves ۾ spelled out; the
+# reference translator contracts it.  One entry of 205.
+word \x0646\x0647 1345
+word \x0645\x0627\x06BB\x06BE\x0648 3456
+word \x0648\x064A\x0647\x0647 2456
+word \x0647\x0627 125-125
+word \x064A\x0627\x062F 24
+
+# --- نقطي پنج سان شروع ٿيندڙ مخفف  (44 entries) ---
+# prefix: dots 5
+word \x0622\x0647\x064A 5-345
+word \x0627\x0648\x0647\x0627\x0646 5-1
+word \x0628\x064A\x0647\x0646 5-12
+word \x067B\x0627\x0647\x0631 5-26
+word \x0680\x0644\x0627\x0626\x064A 5-23
+word \x062A\x0646\x0647\x0646 5-2345
+word \x067F\x064A\x0646 5-1256
+word \x067D\x0627\x0631\x064A\x0646 5-246
+word \x067A\x0627\x0647\x064A\x0646 5-135
+word \x062B\x0648\x0627\x0628 5-1456
+word \x067E\x0646\x0647\x0646 5-1234
+word \x062C\x064A\x062A\x0631 5-245
+word \x0684\x0627\x06BB\x064A 5-356
+word \x0686\x064A\x0627\x0626\x064A\x0646 5-14
+word \x0687\x068F\x064A\x0646 5-16
+word \x062D\x064A\x0631\x0627\x0646 5-156
+word \x062E\x0648\x0634 5-1346
+word \x062F\x0634\x0645\x0646 5-145
+word \x068C\x0648\x0626\x0646 5-1236
+word \x068F\x064A\x06A9\x0627\x0631 5-34
+word \x068A\x0648\x0699\x0646 5-346
+word \x0630\x0645\x064A\x0648\x0627\x0631 5-2346
+word \x0631\x0627\x0646\x062F 5-1235
+word \x0632\x0648\x0631 5-1356
+word \x0633\x064A\x06A9\x0627\x0631 5-234
+word \x0634\x0647\x0631 5-146
+word \x0635\x0627\x062D\x0628 5-12346
+word \x0636\x0631\x0648\x0631 5-1246
+word \x0637\x0631\x0641 5-23456
+word \x0638\x0627\x0647\x0631 5-123456
+word \x0639\x0627\x0645 5-12356
+word \x063A\x0644\x0637\x064A 5-126
+word \x0641\x0631\x0642 5-124
+word \x0642\x0631\x064A\x0628 5-12345
+word \x06AA\x0646\x0647\x0646 5-13
+word \x06AF\x0646\x062F 5-1245
+word \x06B3\x0627\x0644\x06BE 5-13456
+word \x0644\x06B3\x0646 5-123
+word \x0645\x0646\x06BE\x0646 5-134
+word \x0646\x062F\x064A\x0648\x0646 5-1345
+word \x0648\x06BB\x0646 5-3456
+word \x0648\x064A\x0646 5-2456
+word \x0647\x0644\x0646 5-125-125
+word \x064A\x0642\x064A\x0646 5-24
+
+# --- نقطي چار پنج سان شروع ٿيندڙ مخفف  (18 entries) ---
+# prefix: dots 4-5
+word \x0622\x0647\x0633\x062A\x064A 45-345
+word \x0680\x0631\x0633\x0627\x0646 45-23
+word \x062A\x064A\x0626\x0646 45-2345
+word \x067F\x064A\x0648\x0646 45-1256
+word \x0687\x0627\x06AA\x0627\x06BB 45-16
+word \x062D\x0631\x06AA\x062A 45-156
+word \x062E\x064A\x0627\x0644 45-1346
+word \x0633\x0646\x062F\x0633 45-234
+word \x0634\x0627\x0646\x062F\x0627\x0631 45-146
+word \x0635\x062D\x062A 45-12346
+word \x0636\x0627\x0645\x0646 45-1246
+word \x0637\x0631\x064A\x0642 45-23456
+word \x0639\x0644\x0627\x0648\x0647 45-12356
+word \x06A6\x064A\x0631\x06AF\x06BE\x064A\x0631 45-235
+word \x0642\x0627\x0626\x062F 45-12345
+word \x06AF\x068F\x064A\x0644 45-1245
+word \x0645\x0639\x0644\x0648\x0645 45-134
+word \x0648\x0627\x0642\x0639 45-2456
+
+# --- نقطي چار پنج ڇهه سان شروع ٿيندڙ ڪل ۽ جز لفظي مخفف  (42 entries) ---
+# prefix: dots 4-5-6
+word \x0622\x06BB\x064A\x0646 456-345
+word \x0627\x062E\x062A\x064A\x0627\x0631 456-1
+word \x0628\x0646\x062F\x0648\x0628\x0633\x062A 456-12
+word \x0680\x0627\x0626\x064A\x0646 456-23
+word \x062A\x06AA\x0644\x064A\x0641 456-2345
+word \x067F\x06AA\x0627\x0648\x067D 456-1256
+word \x067D\x06AA\x0631 456-246
+word \x067A\x0647\x0631\x0627\x0621\x064F 456-135
+word \x067E\x064A\x0627\x0631 456-1234
+word \x062C\x0646\x0647\x0646 456-245
+word \x0684\x0645\x0627\x0631 456-356
+word \x0686\x0648\x0646 456-14
+word \x0687\x068F\x064A 456-16
+word \x062D\x0627\x0636\x0631 456-156
+word \x062E\x0631\x0627\x0628 456-1346
+word \x062F\x0639\x0648\x062A 456-145
+word \x068C\x0631\x062A\x064A 456-1236
+word \x068F\x0633\x0646 456-34
+word \x068A\x064A\x0684\x0627\x0631 456-346
+word \x068D\x0646\x06AF 456-256
+word \x0630\x062E\x064A\x0631\x0648 456-2346
+word \x0631\x0648\x0634\x0646 456-1235
+word \x0632\x0645\x0627\x0646 456-1356
+word \x0633\x064A\x0646\x06AF\x0627\x0631 456-234
+word \x0634\x0631\x0648\x0639 456-146
+word \x0635\x0648\x0631\x062A 456-12346
+word \x0636\x0645\x0627\x0646\x062A 456-1246
+word \x0637\x0627\x0644\x0628 456-23456
+word \x0639\x0628\x0627\x062F\x062A 456-12356
+word \x063A\x0645\x06AF\x064A\x0646 456-126
+word \x0641\x0631\x0645\x0627\x0646 456-124
+word \x06A6\x064A\x0631\x0627\x0626\x064A\x0646 456-235
+word \x0642\x0627\x0628\x0644 456-12345
+word \x06AA\x0645\x0627\x0621\x0650 456-13
+word \x06AF\x0646\x062C\x0627\x0626\x0634 456-1245
+word \x06B3\x062C\x0647\x0647 456-13456
+word \x0645\x0646\x062C\x0647\x0647 456-134
+word \x0646\x0647\x0627\x064A\x062A 456-1345
+word \x0627\x06B3\x0648\x0627\x06BB 456-3456
+word \x0648\x064A\x06AA\x0631 456-2456
+word \x0647\x0645\x062F\x0631\x062F 456-125-125
+word \x064A\x0627\x062F\x06AF\x0627\x0631 456-24
+
+# --- نقطي ٽي چار پنج ڇهه سان شروع ٿيندڙ مخفف  (28 entries) ---
+# prefix: dots 3-4-5-6
+word \x0622\x0648\x0627\x0632 3456-345
+word \x062A\x0646\x062F\x0631\x0633\x062A 3456-2345
+word \x067F\x0699\x06AA\x0646 3456-1256
+word \x067D\x0699\x0646 3456-246
+word \x067A\x06AA\x0631\x0627\x0626\x0646 3456-135
+word \x067E\x0627\x0644\x06BB\x0647\x0627\x0631 3456-1234
+word \x0687\x068F\x0627\x0626\x064A\x0646 3456-16
+word \x062D\x0641\x0627\x0638\x062A 3456-156
+word \x062E\x0648\x0634\x062D\x0627\x0644 3456-1346
+word \x068C\x06AA\x0627\x0631 3456-1236
+word \x068F\x06A9\x0648\x0626\x064A\x0646 3456-34
+word \x0631\x064A\x062C\x0627\x0626\x064A\x0646 3456-1235
+word \x0632\x064A\x0627\x0631\x062A 3456-1356
+word \x0633\x062F\x0627\x0626\x064A\x0646 3456-234
+word \x0634\x0627\x0647\x0648\x06AA\x0627\x0631 3456-146
+word \x0635\x062D\x062A\x0645\x0646\x062F 3456-12346
+word \x0635\x062D\x062A\x0645\x0646\x062F\x064A 3456-12346
+word \x0636\x0639\x064A\x0641 3456-1246
+word \x0637\x0627\x0642\x062A\x0648\x0631 3456-23456
+word \x0639\x0627\x0644\x064A\x0634\x0627\x0646 3456-12356
+word \x063A\x0644\x0627\x0636\x062A 3456-126
+word \x0642\x0631\x0627\x0631\x062F\x0627\x062F 3456-12345
+word \x06AA\x0627\x0631\x0648\x0628\x0627\x0631 3456-13
+word \x06B3\x0648\x0644\x0647\x0647 3456-13456
+word \x0644\x06B3\x0627\x062A\x0627\x0631 3456-123
+word \x0645\x062E\x062A\x0644\x0641 3456-134
+word \x0646\x0645\x0648\x0646\x0627 3456-1345
+word \x0648\x0627\x067E\x0633 3456-2456
+
+# --- نقطي ڇهه سان شروع ٿيندڙ مخفف  (3 entries) ---
+# prefix: dots 6
+word \x0628\x062D\x0631\x062D\x0627\x0644 6-12
+word \x062C\x064A\x062A\x0648\x06BB\x064A\x06AA 6-245
+word \x062D\x0627\x0644\x0627\x0646\x06AA\x0647 6-156
+
+# --- سنڌي اختصار — Sindhi abbreviations  (25 entries) ---
+word \x0627\x0644\x0628\x062A\x0647 1-123-2345
+word \x0627\x062A\x0641\x0627\x0642 1-2345-124
+word \x0627\x0645\x06AA\x0627\x0646 1-134-13
+word \x0627\x0645\x06AA\x0627\x0646\x064A 1-134-13-24
+word \x0628\x0631\x0627\x0628\x0631 12-12
+word \x0628\x0639\x062F 12-12356
+word \x0628\x0627\x0639\x062B 12-1456
+word \x062C\x0645\x0644\x0648 245-134
+word \x062C\x0645\x0644\x064A 245-134
+word \x0687\x0627\x06A9\x064A 16-13-236
+word \x0644\x062D\x0627\x0638 123-156
+word \x0645\x0646\x0627\x0633\x0628 134-12
+word \x0645\x0646\x0627\x0633\x0628\x062A 134-12-2345
+word \x0645\x0631\x062A\x0628\x0648 134-1235-2345
+word \x0645\x0631\x062A\x0628\x0627 134-1235-2345
+word \x0645\x0637\x0627\x0628\x0642 134-23456
+word \x0645\x0637\x0627\x0628\x0642\x062A 134-23456-2345
+word \x0645\x0639\x0645\x0648\x0644\x064A 134-12356-134
+word \x0645\x0639\x0645\x0648\x0644\x0627\x062A 134-12356-134-2345
+word \x0645\x0639\x0646\x064A\x0670 134-12356
+word \x0645\x0627\x0647\x0648\x0627\x0631 134-2456
+word \x0647\x0645\x064A\x0634\x0647 125-125-125
+word \x064A\x0644\x06AF\x0627\x0631 24-123
+word \x064A\x0639\x0646\x064A 24-12356
+word \x064A\x06AA\x062F\x0645 24-145
+
+# --- contractions that stand for a PHRASE, not a word ---
+# liblouis `word` rules cannot match across a space, so the 32 entries
+# below are not in this table.  They are implemented in the reference
+# translator (tools/sindhi_braille.py), which can see more than one word.
+#   تيئن ته                      6-2345
+#   پوءِ ته                      6-1234
+#   چئبو ته                      6-14
+#   ڇاڪاڻ ته                     6-16
+#   فرمايو ته                    6-124
+#   مطلب ته                      6-134
+#   ڳالھ ٻولھ                    45-13456
+#   ان طرح                       1-23456
+#   ان طرف                       1-23456-124
+#   ڏکڻ طرف                      34-23456-124
+#   ان کان پوءِ                  1-13-236-1234
+#   ان کان سواءِ                 1-13-236-234
+#   ان کان علاوه                 1-13-236-12356
+#   کان علاوه                    13-236-12356
+#   اوڀر طرف                     1-23-23456-124
+#   اولهه طرف                    1-2456-23456-124
+#   اتر قطب                      1-12345
+#   ڏکڻ قطب                      34-12345
+#   پنهنجو پاڻ                   1234-1234
+#   پنهنجي طرف                   1234-23456
+#   جهڙي طرح                     245-23456
+#   جفط ( جنهن طرف               245-23456
+#   جنهن قدر                     245-12345
+#   خواه مخواه                   1346-1346
+#   ڏينهون ڏينهن                 34-125-34
+#   ڪنهن طرف                     13-23456-124
+#   ڪيتري قدر                    13-12345
+#   هڪ دفعي                      125-145
+#   هڪ ڀيري                      125-23
+#   هيڏانهن هوڏانهن              125-34-125-125
+#   هن طرف                       125-23456
+#   هڪ ٻئي                       125-13-26
+
+# --- ڳانڊڙا — groups written in the middle or at the end of a word ---
+# Book pages 15 (dots 5-6) and 17 (dots 4-6).  Both tables are printed almost
+# entirely BLANK: only three rows on each page carry an entry.  These six are
+# everything the book gives.  `midendword` is the exact match for the heading
+# «لفظن جا وچان ۽ پويان ڳانڊڙا» — medial and final groups.
+midendword \x064A\x0627\x0628 56-12   # dots 5-6 + ب
+midendword \x064A\x0646\x062F 56-145   # dots 5-6 + د
+midendword \x0627\x0631\x0627 56-1235   # dots 5-6 + ر
+midendword \x0648\x0627\x0628 46-12   # dots 4-6 + ب
+midendword \x0628\x0627\x062F 46-145   # dots 4-6 + د
+midendword \x0648\x06AA\x0631 46-1235   # dots 4-6 + ر
