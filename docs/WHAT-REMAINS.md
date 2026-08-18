@@ -160,5 +160,30 @@ document the book was made from, or OCR.
 
 ---
 
+## 8. To read back to Riaz: the spoken letter names
+
+The writer speaks. Which voice it uses is now decided by what is being said
+rather than by one guess for everything: a Sindhi letter goes to the nearest
+Perso-Arabic voice, a dot number goes to an English one. On a machine with no
+Sindhi, Urdu, Persian or Arabic voice at all, no voice can pronounce the script,
+so the letters are spoken by name instead, spelled so an English voice can say
+them.
+
+**Those spellings are mine and have not been confirmed.** They are written for
+the ear, not to any transliteration standard, and three pairs are told apart by
+description rather than by sound:
+
+| letter | spoken as | letter | spoken as |
+|---|---|---|---|
+| ح | baree hay | ه | chhoti hay |
+| ھ | do chashmi hay | خ | khay |
+| ک | khaaf aspirated | ڪ | kaaf |
+| ڏ | ddaal | ڊ | dal retroflex |
+
+Ask him to listen to the alphabet read out by an English voice and say which
+names are wrong. The list lives in `website/src/page.html` as `LETNAME`.
+
+---
+
 **Digital implementation, verification and documentation by Safeer Ali Mirani,
 2026**, in partnership with **Riaz Hussain Memon**, with **Mansoor Ali Kori**.

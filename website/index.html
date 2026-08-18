@@ -419,6 +419,12 @@ ul.ticks li::before{content:"";position:absolute;inset-inline-start:0;top:.52em;
 .dotpad .padrow button.pri{background:var(--ink);border-color:var(--ink);color:var(--paper);
   font-weight:600;flex:1 1 190px;max-width:280px}
 .dotpad .padhint{font-size:13px;color:var(--ink-3);text-align:center;margin:12px 0 0}
+.voicepick{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:12px;
+  font-size:13px;color:var(--ink-3)}
+.voicepick select{font:inherit;font-size:13px;padding:8px 10px;border-radius:9px;
+  border:1px solid var(--line-2);background:var(--panel);color:var(--ink-2);
+  max-width:100%;min-height:36px}
+html[data-lang="sd"] .voicepick{flex-direction:row-reverse;justify-content:flex-end}
 html[data-lang="sd"] .dotpad .padhint{font-family:var(--sindhi);direction:rtl}
 .touchonly{display:none}
 @media(pointer:coarse){.dotpad{display:block}
@@ -794,6 +800,10 @@ html[data-lang="sd"] .chips{direction:rtl}
         <button class="mini" id="wClear"><span class="en-only inl">Clear</span><span class="sd-only inl sd" lang="sd">صاف ڪريو</span></button>
       </div>
       <p id="wVoiceNote" style="font-size:13px;color:var(--ink-3);margin:12px 0 0" hidden></p>
+      <label class="voicepick" for="wVoice">
+        <span class="en-only inl">Voice for the Sindhi letters</span>
+        <span class="sd-only inl sd" lang="sd">سنڌي اکرن لاءِ آواز</span>
+        <select id="wVoice" hidden></select></label>
     </div>
   </div>
 </section>
@@ -2423,52 +2433,199 @@ function sigmaDraw(){
      their names in whatever voice there is, which is still far better than
      silence, and the note under the buttons says so plainly rather than
      pretending. */
-  const DOTNAME = {'1':'one','2':'two','3':'three','4':'four','5':'five','6':'six'};
+  /* ---- which voice reads which words --------------------------------------
+
+     One voice for everything was wrong, and wrong in a way that only shows up
+     on a device that has no Sindhi and no Urdu.  The voice was chosen by how
+     near it was to Sindhi, and then given every word to read, dot numbers
+     included.  On an iPhone that means Majed, an Arabic voice, reading the
+     English word "three".  What comes out is neither English nor Arabic and is
+     no use to anybody.
+
+     So the two kinds of text are separated.  A Sindhi letter or word goes to
+     the nearest Perso-Arabic voice, which at worst reads the letter by its
+     Arabic name and those names are close to the Sindhi ones.  A dot number or
+     a status word goes to an English voice, because a number read in English is
+     understood across Sindh and the same number read by an Arabic voice is not.
+
+     If the device does have a Sindhi or an Urdu voice, that voice can read
+     both, and the dot numbers are spoken in Sindhi instead.
+
+     None of this is a guess the reader has to live with: every installed voice
+     is listed and they can pick. */
+  const DOTNAME    = {'1':'one','2':'two','3':'three','4':'four','5':'five','6':'six'};
+  const DOTNAME_SD = {'1':'هڪ','2':'ٻه','3':'ٽي','4':'چار','5':'پنج','6':'ڇهه'};
+  const SCRIPT = /[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]/;
+
+  /* The names of the letters, written so that an English voice can say them.
+     This is the last resort: on a machine with no Sindhi, no Urdu, no Persian
+     and no Arabic voice, handing ڪ to an English voice produces silence, and
+     silence is the one thing this box must not do. The three h's and the two
+     kh's are told apart by their usual descriptions rather than by diacritics
+     no voice would pronounce. These spellings are for the ear, not for any
+     transliteration standard, and are on the list to read back to Riaz. */
+  const LETNAME = {
+    'ا':'alif','آ':'alif madd','ب':'bay','ٻ':'bbay','ڀ':'bhay','ت':'tay','ٿ':'thay',
+    'ٽ':'ttay','ٺ':'tthay','ث':'say','پ':'pay','ج':'jeem','ڄ':'jjay','ڃ':'nyay',
+    'چ':'chay','ڇ':'chhay','ح':'baree hay','خ':'khay','د':'daal','ڌ':'dhaal',
+    'ڏ':'ddaal','ڊ':'dal retroflex','ڍ':'ddhaal','ذ':'zaal','ر':'ray','ڙ':'rray',
+    'ز':'zay','س':'seen','ش':'sheen','ص':'suaad','ض':'zuaad','ط':'toay','ظ':'zoay',
+    'ع':'ain','غ':'ghain','ف':'fay','ڦ':'phay','ق':'qaaf','ڪ':'kaaf',
+    'ک':'khaaf aspirated','گ':'gaaf','ڳ':'ggaaf','ڱ':'ngaaf','ل':'laam','م':'meem',
+    'ن':'noon','ڻ':'nnoon','و':'wao','ه':'chhoti hay','ھ':'do chashmi hay',
+    'ي':'yay','ء':'hamza'
+  };
+  /* true when the script voice really can pronounce the Sindhi script */
+  function scriptVoiceReadsScript(){
+    return !!(vScript && /^(sd|ur|fa|ar)\b/i.test(vScript.lang));
+  }
+  /* a Sindhi letter, said in whatever way this device can say it */
+  function letterSound(ch){
+    return scriptVoiceReadsScript() ? ch : (LETNAME[ch] || ch);
+  }
+  /* a whole Sindhi word: spoken as a word where a voice can, spelled out by
+     letter name where none can */
+  function sayWord(w, interrupt){
+    if(!w) return;
+    if(scriptVoiceReadsScript()){ say(w, interrupt); return; }
+    const names = [...w].map(c => LETNAME[c]).filter(Boolean);
+    if(names.length) say(names.join(', '), interrupt);
+  }
+
   // On by default. This box is for someone who cannot see the screen; making
   // them find a button before they can hear what they typed is the wrong way
   // round. The toggle stays, for anyone who wants quiet.
-  let speakOn = true, voice = null, voiceIsSindhi = false;
+  let speakOn = true;
+  let vScript = null;   // reads Sindhi letters and words
+  let vLatin  = null;   // reads dot numbers and the short status words
+  let chosen  = '';     // a voice the reader picked by hand, by name
+
+  function allVoices(){
+    return (window.speechSynthesis && speechSynthesis.getVoices()) || [];
+  }
+  /* true when the script voice can be trusted with Sindhi words as words,
+     rather than only with single letters read by their Arabic names */
+  function scriptReadsSindhi(){
+    return !!(vScript && /^(sd|ur)\b/i.test(vScript.lang));
+  }
 
   function pickVoice(){
-    const vs = (window.speechSynthesis && speechSynthesis.getVoices()) || [];
-    voice = vs.find(v=>/^sd\b/i.test(v.lang)) ||
-            vs.find(v=>/^ur\b/i.test(v.lang)) ||
-            vs.find(v=>/^(fa|ar)\b/i.test(v.lang)) || vs[0] || null;
-    voiceIsSindhi = !!(voice && /^sd\b/i.test(voice.lang));
+    const vs = allVoices();
+    const byName = chosen && vs.find(v => v.name === chosen);
+    vScript = byName
+      || vs.find(v=>/^sd\b/i.test(v.lang))
+      || vs.find(v=>/^ur\b/i.test(v.lang))
+      || vs.find(v=>/^fa\b/i.test(v.lang))
+      || vs.find(v=>/^ar\b/i.test(v.lang)) || null;
+    vLatin = vs.find(v=>/^en[-_]GB/i.test(v.lang))
+      || vs.find(v=>/^en\b/i.test(v.lang))
+      || vs.find(v=>!SCRIPT.test(v.name)) || null;
+    if(!vScript) vScript = vLatin;
+    if(!vLatin)  vLatin  = vScript;
+    fillVoiceList(vs);
+    voiceNote();
+  }
+
+  function fillVoiceList(vs){
+    const sel = $('wVoice'); if(!sel) return;
+    if(!vs.length){ sel.hidden = true; return; }
+    sel.hidden = false;
+    const cur = vScript && vScript.name;
+    sel.innerHTML = vs.map(v =>
+      `<option value="${v.name.replace(/"/g,'&quot;')}"${v.name===cur?' selected':''}>`
+      + `${v.name} (${v.lang})</option>`).join('');
+  }
+
+  function voiceNote(){
     const note = $('wVoiceNote');
     if(!window.speechSynthesis){
-      note.textContent = 'This browser has no speech. Try Chrome or Edge.';
+      note.innerHTML = isSd()
+        ? 'هن براؤزر ۾ ڳالهائڻ جي سهولت ناهي. ڪروم يا ايج آزمايو.'
+        : 'This browser has no speech. Try Chrome or Edge.';
       note.hidden = false; return;
     }
-    if(!voice){ note.hidden = true; return; }
-    note.innerHTML = voiceIsSindhi
-      ? 'Speaking with a Sindhi voice: <strong>'+voice.name+'</strong>.'
-      : 'No Sindhi voice is installed on this device, so the letters are spoken '
-        + 'by name using <strong>'+voice.name+'</strong> ('+voice.lang+'). The '
-        + 'dots and the letter names are still correct.';
+    if(!vScript && !vLatin){ note.hidden = true; return; }
+    const nm  = v => '<strong>' + v.name + '</strong> (' + v.lang + ')';
+    const sd  = isSd();
+    const isSindhiVoice = !!(vScript && /^sd\b/i.test(vScript.lang));
+    let html;
+    if(isSindhiVoice){
+      html = sd ? 'سنڌي آواز سان ڳالهائي ٿو: ' + nm(vScript) + '.'
+                : 'Speaking with a Sindhi voice: ' + nm(vScript) + '.';
+    } else if(scriptVoiceReadsScript()){
+      // an Urdu, Persian or Arabic voice: it can say the script, and it says
+      // the letters by names close enough to the Sindhi ones to follow
+      html = sd
+        ? 'هن ڊوائيس تي سنڌي آواز ناهي. اکر ' + nm(vScript) + ' سان پڙهجن ٿا، '
+          + 'جيڪو اُنهن کي ويجهن نالن سان چوي ٿو، ۽ نقطن جا نمبر '
+          + (vLatin ? nm(vLatin) : 'انگريزي آواز') + ' سان.'
+        : 'No Sindhi voice is installed. The letters are read by ' + nm(vScript)
+          + ', which says them by names close to the Sindhi ones, and the dot '
+          + 'numbers by ' + (vLatin ? nm(vLatin) : 'an English voice')
+          + ', because a number read by a voice that cannot say English is no use.';
+    } else {
+      // nothing that can pronounce the script at all: the letters are spoken by
+      // their names, spelled so an English voice can say them
+      html = sd
+        ? 'هن ڊوائيس تي سنڌي، اردو، فارسي يا عربي ڪوبه آواز ناهي. ان ڪري اکر '
+          + 'پنهنجن نالن سان پڙهجن ٿا (kaaf، alif، seen) '
+          + (vScript ? nm(vScript) : '') + ' سان. ڪو اردو يا عربي آواز نصب ڪريو، '
+          + 'يا هيٺان ٻيو چونڊيو.'
+        : 'No Sindhi, Urdu, Persian or Arabic voice is installed on this device, '
+          + 'so no voice here can pronounce the script. The letters are spoken by '
+          + 'their names instead (kaaf, alif, seen) using '
+          + (vScript ? nm(vScript) : 'the voice available')
+          + '. Installing an Urdu or Arabic voice, or picking one below, gives you '
+          + 'the letters themselves.';
+    }
+    note.innerHTML = html;
     note.hidden = !speakOn;
   }
+  window.__voiceNote = voiceNote;
+
   if(window.speechSynthesis){
     pickVoice();
     speechSynthesis.addEventListener?.('voiceschanged', pickVoice);
   }
 
+  /* text written in the Sindhi script goes to the script voice; everything else
+     to the Latin one, so a number is never read by a voice that cannot say it */
   function say(text, interrupt){
     if(!speakOn || !text || !window.speechSynthesis) return;
     if(interrupt) speechSynthesis.cancel();
+    const sindhi = SCRIPT.test(text);
+    const v = sindhi ? vScript : vLatin;
     const u = new SpeechSynthesisUtterance(text);
-    if(voice) u.voice = voice;
-    u.lang = voice ? voice.lang : 'sd-PK';
+    if(v) u.voice = v;
+    u.lang = v ? v.lang : (sindhi ? 'sd-PK' : 'en-GB');
     u.rate = 1;
     speechSynthesis.speak(u);
   }
 
-  /* what one cell should be called out as */
+  /* The dots of a cell, in words a voice on this device can actually say. */
+  function dotWords(c){
+    return scriptReadsSindhi() && isSd()
+      ? [...c].map(d=>DOTNAME_SD[d]).join('، ')
+      : [...c].map(d=>DOTNAME[d]).join(' ');
+  }
+  /* what one cell is called out as, still one string, for the messages that
+     quote it inside a sentence */
   function nameCell(c){
-    const dots = [...c].map(d=>DOTNAME[d]).join(' ');
+    const dots = dotWords(c);
     const letter = CELL2LET[c];
-    if(letter) return dots + ', ' + letter;
-    return dots;
+    return letter ? dots + ', ' + letter : dots;
+  }
+  /* A cell as it lands: the dots first, then the letter, as two utterances so
+     that each goes to a voice that can pronounce it. Queued, so they still come
+     out in order. */
+  function sayCell(c, interrupt){
+    const letter = CELL2LET[c];
+    say(dotWords(c), interrupt);
+    if(letter) say(letterSound(letter), false);
+  }
+  /* a short status word, in Sindhi only when a voice exists that can read it */
+  function msg(en, sd){
+    return (isSd() && scriptReadsSindhi() && sd) ? sd : en;
   }
 
   /* the word that has just been closed by a space or a line break */
@@ -2487,26 +2644,27 @@ function sigmaDraw(){
     const c = [...pending].sort().join('');
     cells.push(c); pending.clear(); draw();
     if(typeof paintPad === 'function') paintPad();
-    say(nameCell(c), true);
+    sayCell(c, true);
   }
   /* the same three actions the keyboard performs, so the touch pad and the
      keys cannot drift apart */
   function doSpace(){
     if(pending.size) emit();
     const w = lastWord(); cells.push(''); draw();
-    if(w) setTimeout(()=>say(w), 260); else say('space', true);
+    if(w) setTimeout(()=>sayWord(w), 260); else say(msg('space','وٿي'), true);
   }
   function doDelete(){
     pending.clear(); paintPad();
     const gone = cells.pop(); draw();
-    say(gone===undefined ? 'nothing to delete'
-        : gone==='' ? 'space deleted' : gone==='\n' ? 'line deleted'
-        : 'deleted ' + nameCell(gone), true);
+    if(gone===undefined){ say(msg('nothing to delete','ميسارڻ لاءِ ڪجهه ناهي'), true); }
+    else if(gone===''){ say(msg('space deleted','وٿي ميساري وئي'), true); }
+    else if(gone==='\n'){ say(msg('line deleted','سِٽ ميساري وئي'), true); }
+    else { say(msg('deleted','ميساريو'), true); sayCell(gone, false); }
   }
   function doNewline(){
     emit();
     const w = lastWord(); cells.push('\n'); draw();
-    setTimeout(()=>say((w? w+', ' : '') + 'new line'), 260);
+    setTimeout(()=>{ if(w) sayWord(w); say(msg('new line','نئين سِٽ')); }, 260);
   }
 
   box.addEventListener('keydown', e=>{
@@ -2560,8 +2718,11 @@ function sigmaDraw(){
     const d = b.dataset.d;
     if(pending.has(d)) pending.delete(d); else pending.add(d);
     b.setAttribute('aria-pressed', pending.has(d) ? 'true' : 'false');
-    say((isSd() ? 'نقطو ' + d + (pending.has(d) ? '' : '، بند') 
-                : 'dot ' + d + (pending.has(d) ? '' : ' off')), true);
+    const on = pending.has(d);
+    if(isSd() && scriptReadsSindhi())
+      say('نقطو ' + DOTNAME_SD[d] + (on ? '' : '، بند'), true);
+    else
+      say('dot ' + DOTNAME[d] + (on ? '' : ' off'), true);
   });
 
   pact.addEventListener('click', e => {
@@ -2591,23 +2752,34 @@ function sigmaDraw(){
   });
 
   $('wClear').onclick=()=>{ cells=[]; pending.clear(); draw(); paintPad(); box.focus();
-    if(speakOn) say('cleared', true); };
+    if(speakOn) say(msg('cleared','صاف ٿي ويو'), true); };
   $('wSpeak').onclick=()=>{
     speakOn = !speakOn;
     $('wSpeak').setAttribute('aria-pressed', speakOn?'true':'false');
     $('wSpeak').querySelector('.en-only').textContent = 'Speak: ' + (speakOn?'on':'off');
     $('wSpeak').querySelector('.sd-only').textContent = 'آواز: ' + (speakOn?'کليل':'بند');
-    $('wVoiceNote').hidden = !speakOn || !voice;
-    if(speakOn){ pickVoice(); say('speech on', true); }
+    $('wVoiceNote').hidden = !speakOn || !vScript;
+    if(speakOn){ pickVoice(); say(msg('speech on','آواز کليل'), true); }
     else if(window.speechSynthesis) speechSynthesis.cancel();
     box.focus();
   };
+  /* The reader knows which voice they can follow; the software does not. */
+  const vsel = $('wVoice');
+  if(vsel) vsel.onchange = () => {
+    chosen = vsel.value;
+    pickVoice();
+    const v = vScript;
+    if(v && /^(sd|ur|fa|ar)\b/i.test(v.lang)) say('سنڌي', true);
+    else say('this is the voice for the letters', true);
+  };
+
   $('wSay').onclick=()=>{
     const t = $('wOut').textContent.trim();
     if(!window.speechSynthesis) return;
     speechSynthesis.cancel();
     const was = speakOn; speakOn = true;          // this button always speaks
-    say(t || 'nothing written yet', true);
+    if(t) sayWord(t, true);
+    else say(msg('nothing written yet','اڃا ڪجهه نه لکيو ويو'), true);
     speakOn = was;
     box.focus();
   };
@@ -2647,6 +2819,7 @@ function sigmaDraw(){
     if (window.__paintHeroCount) window.__paintHeroCount();
     if (window.__paintKeys) window.__paintKeys();
     if (window.__paintPad) window.__paintPad();
+    if (window.__voiceNote) window.__voiceNote();
     if (window.__sigmaDraw) window.__sigmaDraw();
   };
 })();
