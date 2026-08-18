@@ -1,0 +1,4 @@
+# A .brf is a braille file: the embosser expects CRLF and a form feed at the end
+# of every page. Git must not normalise those, or a file checked out on another
+# machine will emboss differently from the one that was tested.
+*.brf -text

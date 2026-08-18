@@ -44,7 +44,7 @@ p{margin:0 0 1.05em;color:var(--ink-2);max-width:66ch}
 strong{color:var(--ink);font-weight:640}
 section{padding:clamp(56px,8vw,96px) 0;position:relative;scroll-margin-top:78px}
 .rule{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent)}
-.eyebrow{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--data);
+.eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--data);
   font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:9px}
 .eyebrow::before{content:"";width:22px;height:1px;background:var(--data);display:block}
 
@@ -62,7 +62,7 @@ nav.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:
 .logo b{font-family:var(--serif);font-size:17px;font-weight:600;letter-spacing:-.01em;
   display:block;line-height:1.15;white-space:nowrap}
 .logo>span{min-width:0}
-.logo span{font-size:11px;color:var(--ink-3);letter-spacing:.04em}
+.logo span{font-size:11.5px;color:var(--ink-3);letter-spacing:.04em}
 @media(max-width:560px){
   .logo b{font-size:15.5px}
   .logo .sub{display:none}
@@ -70,8 +70,8 @@ nav.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:
   nav.top .wrap{gap:10px;padding-top:10px;padding-bottom:10px}
   .btn{padding:7px 12px;font-size:13px}
 }
-.navlinks{display:flex;gap:22px;font-size:14px}
-.navlinks a{color:var(--ink-3);text-decoration:none;transition:color .2s;padding:4px 0;
+.navlinks{display:flex;gap:22px;font-size:14px;align-items:center}
+.navlinks a{color:var(--ink-3);text-decoration:none;transition:color .2s;padding:9px 0;
   white-space:nowrap}
 .navlinks a:hover{color:var(--ink)}
 
@@ -132,6 +132,20 @@ svg.cell circle.on{transform-origin:center;animation:pop .42s cubic-bezier(.2,1.
 @keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
 .embosslabel{font-size:12px;color:var(--ink-3);margin-top:20px;display:flex;justify-content:space-between;
   border-top:1px dashed var(--line);padding-top:14px}
+
+/* the three facts under the hero card */
+.herocol{display:flex;flex-direction:column;gap:16px}
+.proof{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);
+  border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
+.proof > div{background:var(--panel);padding:15px 20px;display:flex;align-items:baseline;gap:14px}
+.proof b{font-family:var(--serif);font-size:20px;font-weight:600;color:var(--ink);
+  white-space:nowrap;flex:0 0 auto;min-width:104px}
+.proof p{margin:0;font-size:13px;color:var(--ink-3);line-height:1.5;max-width:none}
+html[data-lang="sd"] .proof > div{flex-direction:row-reverse}
+html[data-lang="sd"] .proof b{text-align:left}
+@media(max-width:940px){.proof b{min-width:92px}}
+@media(max-width:420px){.proof > div{padding:13px 15px;gap:11px}
+  .proof b{font-size:18px;min-width:84px}}
 
 /* ---------- panels / grid ---------- */
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
@@ -211,7 +225,7 @@ html[data-theme="dark"] .brl.emboss{text-shadow:0 1px 0 rgba(255,255,255,.5),0 -
   cursor:default}
 .acard:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--data)}
 .acard .g{font-family:var(--sindhi);font-size:26px;line-height:1.1;margin-bottom:2px}
-.acard .d{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);margin-top:4px}
+.acard .d{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);margin-top:4px}
 .acard .cells{display:flex;justify-content:center;align-items:flex-end;gap:3px}
 .lossy{margin-top:14px;padding:12px 14px;border-radius:10px;background:var(--panel-2);
   border:1px solid var(--line);font-size:13px;color:var(--ink-2)}
@@ -325,6 +339,7 @@ select{min-height:30px;padding:4px 8px}
   .mini,.fld,.lab{font-size:14px}
   /* and nothing tappable should be smaller than this */
   .mini,.btn,.navlinks a,.menupanel a,select,input[type=checkbox]+span{min-height:30px}
+  .logo{min-height:44px;align-items:center}
   .tools .mini{padding:9px 14px}
   label.opt{min-height:34px;display:inline-flex;align-items:center;gap:8px}
   input[type=checkbox]{width:20px;height:20px}
@@ -332,7 +347,7 @@ select{min-height:30px;padding:4px 8px}
 }
 
 th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
-th{color:var(--ink-3);font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+th{color:var(--ink-3);font-weight:700;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase}
 td.mono{font-family:var(--mono);white-space:nowrap;color:var(--ink-2)}
 tr:hover td{background:var(--panel-2)}
 
@@ -357,7 +372,7 @@ ul.ticks li::before{content:"";position:absolute;inset-inline-start:0;top:.52em;
 .keys .grp{display:flex;gap:6px}
 .keys .k{width:52px;height:62px;border:1px solid var(--line-2);border-radius:10px;
   display:grid;place-items:center;gap:2px;background:var(--panel);transition:.12s;
-  font-family:var(--mono);font-size:11px;color:var(--ink-3);user-select:none}
+  font-family:var(--mono);font-size:12px;color:var(--ink-3);user-select:none}
 .keys .k b{font-family:var(--sans);font-size:17px;color:var(--ink);font-weight:650}
 .keys .k.hot{background:var(--data);border-color:var(--data);transform:translateY(2px)}
 .keys .k.hot b,.keys .k.hot{color:#fff}
@@ -383,6 +398,33 @@ ul.ticks li::before{content:"";position:absolute;inset-inline-start:0;top:.52em;
   background:radial-gradient(circle,color-mix(in srgb,var(--data) 12%,transparent),transparent 68%)}
 .about h2{margin-bottom:.3em}
 .skills{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+
+/* the touch pad: a phone has no six keys to hold, so the dots become buttons
+   laid out in the shape of the cell itself, 1 2 3 down the left, 4 5 6 down
+   the right, which is how the cell is described to anyone learning it. */
+.dotpad{display:none;margin:18px 0 4px}
+.dotpad .cellgrid{display:grid;grid-template-columns:repeat(2,minmax(0,86px));
+  grid-auto-rows:56px;gap:10px;justify-content:center;direction:ltr}
+.dotpad button.dot{font:inherit;font-size:15px;font-weight:600;color:var(--ink-2);
+  background:var(--panel);border:1px solid var(--line-2);border-radius:14px;
+  display:flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;
+  transition:background .15s,border-color .15s,color .15s;-webkit-tap-highlight-color:transparent}
+.dotpad button.dot i{width:12px;height:12px;border-radius:50%;background:var(--dot-off);display:block}
+.dotpad button.dot[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.dotpad button.dot[aria-pressed="true"] i{background:var(--paper)}
+.dotpad .padrow{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
+.dotpad .padrow button{font:inherit;font-size:14px;padding:11px 16px;border-radius:11px;
+  border:1px solid var(--line-2);background:var(--panel);color:var(--ink-2);cursor:pointer;
+  min-height:44px;-webkit-tap-highlight-color:transparent}
+.dotpad .padrow button.pri{background:var(--ink);border-color:var(--ink);color:var(--paper);
+  font-weight:600;flex:1 1 190px;max-width:280px}
+.dotpad .padhint{font-size:13px;color:var(--ink-3);text-align:center;margin:12px 0 0}
+html[data-lang="sd"] .dotpad .padhint{font-family:var(--sindhi);direction:rtl}
+.touchonly{display:none}
+@media(pointer:coarse){.dotpad{display:block}
+  .keys{display:none}
+  .kbdonly{display:none!important}
+  .touchonly{display:inline}}
 .skills span{font-size:12.5px;border:1px solid var(--line-2);border-radius:999px;padding:5px 13px;
   color:var(--ink-2)}
 footer{border-top:1px solid var(--line);padding:40px 0 70px;color:var(--ink-3);font-size:13.5px}
@@ -418,6 +460,10 @@ html[data-lang="sd"] .sd-only.inl{display:inline}
 ul.ticks.sd-only{display:none}
 html[data-lang="sd"] ul.ticks.sd-only{display:grid}
 html[data-lang="sd"] ul.ticks.en-only{display:none}
+/* .skills sets display:flex and would beat .sd-only the same way */
+.skills.sd-only{display:none}
+html[data-lang="sd"] .skills.sd-only{display:flex;justify-content:flex-end}
+html[data-lang="sd"] .skills.en-only{display:none}
 .sd{font-family:var(--sindhi);direction:rtl;text-align:right}
 html[data-lang="sd"] #use .cta,
 html[data-lang="sd"] .hero .cta,
@@ -443,7 +489,7 @@ html[data-lang="sd"] .chips{direction:rtl}
         <circle cx="9" cy="15" r="1.5" fill="var(--line-2)"/><circle cx="21" cy="15" r="3.4" fill="var(--data)"/>
         <circle cx="9" cy="23" r="3.4" fill="var(--ink)"/><circle cx="21" cy="23" r="1.5" fill="var(--line-2)"/>
       </svg>
-      <span><b>Sindhi Braille</b><span class="sub"><span class="en-only inl">Digital implementation · 2026</span><span class="sd-only inl sd" lang="sd">ڊجيٽل روپ · 2026ع</span></span></span>
+      <span><b><span class="en-only inl">Sindhi Braille</span><span class="sd-only inl sd" lang="sd">سنڌي بريل</span></b><span class="sub"><span class="en-only inl">Digital implementation · 2026</span><span class="sd-only inl sd" lang="sd">ڊجيٽل روپ · 2026ع</span></span></span>
     </a>
     <div class="navlinks">
       <a href="#try"><span class="en-only inl">Translator</span><span class="sd-only inl sd" lang="sd">مترجم</span></a>
@@ -456,7 +502,7 @@ html[data-lang="sd"] .chips{direction:rtl}
     </div>
     <div class="ctl">
       <button class="btn" id="lang" aria-pressed="false">سنڌي</button>
-      <button class="btn" id="theme" aria-label="Switch to dark mode">Dark</button>
+      <button class="btn" id="theme" aria-label="Switch to dark mode"><span class="en-only inl">Dark</span><span class="sd-only inl sd" lang="sd">اونداهو</span></button>
       <button class="btn menubtn" id="menu" aria-expanded="false" aria-controls="menupanel"
               aria-label="Sections">
         <svg viewBox="0 0 16 12" width="16" height="12" aria-hidden="true">
@@ -487,7 +533,7 @@ html[data-lang="sd"] .chips{direction:rtl}
 <section class="hero">
   <div class="wrap grid">
     <div>
-      <div class="kicker"><i></i> First digital implementation · Sindh, Pakistan</div>
+      <div class="kicker"><i></i><span class="en-only inl">First digital implementation · Sindh, Pakistan</span><span class="sd-only inl sd" lang="sd">پهريون ڊجيٽل روپ · سنڌ، پاڪستان</span></div>
       <div class="en-only">
         <h1>Thirty million speakers.<br>One braille code.<br><em>No software.</em></h1>
         <p class="lead">Standard Sindhi Braille was ratified by the Sindhi Language
@@ -521,12 +567,25 @@ html[data-lang="sd"] .chips{direction:rtl}
         <a class="hollow" href="#method"><span class="en-only inl">How it was built</span><span class="sd-only inl sd" lang="sd">هي ڪيئن ٺهيو</span></a>
       </div>
     </div>
-    <div class="embosscard reveal">
-      <div class="sdline" id="heroSd"></div>
-      <div class="dotline" id="heroDots"></div>
-      <div class="embosslabel">
-        <span><span class="en-only inl">live · Sindhi → braille</span><span class="sd-only inl sd" lang="sd">جيئرو · سنڌي ← بريل</span></span>
-        <span id="heroCount"></span>
+    <div class="herocol">
+      <div class="embosscard reveal">
+        <div class="sdline" id="heroSd"></div>
+        <div class="dotline" id="heroDots"></div>
+        <div class="embosslabel">
+          <span><span class="en-only inl">live · Sindhi → braille</span><span class="sd-only inl sd" lang="sd">جيئرو · سنڌي ← بريل</span></span>
+          <span id="heroCount"></span>
+        </div>
+      </div>
+      <div class="proof reveal">
+        <div><b>69 of 69</b>
+          <p class="en-only">printed examples in the standard guide, reproduced cell for cell</p>
+          <p class="sd-only sd" lang="sd">معياري رهبر ۾ ڇپيل مثال، خانو خانو ساڳيا</p></div>
+        <div><b>23,432</b>
+          <p class="en-only">Sindhi words taken to braille and back, 99.94% of them unchanged</p>
+          <p class="sd-only sd" lang="sd">سنڌي لفظ بريل ۾ ۽ واپس، اُنهن مان 99.94٪ جيئن جا تيئن</p></div>
+        <div><b><span class="en-only inl">15 Aug 2026</span><span class="sd-only inl sd" lang="sd">15 آگسٽ 2026ع</span></b>
+          <p class="en-only">a blind reader read an embossed page of it, cold, without an error</p>
+          <p class="sd-only sd" lang="sd">هڪ نابين پڙهندڙ اُن جو ڇپيل صفحو، اڳ ٻڌائڻ کان سواءِ، بنا غلطيءَ پڙهيو</p></div>
       </div>
     </div>
   </div>
@@ -578,11 +637,11 @@ html[data-lang="sd"] .chips{direction:rtl}
         <div class="g2" style="margin-top:18px;gap:14px">
           <div class="panel" style="padding:18px">
             <div style="font-family:var(--serif);font-size:32px;letter-spacing:-.02em">63</div>
-            <div style="font-size:13px;color:var(--ink-3)">usable braille cells</div>
+            <div style="font-size:13px;color:var(--ink-3)"><span class="en-only inl">usable braille cells</span><span class="sd-only inl sd" lang="sd">ڪم ايندڙ بريل خانا</span></div>
           </div>
           <div class="panel" style="padding:18px">
             <div style="font-family:var(--serif);font-size:32px;letter-spacing:-.02em">89</div>
-            <div style="font-size:13px;color:var(--ink-3)">things this code must say</div>
+            <div style="font-size:13px;color:var(--ink-3)"><span class="en-only inl">things this code must say</span><span class="sd-only inl sd" lang="sd">شيون جيڪي هن ڪوڊ کي لکڻيون آهن</span></div>
           </div>
         </div>
       </div>
@@ -597,12 +656,12 @@ html[data-lang="sd"] .chips{direction:rtl}
     <h2 class="en-only">Type Sindhi. Get braille you can emboss.</h2>
     <h2 class="sd-only sd">سنڌي لکو، ۽ اهڙي بريل وٺو جيڪا ڇپجي سگهي.</h2>
     <p class="en-only" style="margin-bottom:26px">Everything runs in your browser.
-    Nothing is uploaded. Type a passage, or <strong>open a document</strong> — a text
+    Nothing is uploaded. Type a passage, or <strong>open a document</strong>: a text
     file or a Word file. What you get back is a <code>.brf</code>, the file every
     braille embosser reads. Set the cells per line to match your paper first: A4
     takes 28.</p>
     <p class="sd-only sd" style="margin-bottom:26px">سڀ ڪجهه توهان جي براؤزر ۾ هلي
-    ٿو. ڪجهه به اپلوڊ نه ٿو ٿئي. ٿورو متن لکو، يا <strong>دستاويز کوليو</strong> —
+    ٿو. ڪجهه به اپلوڊ نه ٿو ٿئي. ٿورو متن لکو، يا <strong>دستاويز کوليو</strong>:
     ٽيڪسٽ فائل يا ورڊ فائل. موٽ ۾ <code>.brf</code> ملندي، اها فائل جيڪا هر بريل
     پرنٽر پڙهي ٿو. پهرين في سِٽ خانا پنهنجي ڪاغذ مطابق رکو: A4 ۾ 28 اچن ٿا.</p>
 
@@ -620,11 +679,11 @@ html[data-lang="sd"] .chips{direction:rtl}
             <span class="sd-only inl sd">شعر: هر سٽ کي مصرع طور نشان لڳايو</span></label>
           <input type="text" id="takhallus" dir="rtl" placeholder="تخلص" aria-label="pen-name">
           <p id="poetryNote" hidden class="optnote">
-            <span class="en-only">This marks <em>every</em> line as a hemistich —
-            right for a bait, wrong for a book — so it stays off while a document is
+            <span class="en-only">This marks <em>every</em> line as a hemistich, which is right for a
+            bait and wrong for a book, so it stays off while a document is
             open. For a poem, paste it in instead.</span>
             <span class="sd-only sd" lang="sd">شعر واري ڳالهه <em>هر</em> سٽ کي مصرع
-            بڻائي ٿي — جيڪا هڪ بيت لاءِ صحيح ۽ ڪتاب لاءِ غلط آهي — انهيءَ ڪري دستاويز
+            بڻائي ٿي، جيڪا هڪ بيت لاءِ صحيح ۽ ڪتاب لاءِ غلط آهي، انهيءَ ڪري دستاويز
             کُلي هجڻ وقت اها بند رهي ٿي. ڪنهن شعر لاءِ اُهو هتي لکو.</span></p>
         </div>
       </div>
@@ -640,7 +699,7 @@ html[data-lang="sd"] .chips{direction:rtl}
       <div class="chips" id="chips"></div>
 
       <div class="tools">
-        <button class="mini pri" id="dl">Download .brf</button>
+        <button class="mini pri" id="dl"><span class="en-only inl">Download .brf</span><span class="sd-only inl sd" lang="sd">‏.brf ڊائون لوڊ ڪريو</span></button>
         <button class="mini pri" id="docdl" hidden
           title="Write the whole document as a .brf file">
           <span class="en-only inl">Save .brf</span>
@@ -662,10 +721,14 @@ html[data-lang="sd"] .chips{direction:rtl}
       <label class="fld"><span class="en-only inl">Read it back · بريل مان واپس سنڌي</span><span class="sd-only inl sd" lang="sd">بريل مان واپس سنڌي</span></label>
       <div class="backline sd" id="back"></div>
       <div id="lossy"></div>
-      <p style="font-size:13.5px;color:var(--ink-3);margin:12px 0 0;max-width:none">
+      <p class="en-only" style="font-size:13.5px;color:var(--ink-3);margin:12px 0 0;max-width:none">
       Reading braille back into Sindhi is the harder direction. Six cells carry
       more than one meaning, so the software has to work out which one is meant
       from where it sits. <a href="#code">See why</a>.</p>
+      <p class="sd-only sd" lang="sd" style="font-size:14px;color:var(--ink-3);margin:12px 0 0;max-width:none">
+      بريل مان واپس سنڌي پڙهڻ ڏکيو پاسو آهي. ڇهن خانن جي هڪ کان وڌيڪ معنيٰ آهي،
+      انهيءَ ڪري سافٽ ويئر کي خاني جي جاءِ مان طئي ڪرڻو پوي ٿو ته ڪهڙي معنيٰ
+      کنيل آهي. <a href="#code">ڇو، سو ڏسو</a>.</p>
     </div>
   </div>
 </section>
@@ -678,33 +741,47 @@ html[data-lang="sd"] .chips{direction:rtl}
     <h2 class="en-only">For someone who already reads braille</h2>
     <h2 class="sd-only sd" lang="sd">انهن لاءِ جيڪي اڳ ۾ ئي بريل پڙهن ٿا</h2>
     <p class="en-only" style="max-width:62ch">A blind teacher does not want to type
-    Sindhi letters. They want to type <strong>dots</strong>. This turns an ordinary
-    keyboard into a braille writer, the same six keys as a Perkins brailler. No
-    braille display, no special hardware. Press the keys for one cell together, as
-    a chord, and release.</p>
+    Sindhi letters. They want to type <strong>dots</strong>.
+    <span class="kbdonly">This turns an ordinary keyboard into a braille writer, the
+    same six keys as a Perkins brailler. No braille display, no special hardware.
+    Press the keys for one cell together, as a chord, and release.</span><span
+    class="touchonly">On a phone the six dots are buttons, laid out in the shape of
+    the cell. Tap the dots you want and write the cell. No braille display, no
+    special hardware.</span></p>
     <p class="sd-only sd" lang="sd" style="max-width:62ch">نابين استاد سنڌي اکر لکڻ
-    نٿو چاهي. هو <strong>نقطا</strong> لکڻ چاهي ٿو. هي عام ڪيبورڊ کي بريل لکڻ واري
-    مشين بڻائي ٿو، بلڪل پرڪنز برائلر وارن ڇهن بٽڻن وانگر. هڪ خاني جا بٽڻ گڏ دٻايو
-    ۽ ڇڏي ڏيو.</p>
+    نٿو چاهي. هو <strong>نقطا</strong> لکڻ چاهي ٿو.
+    <span class="kbdonly">هي عام ڪيبورڊ کي بريل لکڻ واري مشين بڻائي ٿو، بلڪل پرڪنز
+    برائلر وارن ڇهن بٽڻن وانگر. هڪ خاني جا بٽڻ گڏ دٻايو ۽ ڇڏي ڏيو.</span><span
+    class="touchonly">فون تي ڇهئي نقطا بٽڻ آهن، خاني جي شڪل ۾ رکيل. جيڪي نقطا
+    گهرجن سي دٻايو ۽ خانو لکو. نه ڪنهن بريل ڊسپلي جي ضرورت، نه ڪنهن خاص مشين جي.</span></p>
 
     <div class="panel reveal">
       <div class="keys" id="keys" aria-hidden="true"></div>
+      <div class="dotpad" id="dotpad">
+        <div class="cellgrid" id="dotgrid"></div>
+        <div class="padrow" id="padactions"></div>
+        <p class="padhint" id="padhint"></p>
+      </div>
       <div class="writer" id="writer" tabindex="0" role="textbox" aria-multiline="true"
            aria-label="Braille writer. Use S D F for dots 3 2 1 and J K L for dots 4 5 6, pressed together. Space for a space, Backspace to delete, Enter for a new line."></div>
-      <p style="font-size:13px;color:var(--ink-3);margin:12px 0 0">
+      <p class="en-only kbdonly" style="font-size:13px;color:var(--ink-3);margin:12px 0 0">
         Click the box, then chord. <strong>Space</strong> = space ·
         <strong>Backspace</strong> = delete a cell · <strong>Enter</strong> = new line.
       </p>
+      <p class="sd-only sd kbdonly" lang="sd" style="font-size:14px;color:var(--ink-3);margin:12px 0 0">
+        خاني تي ڪلڪ ڪريو، پوءِ بٽڻ گڏ دٻايو. <strong>اسپيس</strong> = وٿي ·
+        <strong>بيڪ اسپيس</strong> = هڪ خانو ميساريو · <strong>اينٽر</strong> = نئين سِٽ.
+      </p>
       <div class="wrow">
-        <span class="lab">Reads as</span>
+        <span class="lab"><span class="en-only inl">Reads as</span><span class="sd-only inl sd" lang="sd">ڪيئن پڙهجي ٿو</span></span>
         <div class="backline sd" id="wOut" aria-live="polite" style="min-height:1.6em"></div>
       </div>
       <div class="wrow">
-        <span class="lab">Dots</span>
+        <span class="lab"><span class="en-only inl">Dots</span><span class="sd-only inl sd" lang="sd">نقطا</span></span>
         <div class="dotstr" id="wDots" style="margin:0"></div>
       </div>
       <div class="tools">
-        <button class="mini pri" id="wDl">Download .brf</button>
+        <button class="mini pri" id="wDl"><span class="en-only inl">Download .brf</span><span class="sd-only inl sd" lang="sd">‏.brf ڊائون لوڊ ڪريو</span></button>
         <button class="mini" id="wSpeak" aria-pressed="true"
           title="Say each cell as it is written, and the word it makes">
           <span class="en-only inl">Speak: on</span>
@@ -713,8 +790,8 @@ html[data-lang="sd"] .chips{direction:rtl}
           title="Say everything written so far">
           <span class="en-only inl">Read it back</span>
           <span class="sd-only inl sd" lang="sd">وري ٻڌايو</span></button>
-        <button class="mini" id="wSend">Send to the translator</button>
-        <button class="mini" id="wClear">Clear</button>
+        <button class="mini" id="wSend"><span class="en-only inl">Send to the translator</span><span class="sd-only inl sd" lang="sd">مترجم ڏانهن موڪليو</span></button>
+        <button class="mini" id="wClear"><span class="en-only inl">Clear</span><span class="sd-only inl sd" lang="sd">صاف ڪريو</span></button>
       </div>
       <p id="wVoiceNote" style="font-size:13px;color:var(--ink-3);margin:12px 0 0" hidden></p>
     </div>
@@ -729,7 +806,7 @@ html[data-lang="sd"] .chips{direction:rtl}
     <h2 class="sd-only sd" lang="sd">ڪن ضابطن لاءِ سڄو جملو گهرجي</h2>
     <p class="en-only" style="max-width:62ch">Most people assume a braille
     translator is a lookup table: one letter in, one cell out. For Sindhi that gets
-    you most of the way and then fails on ordinary schoolbook text — fractions,
+    you most of the way and then fails on ordinary schoolbook text: fractions,
     dates, a repeated word.</p>
     <p class="sd-only sd" lang="sd" style="max-width:62ch">بريل ترجمي جو سولو
     طريقو هڪ فهرست آهي: هڪ اکر اندر، هڪ خانو ٻاهر. سنڌيءَ لاءِ اهو غلط آهي، ۽
@@ -877,22 +954,38 @@ html[data-lang="sd"] .chips{direction:rtl}
     پڙهندڙ آهي، جنهن جي هٿن ۾ ڇپيل ڪاغذ هجي. ٻيو خود اُهو ڪتاب آهي جيڪو اداري
     ڇاپيو. ٽيون ٽي اهڙا ڪوڊ آهن جن جو هن ڪم سان ڪوبه واسطو ناهي.</p>
     <div class="statrow" style="margin-top:28px">
-      <div class="stat reveal"><div class="n" data-count="0" data-suffix=" errors">0</div>
-        <div class="k">a news page, embossed and read aloud</div>
-        <div class="s">On 15 August 2026 Riaz Hussain Memon read a passage of
+      <div class="stat reveal">
+        <div class="n"><span data-count="0">0</span><span class="en-only inl"> errors</span><span class="sd-only inl sd" lang="sd"> غلطيون</span></div>
+        <div class="k en-only">a news page, embossed and read aloud</div>
+        <div class="k sd-only sd" lang="sd">هڪ خبر جو صفحو، ڇپيو ۽ پڙهي ٻڌايو ويو</div>
+        <div class="s en-only">On 15 August 2026 Riaz Hussain Memon read a passage of
         Sindhi news prose he had never seen, from embossed paper, by touch,
         complete and without a single mistake. The other two checks below are the
-        software checking itself against a book. This one is not.</div></div>
-      <div class="stat reveal"><div class="n" data-count="69" data-suffix=" / 69">0</div>
-        <div class="k">worked examples from the standard guide</div>
-        <div class="s">Every example the Sindhi Language Authority's own book
+        software checking itself against a book. This one is not.</div>
+        <div class="s sd-only sd" lang="sd">15 آگسٽ 2026ع تي رياض حسين ميمڻ سنڌي
+        خبر جو اهڙو ٽڪرو، جيڪو هن اڳ ڪڏهن نه ڏٺو هو، ڇپيل ڪاغذ تان آڱرين سان
+        پورو ۽ بنا هڪ به غلطيءَ جي پڙهيو. هيٺيان ٻه امتحان سافٽ ويئر جا پاڻ کي
+        ڪتاب سان ڀيٽڻ وارا آهن. هيءُ اهڙو ناهي.</div></div>
+      <div class="stat reveal">
+        <div class="n"><span data-count="69">0</span><span> / 69</span></div>
+        <div class="k en-only">worked examples from the standard guide</div>
+        <div class="k sd-only sd" lang="sd">معياري رهبر ۾ حل ٿيل مثال</div>
+        <div class="s en-only">Every example the Sindhi Language Authority's own book
         works through, reproduced cell for cell: the fractions, the four sums,
-        the Roman numerals, the abbreviations and the sample sentences.</div></div>
-      <div class="stat reveal"><div class="n" data-count="94" data-suffix=" / 99">0</div>
-        <div class="k">agreements with Arabic, Persian and Urdu braille</div>
-        <div class="s">The same letters, checked against three codes written by
+        the Roman numerals, the abbreviations and the sample sentences.</div>
+        <div class="s sd-only sd" lang="sd">هر اهو مثال جيڪو سنڌي لينگئيج اٿارٽيءَ
+        جو پنهنجو ڪتاب حل ڪري ٿو، خانو خانو ساڳيو ٺهي ٿو: ڀڃون، چار حساب، رومي
+        عدد، مخفف ۽ مثالي جملا.</div></div>
+      <div class="stat reveal">
+        <div class="n"><span data-count="94">0</span><span> / 99</span></div>
+        <div class="k en-only">agreements with Arabic, Persian and Urdu braille</div>
+        <div class="k sd-only sd" lang="sd">عربي، فارسي ۽ اردو بريل سان اتفاق</div>
+        <div class="s en-only">The same letters, checked against three codes written by
         other people for other languages. The five differences are letters those
-        codes do not have, and each has a reason in the Sindhi alphabet.</div></div>
+        codes do not have, and each has a reason in the Sindhi alphabet.</div>
+        <div class="s sd-only sd" lang="sd">ساڳيا اکر، ٽن اهڙن ڪوڊن سان ڀيٽيا ويا
+        جيڪي ٻين ماڻهن ٻين ٻولين لاءِ لکيا. جيڪي پنج فرق آهن، سي اهي اکر آهن جيڪي
+        اُنهن ڪوڊن ۾ آهن ئي ڪونه، ۽ هر هڪ جو سبب سنڌي الفابيٽ ۾ موجود آهي.</div></div>
     </div>
     <p class="caveat reveal en-only">One reader, one page. A few marks and the
     spacing of arithmetic are still being settled with him.</p>
@@ -956,7 +1049,7 @@ html[data-lang="sd"] .chips{direction:rtl}
     <div class="about reveal">
       <div class="eyebrow"><span class="en-only inl">About</span><span class="sd-only inl sd" lang="sd">تعارف</span></div>
       <h2 class="en-only">Safeer Ali Mirani</h2>
-      <h2 class="sd-only sd" lang="sd">صفير علي ميراڻي</h2>
+      <h2 class="sd-only sd" lang="sd">سفير علي ميراڻي</h2>
       <p class="lead en-only" style="max-width:58ch">I build things that make a language
       work on a computer when nobody has done it before.</p>
       <p class="lead sd-only sd" lang="sd" style="max-width:58ch">مان اهي شيون ٺاهيان ٿو
@@ -977,7 +1070,7 @@ html[data-lang="sd"] .chips{direction:rtl}
       authored the code. He is the authority on what the code says; I am the one who
       built the software. <strong>Mansoor Ali Kori</strong> works alongside him on
       the composing and has been part of the meetings throughout.</p>
-      <p style="max-width:62ch">If you have a language, a script or a standard that
+      <p class="en-only" style="max-width:62ch">If you have a language, a script or a standard that
       exists on paper and needs to exist in software, I am interested. That means
       accessibility tooling, low-resource language work, and writing systems that
       mainstream software ignores.</p>
@@ -985,7 +1078,7 @@ html[data-lang="sd"] .chips{direction:rtl}
       ڪا لِپي يا ڪو معيار آهي جيڪو ڪاغذ تي موجود آهي ۽ ان کي سافٽ ويئر ۾ آڻڻو آهي،
       ته مان دلچسپي رکان ٿو. يعني رسائي جا اوزار، گهٽ وسيلن واريون ٻوليون، يا اهي
       لِکتون جن کي عام سافٽ ويئر نظرانداز ڪري ٿو.</p>
-      <div class="skills">
+      <div class="skills en-only">
         <span>Braille &amp; accessibility engineering</span>
         <span>liblouis tables</span>
         <span>Perso-Arabic script processing</span>
@@ -993,6 +1086,15 @@ html[data-lang="sd"] .chips{direction:rtl}
         <span>Python</span>
         <span>Low-resource language tooling</span>
         <span>Technical writing &amp; specification</span>
+      </div>
+      <div class="skills sd-only sd" lang="sd">
+        <span>بريل ۽ رسائيءَ جي انجنيئرنگ</span>
+        <span>liblouis ٽيبلون</span>
+        <span>فارسي عربي رسم الخط جي پروسيسنگ</span>
+        <span>معيارن جو سافٽ ويئر ۾ لاڳو ٿيڻ</span>
+        <span>Python</span>
+        <span>گهٽ وسيلن وارين ٻولين جا اوزار</span>
+        <span>فني لکڻي ۽ وضاحت</span>
       </div>
       <div class="cta" style="margin-top:26px">
         <a class="solid" href="mailto:safeer.ali.mirani@gmail.com"><span class="en-only inl">Get in touch</span><span class="sd-only inl sd" lang="sd">رابطو ڪريو</span></a>
@@ -1028,7 +1130,7 @@ html[data-lang="sd"] .chips{direction:rtl}
       committee's printed book, and on 15 August 2026 an embossed page was read by
       touch, cold and without an error.</p>
       <p class="sd-only sd" lang="sd" style="font-size:14px;margin:8px 0 0">ڊجيٽل روپ،
-      پرک ۽ هيءَ ويب سائيٽ <strong style="color:var(--ink)">صفير علي ميراڻي</strong> جي،
+      پرک ۽ هيءَ ويب سائيٽ <strong style="color:var(--ink)">سفير علي ميراڻي</strong> جي،
       2026ع، رياض حسين ميمڻ جي ڀائيواريءَ سان، ۽ منصور علي ڪوري سان گڏ. بريل ڪوڊ پاڻ
       ڪميٽيءَ جو ڪم آهي ۽ هتي ان ۾ ڪا تبديلي نه ڪئي وئي آهي. هر قاعدو ڪميٽيءَ جي ڇپيل
       ڪتاب سان ڀيٽيو ويو آهي، ۽ 15 آگسٽ 2026ع تي هڪ ڇپيل صفحو آڱرين سان، اڳ ۾ ٻڌائڻ کان
@@ -1038,12 +1140,14 @@ html[data-lang="sd"] .chips{direction:rtl}
 
   <div class="wrap">
     <div class="saf-credit">
-      <p>Built by <strong>Dr. Safeer Ali Mirani</strong>, GPU / XR / real-time
+      <p class="en-only">Built by <strong>Dr. Safeer Ali Mirani</strong>, GPU / XR / real-time
       visualisation engineer (PhD).</p>
+      <p class="sd-only sd" lang="sd">ٺاهيندڙ <strong>ڊاڪٽر سفير علي ميراڻي</strong>،
+      جي پي يو / ايڪس آر / حقيقي وقت جي منظرڪشيءَ جو انجنيئر (پي ايڇ ڊي).</p>
       <p>
         <a href="mailto:safeer.ali.mirani@gmail.com">safeer.ali.mirani@gmail.com</a>
         <span aria-hidden="true">·</span>
-        <a href="https://safeeralimirani.pages.dev" target="_blank" rel="noopener">Portfolio</a>
+        <a href="https://safeeralimirani.pages.dev" target="_blank" rel="noopener"><span class="en-only inl">Portfolio</span><span class="sd-only inl sd" lang="sd">ڪم جو نمونو</span></a>
         <span aria-hidden="true">·</span>
         <a href="https://github.com/SafeerAliMirani" target="_blank" rel="noopener">GitHub</a>
         <span aria-hidden="true">·</span>
@@ -1643,14 +1747,21 @@ function cellSVG(dots, s, animate){
 
 /* ---------- hero ---------- */
 const HERO = ['سنڌي','ٻولي','آهي'];
-let heroI = 0;
+let heroI = 0, heroCells = 0;
+function isSd(){ return document.documentElement.getAttribute('data-lang') === 'sd'; }
+function paintHeroCount(){
+  const sd = document.documentElement.getAttribute('data-lang') === 'sd';
+  $('heroCount').textContent = sd
+    ? heroCells + (heroCells === 1 ? ' خانو' : ' خانا')
+    : heroCells + (heroCells === 1 ? ' cell' : ' cells');
+}
 function heroTick(){
   const w = HERO[heroI % HERO.length]; heroI++;
   $('heroSd').textContent = w;
   const cells = wordToCells(w);
   $('heroDots').innerHTML = cells.map(c =>
     `<span class="cellwrap">${cellSVG(c,1.35,true)}<span class="lbl">${c}</span></span>`).join('');
-  $('heroCount').textContent = cells.length + (cells.length===1?' cell':' cells');
+  heroCells = cells.length; paintHeroCount();
 }
 
 /* ---------- translator ---------- */
@@ -1744,22 +1855,32 @@ function bigCell(dots,id){
   }
   return out+'</svg>';
 }
+window.__sigmaDraw = sigmaDraw;
 function sigmaDraw(){
   const [d,up,lo]=SIG[sigI%SIG.length];
   const shown = sigState? lo : up;
+  const sd = isSd();
+  const capDigit = sd ? 'عدد' : 'the digit';
+  const capMove  = sd ? 'σ · هڪ قطار هيٺ' : 'σ · lower by one row';
+  const capSign  = sigState
+    ? (sd ? 'هيٺيون نشان، هيٺيون عدد' : 'lower sign, the denominator')
+    : (sd ? 'مٿيون نشان، مٿيون عدد'  : 'upper sign, the numerator');
   $('sigma').innerHTML =
     `<div class="step"><div style="font-family:var(--serif);font-size:46px;line-height:1">${d}</div>
-       <div class="cap">the digit</div></div>
+       <div class="cap">${capDigit}</div></div>
      <div class="arrowbox"><svg width="46" height="14" viewBox="0 0 46 14"><path d="M0 7h40M34 2l6 5-6 5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
-       <span style="margin-top:6px">σ · lower by one row</span></div>
-     <div class="step">${bigCell(shown)}<div class="cap">${sigState?'lower sign, the denominator':'upper sign, the numerator'}</div></div>`;
+       <span style="margin-top:6px">${capMove}</span></div>
+     <div class="step">${bigCell(shown)}<div class="cap">${capSign}</div></div>`;
   $('sigmaCap').innerHTML = sigState
-    ? `dots <strong>${up}</strong> → <strong>${lo}</strong> · this is the cell the guide prints for a denominator of ${d}`
-    : `dots <strong>${up}</strong> · the ordinary digit ${d}`;
+    ? (sd ? `نقطا <strong>${up}</strong> ← <strong>${lo}</strong> · ${d} جي هيٺين عدد لاءِ رهبر اهو ئي خانو ڇاپي ٿو`
+          : `dots <strong>${up}</strong> → <strong>${lo}</strong> · this is the cell the guide prints for a denominator of ${d}`)
+    : (sd ? `نقطا <strong>${up}</strong> · عام عدد ${d}`
+          : `dots <strong>${up}</strong> · the ordinary digit ${d}`);
 }
 
 /* ---------- build ---------- */
 (function(){
+  window.__paintHeroCount = paintHeroCount;
   heroTick(); if(!RM) setInterval(heroTick, 2600);
 
   SAMPLES.forEach(x=>{
@@ -1794,7 +1915,7 @@ function sigmaDraw(){
   /* ---- whole documents ----------------------------------------------------
      A passage is a demonstration; a document is the job. Plain text and Markdown
      are read directly. A .docx is a zip, and the browser can now inflate one on
-     its own — DecompressionStream is standard — so Word documents work with no
+     its own, because DecompressionStream is standard, so Word documents work with no
      library and nothing uploaded anywhere. A PDF is a different problem and
      honestly answered elsewhere: `tools/braille_batch.py` handles those, and
      whole folders of them.
@@ -1810,8 +1931,8 @@ function sigmaDraw(){
      What this refuses to do matters more than what it does. A PDF is a page
      description: pictures, tables, captions and text, laid out in an order that
      only a human eye recovers. Braille carries text and nothing else. Feeding a
-     PDF's internals through a braille translator produces confident nonsense —
-     `PDF-1.7`, object numbers and coordinates rendered as Sindhi — and that is
+     PDF's internals through a braille translator produces confident nonsense:
+     `PDF-1.7`, object numbers and coordinates rendered as Sindhi, and that is
      exactly what happened before this check existed. So the format is now read
      from the file's own first bytes, never from its name, and anything that is
      not text is refused with the reason.
@@ -1839,16 +1960,11 @@ function sigmaDraw(){
   }
 
   const REFUSE = {
-    pdf: 'A PDF is a page layout — pictures, tables, captions and text mixed '
-       + 'together — and braille can only carry the text. Which parts to keep, and '
-       + 'in what order, is a decision for a person, not for this page. Use '
-       + '<code>tools/braille_batch.py</code>, which extracts the text and reports '
-       + 'what it dropped, or save the document as .docx or .txt first.',
     zip: 'This is a zip archive but not a Word document. Unpack it and open the '
        + 'text file inside.',
     doc: 'This is an old Word format (.doc). Open it in Word and save it as .docx.',
-    image: 'This is an image. There is no text in it to translate. A scanned page '
-       + 'needs OCR before it can be brailled.',
+    image: 'This is an image, so there is no text in it to translate. Open the '
+       + 'document the picture came from, or type the passage in.',
     binary: 'This is not a text file, so there is nothing here to translate.',
     inpage: 'InPage files cannot be read by anything but InPage. Export the text '
        + 'and open that.'
@@ -1861,14 +1977,14 @@ function sigmaDraw(){
      success. Reading a PDF's text means resolving every font's own character map
      and following the positioning operators to know where words end. Done
      loosely, it returns text that looks right and is not: a CV came back as
-     `Dr.SafeerAli℧ira♪iPhD` — wrong letters, no spaces — and a 79-page picture
+     `Dr.SafeerAli℧ira♪iPhD`, wrong letters and no spaces, and a 79-page picture
      book was reported as having four thousand letters a page when it has about
      twenty. Braille made from either would be confident nonsense under someone's
      fingers.
 
      So this no longer parses PDFs. It reads two things that need no parsing and
-     cannot be got wrong — how many pages there are, and how many bytes and
-     images each page costs — and says what those suggest. A page of text costs
+     cannot be got wrong, how many pages there are and how many bytes and
+     images each page costs, and says what those suggest. A page of text costs
      tens of kilobytes; a scanned page costs hundreds. Then it hands the reader a
      test they can run in two seconds that is more reliable than any parser:
      try to select the text. */
@@ -1930,7 +2046,7 @@ function sigmaDraw(){
       .replace(/\n{3,}/g, '\n\n').trim();
   }
 
-  /* characters the standard has no braille for — counted, never hidden.
+  /* characters the standard has no braille for, counted and never hidden.
      The same set braille_batch.py uses, so both tools agree about what is text. */
   function unknownChars(text){
     const known = new Set([
@@ -2006,7 +2122,7 @@ function sigmaDraw(){
       + '<div class="dwarn"><strong>Check first:</strong> open the file and drag '
       + 'across a line. If it does not highlight, the page is a picture and no '
       + 'software will find words in it.<br><br><strong>Then choose what to take.</strong> '
-      + 'A book page holds more than its words — page numbers, running headings, '
+      + 'A book page holds more than its words: page numbers, running headings, '
       + 'captions, labels inside diagrams, table cells. All of it is text; none of '
       + 'it belongs in the braille. Leave those out, and copy the text in reading '
       + 'order rather than the order it sits on the page.</div>';
@@ -2083,14 +2199,14 @@ function sigmaDraw(){
 
     box.className = 'docreport ok';
     box.innerHTML =
-      '<strong>' + esc(doc.name) + '</strong> — converted in ' + ms + ' ms.'
+      '<strong>' + esc(doc.name) + '</strong>, converted in ' + ms + ' ms.'
       + '<span class="dstat">' + doc.words.toLocaleString() + ' words</span>'
       + '<span class="dstat">' + rows.toLocaleString() + ' braille lines</span>'
       + '<span class="dstat">' + pages.toLocaleString() + ' page' + (pages===1?'':'s')
       + ' at ' + brfWidth() + ' cells</span>'
       + (badCount
           ? '<div class="dwarn"><strong>' + badCount.toLocaleString() + ' characters have no '
-            + 'braille in the standard and were left out</strong> — ' + dropped
+            + 'braille in the standard and were left out</strong>: ' + dropped
             + (bad.size > 8 ? ' and ' + (bad.size - 8) + ' more' : '')
             + '. Everything else is written.</div>'
           : '<div class="dok">Every character had a braille. Nothing was left out.</div>')
@@ -2171,7 +2287,7 @@ function sigmaDraw(){
   // an otherwise right-to-left page.
   const RULE={
     '3456':['number sign at the start of a word, ڻ everywhere else. No ordinary word begins with ڻ. The aspirate ڻھ does, and its two cells are also the fraction 1/8, which is why it is one of the four spellings this code cannot read back',
-            'لفظ جي شروع ۾ عدد جو نشان، ٻئي هنڌ ڻ. ڪو به عام لفظ ڻ سان شروع نه ٿيندو آهي. ڻھ ٿئي ٿو، ۽ اُن جا ٻئي خانا ڀڃ 1/8 به آهن — انهيءَ ڪري اهو اُنهن چئن لفظن مان هڪ آهي جيڪي هيءُ ڪوڊ واپس پڙهي نه ٿو سگهي'],
+            'لفظ جي شروع ۾ عدد جو نشان، ٻئي هنڌ ڻ. ڪو به عام لفظ ڻ سان شروع نه ٿيندو آهي. ڻھ ٿئي ٿو، ۽ اُن جا ٻئي خانا ڀڃ 1/8 به آهن، انهيءَ ڪري اهو اُنهن چئن لفظن مان هڪ آهي جيڪي هيءُ ڪوڊ واپس پڙهي نه ٿو سگهي'],
     '256':['letter inside a word · full stop at the end · lower digit after a number sign',
            'لفظ اندر اکر · لفظ جي آخر ۾ ٽِڪ · عدد جي نشان پٺيان هيٺيون عدد'],
     '236':['<strong>never fully resolves</strong>. The letter ھ by default at the end of a word; a word list recovers ؟',
@@ -2253,15 +2369,23 @@ function sigmaDraw(){
 /* ---------- six-key braille writer ---------- */
 (function(){
   const MAP={KeyF:'1',KeyD:'2',KeyS:'3',KeyJ:'4',KeyK:'5',KeyL:'6'};
-  const KEYCAP=[['KeyS','S','dot 3'],['KeyD','D','dot 2'],['KeyF','F','dot 1'],
-                ['KeyJ','J','dot 4'],['KeyK','K','dot 5'],['KeyL','L','dot 6']];
+  const KEYCAP=[['KeyS','S',3],['KeyD','D',2],['KeyF','F',1],
+                ['KeyJ','J',4],['KeyK','K',5],['KeyL','L',6]];
   const kb=$('keys');
-  kb.innerHTML='<div class="grp">'+KEYCAP.slice(0,3).map(([c,l,d])=>
-      `<div class="k" data-c="${c}"><b>${l}</b><span>${d}</span></div>`).join('')+'</div>'+
-    '<div class="gap"></div><div class="grp">'+KEYCAP.slice(3).map(([c,l,d])=>
-      `<div class="k" data-c="${c}"><b>${l}</b><span>${d}</span></div>`).join('')+'</div>';
+  function paintKeys(){
+    const sd = isSd();
+    const cap = ([c,l,d]) =>
+      `<div class="k" data-c="${c}"><b>${l}</b><span>${sd ? 'نقطو ' + d : 'dot ' + d}</span></div>`;
+    kb.innerHTML = '<div class="grp">' + KEYCAP.slice(0,3).map(cap).join('') + '</div>'
+      + '<div class="gap"></div><div class="grp">' + KEYCAP.slice(3).map(cap).join('') + '</div>';
+    box.setAttribute('aria-label', sd
+      ? 'بريل لکڻ جو خانو. نقطن 3، 2، 1 لاءِ S D F ۽ نقطن 4، 5، 6 لاءِ J K L، گڏ دٻايو. وٿي لاءِ اسپيس، ميسارڻ لاءِ بيڪ اسپيس، نئين سِٽ لاءِ اينٽر.'
+      : 'Braille writer. Use S D F for dots 3 2 1 and J K L for dots 4 5 6, pressed together. Space for a space, Backspace to delete, Enter for a new line.');
+  }
+  window.__paintKeys = paintKeys;
 
   const box=$('writer');
+  paintKeys();
   let cells=[];            // array of dot-strings; '' marks a space; '\n' a break
   // `down` holds the key codes actually down.  It used to be a counter, and the
   // counter broke the moment anyone held a chord: the operating system repeats
@@ -2362,23 +2486,94 @@ function sigmaDraw(){
     if(!pending.size) return;
     const c = [...pending].sort().join('');
     cells.push(c); pending.clear(); draw();
+    if(typeof paintPad === 'function') paintPad();
     say(nameCell(c), true);
   }
+  /* the same three actions the keyboard performs, so the touch pad and the
+     keys cannot drift apart */
+  function doSpace(){
+    if(pending.size) emit();
+    const w = lastWord(); cells.push(''); draw();
+    if(w) setTimeout(()=>say(w), 260); else say('space', true);
+  }
+  function doDelete(){
+    pending.clear(); paintPad();
+    const gone = cells.pop(); draw();
+    say(gone===undefined ? 'nothing to delete'
+        : gone==='' ? 'space deleted' : gone==='\n' ? 'line deleted'
+        : 'deleted ' + nameCell(gone), true);
+  }
+  function doNewline(){
+    emit();
+    const w = lastWord(); cells.push('\n'); draw();
+    setTimeout(()=>say((w? w+', ' : '') + 'new line'), 260);
+  }
+
   box.addEventListener('keydown', e=>{
     if(e.code in MAP){ e.preventDefault();
       if(e.repeat) return;                       // the OS repeating a held key
       pending.add(MAP[e.code]); down.add(e.code);
       kb.querySelector(`[data-c="${e.code}"]`).classList.add('hot'); return; }
-    if(e.code==='Space'){ e.preventDefault(); if(pending.size){emit();}
-      const w = lastWord(); cells.push(''); draw();
-      if(w) setTimeout(()=>say(w), 260); else say('space', true); return; }
-    if(e.code==='Backspace'){ e.preventDefault(); pending.clear();
-      const gone = cells.pop(); draw();
-      say(gone===''? 'space deleted' : gone==='\n' ? 'line deleted'
-          : 'deleted ' + nameCell(gone), true); return; }
-    if(e.code==='Enter'){ e.preventDefault(); emit();
-      const w = lastWord(); cells.push('\n'); draw();
-      setTimeout(()=>say((w? w+', ' : '') + 'new line'), 260); return; }
+    if(e.code==='Space'){ e.preventDefault(); doSpace(); return; }
+    if(e.code==='Backspace'){ e.preventDefault(); doDelete(); return; }
+    if(e.code==='Enter'){ e.preventDefault(); doNewline(); return; }
+  });
+
+  /* ---- the touch pad ------------------------------------------------------
+     A phone has no keys to hold down, so on a touch screen there is no chord
+     to make and the writer was simply unusable there: tapping the box focuses
+     it, but nothing can be typed into it because it is not a text field and no
+     on-screen keyboard appears.  The dots become six buttons instead, laid out
+     in the shape of the cell, and a seventh button writes it.  Tapping a dot
+     twice takes it off again.  Everything else, including the speech, is the
+     same code the keyboard uses. */
+  const PAD = [['1',1],['4',4],['2',2],['5',5],['3',3],['6',6]];   // grid order
+  const padWords = {
+    en: {write:'Write this cell', space:'Space', del:'Delete', nl:'New line',
+         empty:'no dots chosen yet',
+         hint:'Tap the dots of one cell, then Write this cell.'},
+    sd: {write:'هيءُ خانو لکو', space:'وٿي', del:'ميساريو', nl:'نئين سِٽ',
+         empty:'اڃا ڪو نقطو نه چونڊيو ويو',
+         hint:'هڪ خاني جا نقطا دٻايو، پوءِ «هيءُ خانو لکو» دٻايو.'}
+  };
+  const grid = $('dotgrid'), pact = $('padactions'), phint = $('padhint');
+
+  function padText(){ return padWords[isSd() ? 'sd' : 'en']; }
+
+  function paintPad(){
+    const t = padText(), sd = isSd();
+    grid.innerHTML = PAD.map(([d]) =>
+      `<button type="button" class="dot" data-d="${d}" aria-pressed="${pending.has(d)}"
+        aria-label="${sd ? 'نقطو ' + d : 'dot ' + d}"><i></i>${sd ? 'نقطو ' + d : 'dot ' + d}</button>`).join('');
+    pact.innerHTML =
+      `<button type="button" class="pri" data-a="write">${t.write}</button>`
+      + `<button type="button" data-a="space">${t.space}</button>`
+      + `<button type="button" data-a="del">${t.del}</button>`
+      + `<button type="button" data-a="nl">${t.nl}</button>`;
+    phint.textContent = t.hint;
+  }
+  window.__paintPad = paintPad;
+  paintPad();
+
+  grid.addEventListener('click', e => {
+    const b = e.target.closest('button.dot'); if(!b) return;
+    const d = b.dataset.d;
+    if(pending.has(d)) pending.delete(d); else pending.add(d);
+    b.setAttribute('aria-pressed', pending.has(d) ? 'true' : 'false');
+    say((isSd() ? 'نقطو ' + d + (pending.has(d) ? '' : '، بند') 
+                : 'dot ' + d + (pending.has(d) ? '' : ' off')), true);
+  });
+
+  pact.addEventListener('click', e => {
+    const b = e.target.closest('button'); if(!b) return;
+    const a = b.dataset.a;
+    if(a==='write'){
+      if(!pending.size){ say(padText().empty, true); return; }
+      emit(); paintPad(); return;
+    }
+    if(a==='space'){ doSpace(); paintPad(); return; }
+    if(a==='del'){ doDelete(); return; }
+    if(a==='nl'){ doNewline(); paintPad(); return; }
   });
   box.addEventListener('keyup', e=>{
     if(!(e.code in MAP)) return;
@@ -2387,10 +2582,15 @@ function sigmaDraw(){
     down.delete(e.code);
     if(down.size===0) emit();
   });
-  box.addEventListener('blur', ()=>{ down.clear(); pending.clear();
-    kb.querySelectorAll('.k').forEach(k=>k.classList.remove('hot')); });
+  /* Leaving the box used to throw away the pending dots. That is right for a
+     chord let go mid-press, and wrong for dots tapped on the pad, which have
+     to survive the focus moving to the Write button. */
+  box.addEventListener('blur', ()=>{
+    if(down.size){ down.clear(); pending.clear(); paintPad(); }
+    kb.querySelectorAll('.k').forEach(k=>k.classList.remove('hot'));
+  });
 
-  $('wClear').onclick=()=>{ cells=[]; pending.clear(); draw(); box.focus();
+  $('wClear').onclick=()=>{ cells=[]; pending.clear(); draw(); paintPad(); box.focus();
     if(speakOn) say('cleared', true); };
   $('wSpeak').onclick=()=>{
     speakOn = !speakOn;
@@ -2432,7 +2632,9 @@ function sigmaDraw(){
   $('theme').onclick=()=>{
     const dark=H.getAttribute('data-theme')==='dark';
     H.setAttribute('data-theme', dark?'light':'dark');
-    $('theme').textContent=dark?'Dark':'Light';
+    $('theme').innerHTML = dark
+      ? '<span class="en-only inl">Dark</span><span class="sd-only inl sd" lang="sd">اونداهو</span>'
+      : '<span class="en-only inl">Light</span><span class="sd-only inl sd" lang="sd">روشن</span>';
     $('theme').setAttribute('aria-label', dark?'Switch to dark mode':'Switch to light mode');
   };
   $('lang').onclick=()=>{
@@ -2442,6 +2644,10 @@ function sigmaDraw(){
     $('lang').setAttribute('aria-pressed', sd?'false':'true');
     $('lang').textContent = sd?'سنڌي':'English';
     if (window.__drawAmb) window.__drawAmb();   // the table is built per language
+    if (window.__paintHeroCount) window.__paintHeroCount();
+    if (window.__paintKeys) window.__paintKeys();
+    if (window.__paintPad) window.__paintPad();
+    if (window.__sigmaDraw) window.__sigmaDraw();
   };
 })();
 </script>
