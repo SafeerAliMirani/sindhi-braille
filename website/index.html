@@ -1684,7 +1684,7 @@ function back(lines, poetry, grade2) {
           while (i < cells.length && (cells[i] in LOW2DIG)) { s += LOW2DIG[cells[i]]; i++; }
           continue;
         }
-        if (c === T.NUMSIGN && (i === 0 || ':%({'.includes(s.slice(-1)))
+        if (c === T.NUMSIGN && (i === 0 || ':%({='.includes(s.slice(-1)))
             && cells[i + 1] && (cells[i + 1] in DIG2)) {
           i++;
           while (i < cells.length && (cells[i] in DIG2)) {

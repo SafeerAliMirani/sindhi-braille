@@ -1,10 +1,11 @@
-;A4 #H ;6 #I ;7 #AG
-;B4 #H;6#I ;7 #AG
-;J4 #H ;6#I ;7#AG
+;A4 #H ;6#I ;7#AG
+;B4 #H ;6 #I ;7#AG
 
-;D4 AL,L@H
-;H4 A,L@H
-;W4 ALL,@H
+;J4 #BJ ;-#AC ;7#G
+;D4 #BJ ;- #AC ;7#G
+
+AL,L@H
+BSM AL,L@H ALR:MN ALR:IM
 
 (( SNV 2[A'I JI 2WN'(
 HTI AMN A'IN M:BT >HI(
