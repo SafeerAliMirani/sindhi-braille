@@ -52,7 +52,43 @@ to try.
 
 ---
 
-## A3 — the spacing of arithmetic. OPEN, and on sheet 4.
+## A3 — the spacing of arithmetic. MOSTLY CLOSED, 19 August 2026, by the book.
+
+**Closed by reading the guide's own typography instead of our summary of it.**
+The guide prints five worked sums. Set out as it sets them:
+
+| the sum | as the guide prints it |
+|---|---|
+| 8+9 = 17 | `~8 }F~9 }'~17` |
+| 20 − 13 = 7 | `~20 }& ~13 }'~7` |
+| 12 × 8 = 96 | `~12 }? ~8 }'~96` |
+| 91 ÷ 7 = 13 | `~91 }\ ~7 }'~13` |
+| 10 = 15 | `~10 }'~15` |
+
+Read the spacing, not the cells. **Every one of the six equals signs is closed
+up to the number after it**, and every sign has a space before it. That is
+exactly what Riaz Hussain Memon said on 15 August 2026, before any of this was
+checked against the page.
+
+**We had it wrong, and so did this document.** It said the guide spaces every
+sign on both sides. It does not. The mistake was possible because
+`verify_guide.py` recorded the expected grouping from *our own output* rather
+than from the book, and `to_brf` writes one space between groups, so the
+spacing was never actually compared with the page.
+
+**Implemented 19 August 2026:** a comparison sign takes a space before it and
+none after, in both engines. Four of the five sums now reproduce exactly.
+
+**What is still open, and it is narrow.** The operation signs. The guide closes
+`+` up to the 9 and spaces `−`, `×` and `÷`, so it is 1 against 3 with itself.
+Riaz says all four close up. We have left them spaced, matching three of the
+guide's four, and the one printed example we do not reproduce is recorded in
+`verify_guide.DIVERGENCE` rather than deleted. **Ask him to read the sum with
+the plus closed up and the sum with it spaced, and say which is right.**
+
+---
+
+## A3b — the old text of this question, kept for the record
 
 He said on 15 August 2026 that `8 + 9 = 17` should be written `8 +9 =17` — a
 space before each sign and none after — and that the international rules have

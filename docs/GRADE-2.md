@@ -7,7 +7,7 @@ Sindhi braille books use, and until now this project only had Grade 1.
 
 ## What the source is
 
-Everything here comes from **ڪامل سنڌي بريل درجو II**, Riaz Hussain Memon's Grade 2
+Everything here comes from **مڪمل سنڌي بريل درجو II**, Riaz Hussain Memon's Grade 2
 book, in the manuscript he supplied. Each table in it has three columns — نقطو
 (the braille), اکر (the letter), لفظ (the word). The braille column did not
 survive in the file, but the letter and the word did, and the braille is

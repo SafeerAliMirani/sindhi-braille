@@ -9,8 +9,16 @@ fs.writeFileSync(tmp, src);
 delete require.cache[tmp];
 const E = require(tmp);
 
-const cases = JSON.parse(
-  fs.readFileSync(path.join(__dirname, 'backcases.json'), 'utf8'));
+/* The expectations are computed by the Python on this run and handed to us as
+   argv[2]. Falling back to the stored file would let a stale file pass as a
+   cross-check, which is exactly the failure this replaced. */
+const casesPath = process.argv[2];
+if (!casesPath) {
+  console.error('crosscheck.js needs the path to the expectations the Python '
+    + 'just produced; run it through tools/check_all.py');
+  process.exit(2);
+}
+const cases = JSON.parse(fs.readFileSync(casesPath, 'utf8'));
 let ok = 0, bad = 0;
 for (const [text, want, opts] of cases) {
   const o = opts || {};

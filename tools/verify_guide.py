@@ -60,11 +60,11 @@ CASES = [
  ('p52', '13/44',          '3456 1 14 256 256'),
  ('p52', '25/88',          '3456 12 15 236 236'),
  # ---- arithmetic (pp.49-50) ----------------------------------------------
- ('p49', '8 + 9 = 17',     '3456 125 | 56 235 | 3456 24 | 56 2356 | 3456 1 1245'),
- ('p49', '20 - 13 = 7',    '3456 12 245 | 56 36 | 3456 1 14 | 56 2356 | 3456 1245'),
- ('p50', '12 x 8 = 96',    '3456 1 12 | 56 236 | 3456 125 | 56 2356 | 3456 24 124'),
- ('p50', '91 ÷ 7 = 13',    '3456 24 1 | 56 256 | 3456 1245 | 56 2356 | 3456 1 14'),
- ('p50', '10 = 15',        '3456 1 245 | 56 2356 | 3456 1 15'),
+ 
+ ('p49', '20 - 13 = 7',    '3456 12 245 | 56 36 | 3456 1 14 | 56 2356 3456 1245'),
+ ('p50', '12 x 8 = 96',    '3456 1 12 | 56 236 | 3456 125 | 56 2356 3456 24 124'),
+ ('p50', '91 ÷ 7 = 13',    '3456 24 1 | 56 256 | 3456 1245 | 56 2356 3456 1 14'),
+ ('p50', '10 = 15',        '3456 1 245 | 56 2356 3456 1 15'),
  # ---- Roman numerals (p.48) ----------------------------------------------
  ('p48', 'I',              '56 24'),
  ('p48', 'III',            '56 24 24 24'),
@@ -116,15 +116,40 @@ CASES = [
 # ---------------------------------------------------------------------------
 # RULES.  Stated in the guide, but with no worked example printed beside them,
 # so these are our reading of the rule and not a transcription of the book.
+# Printed examples this software does NOT reproduce, with the reason.  Kept
+# here and counted, because deleting a failing example is how a suite starts
+# lying.
+#
+# D1 - the guide's own worked sum for addition.  It prints
+#
+#       8+9 = 17        as        ~8 }F~9 }'~17
+#
+# with the plus closed up to the 9.  Its other three sums space the operation
+# sign on both sides (`}& ~13`, `}? ~8`, `}\ ~7`), so the guide is 1 against 3
+# with itself on operation signs.  Every one of its six equals signs, by
+# contrast, is closed up to the number after it, and that is now implemented.
+#
+# Riaz Hussain Memon said on 15 August 2026 that a sign takes a space before it
+# and none after, which agrees with the plus example and with all six equals
+# signs, and disagrees with the minus, times and divide examples.  We have not
+# guessed: the operation signs are left spaced on both sides, matching three of
+# the guide's four, and the question is on the decision sheet for him to read.
+DIVERGENCE = [
+ ('p49', '8 + 9 = 17',
+  '3456 125 | 56 235 3456 24 | 56 2356 3456 1 1245',
+  'the guide closes the plus up to the 9; we space it, as the guide itself '
+  'does for minus, times and divide'),
+]
+
 RULES = [
  # (page the rule is on, text, expected dots, what the rule says)
  ('p51', '1%',   '25 1234 3456 1',
   'the per cent sign is 25 1234 and is printed BEFORE the number'),
  ('p51', '50%',  '25 1234 3456 15 245',
   'the same, with a two-digit number'),
- ('p53', '(8 + 9) = 17', '126 3456 125 | 56 235 | 3456 24 345 | 56 2356 | 3456 1 1245',
+ ('p53', '(8 + 9) = 17', '126 3456 125 | 56 235 | 3456 24 345 | 56 2356 3456 1 1245',
   'arithmetic has its own brackets: ( is 126 and ) is 345'),
- ('p53', '{12 + 3} = 15', '246 3456 1 12 | 56 235 | 3456 14 135 | 56 2356 | 3456 1 15',
+ ('p53', '{12 + 3} = 15', '246 3456 1 12 | 56 235 | 3456 14 135 | 56 2356 3456 1 15',
   'and its own braces: { is 246 and } is 135'),
  ('p32', 'ڪتاب (سنڌي) آهي.', '13 2345 1 12 | 2356 234 1345 1236 24 2356 | 345 125 24 256',
   'in prose both round brackets are 2356'),

@@ -440,6 +440,8 @@ def translate(text, diacritics=False, doubling=True, waw=True,
         elif poetry:
             stanza_open = False                             # a blank line ends it
 
+        if arith:
+            toks = _close_comparison(toks)
         lines.append(_merge_foreign(toks))
 
     if poetry:                                  # a full stop closes the stanza
@@ -448,6 +450,32 @@ def translate(text, diacritics=False, doubling=True, waw=True,
             if ln and (nxt is None or not nxt):
                 ln[-1] = ln[-1] + [PUNCT['.']]
     return lines
+
+COMPARISON = [MATH['=']]            # the only comparison sign the code has
+
+
+def _close_comparison(toks):
+    """A comparison sign takes a space before it and none after.
+
+    The guide prints this six times out of six, in every worked sum it shows:
+    `8 + 9 = 17` is set as three groups, the last of them the equals sign and
+    the 17 together, and the same holds for the other four sums and for the two
+    bracketed examples.  Riaz Hussain Memon said the same thing on 15 August
+    2026, independently and before this was checked against the book.
+
+    This software wrote a space on both sides until August 2026.  The check
+    that was supposed to catch it compared cells and recorded the grouping from
+    our own output rather than from the page, so it agreed with itself.  The
+    grouping is the spacing: `to_brf` writes one space between groups.
+    """
+    out, i = [], 0
+    while i < len(toks):
+        t = toks[i]
+        if any(t == c for c in COMPARISON) and i + 1 < len(toks):
+            out.append(list(t) + list(toks[i + 1])); i += 2; continue
+        out.append(t); i += 1
+    return out
+
 
 def _merge_foreign(toks):
     """The guide wraps a whole foreign word or sentence in one pair of marks
@@ -629,7 +657,7 @@ def back(lines, poetry=False, grade2=False):
                     while i < len(cells) and cells[i] in LOW2DIG:
                         s += LOW2DIG[cells[i]]; i += 1
                     continue
-                if (c == NUMSIGN and (i == 0 or s[-1:] in ':%({')
+                if (c == NUMSIGN and (i == 0 or s[-1:] in ':%({=')
                         and i + 1 < len(cells) and cells[i+1] in DIG2):
                     i += 1                                  # number sign: digits must follow
                     while i < len(cells) and cells[i] in DIG2:

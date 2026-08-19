@@ -47,8 +47,14 @@ def check_guide():
     for page, text, want, *_ in verify_guide.CASES:
         if verify_guide.got(text) == want: ok += 1
         else: bad += 1
-    record('guide', bad == 0, '%d of %d printed examples, cell for cell'
-           % (ok, ok + bad))
+    div = getattr(verify_guide, 'DIVERGENCE', [])
+    dstill = [c for c in div if verify_guide.got(c[1]) != c[2]]
+    record('guide', bad == 0,
+           '%d of %d printed examples, cell for cell and space for space%s'
+           % (ok, ok + bad,
+              '' if not div else
+              '; %d known divergence%s, see verify_guide.DIVERGENCE'
+              % (len(dstill), '' if len(dstill) == 1 else 's')))
 
     rok = rbad = 0
     for page, text, want, *_ in verify_guide.RULES:
@@ -221,8 +227,27 @@ def check_browser():
         record('browser', None,
                'node or the cross-check harness is missing — not checked')
         return
-    r = subprocess.run(['node', 'crosscheck.js'], cwd=web,
+    # The Python answers every case on this run, so the file the browser is
+    # checked against cannot be stale. backcases.json holds the inputs only.
+    import json, tempfile
+    sb.load_words()
+    inputs = json.load(io.open(os.path.join(web, 'backcases.json'),
+                               encoding='utf-8'))
+    live = []
+    for c in inputs:
+        text = c[0]
+        opts = c[2] if len(c) > 2 else (c[1] if len(c) > 1 and isinstance(c[1], dict) else None)
+        kw = dict(opts) if opts else {}
+        want = sb.back(sb.translate(text, **kw),
+                       kw.get('poetry', False), kw.get('grade2', False))
+        live.append([text, want] + ([opts] if opts else []))
+    fh = tempfile.NamedTemporaryFile('w', suffix='.json', delete=False,
+                                     encoding='utf-8')
+    json.dump(live, fh, ensure_ascii=False)
+    fh.close()
+    r = subprocess.run(['node', 'crosscheck.js', fh.name], cwd=web,
                        capture_output=True, text=True)
+    os.unlink(fh.name)
     out = (r.stdout + r.stderr).splitlines()
     tail = [l for l in out if l.strip() and not l.startswith('DOCSHA')]
     record('browser', r.returncode == 0, tail[-1].strip() if tail else 'ran')

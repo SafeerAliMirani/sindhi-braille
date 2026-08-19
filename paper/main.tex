@@ -4,8 +4,8 @@
 %  Compile with XeLaTeX. On Overleaf: Menu -> Compiler -> XeLaTeX.
 %  pdfLaTeX will not typeset the Sindhi; see README.md for the fallback.
 %
-%  The tables and every figure in the text come from generated.tex, which
-%  is written by make_paper_tables.py out of the same modules the software
+%  Every figure and table of data comes from generated.tex, which is
+%  written by make_paper_tables.py out of the same modules the software
 %  runs on. Do not edit generated.tex by hand.
 % =====================================================================
 \documentclass[11pt,a4paper]{article}
@@ -19,17 +19,18 @@
 \usepackage{microtype}
 \usepackage[hidelinks]{hyperref}
 \usepackage{xcolor}
+\usepackage{caption}
+\usetikzlibrary{positioning, arrows.meta}
 
 % ---- the Sindhi face -------------------------------------------------
 % Substitute Scheherazade New or Amiri if Noto Naskh Arabic is unavailable.
 \newfontfamily\sdfont{Noto Naskh Arabic}[Script=Arabic]
 
 % ---- a braille cell, drawn from its dot numbers ----------------------
-% The paper's braille is drawn from the same dot numbers the embosser is
-% sent, so a figure here cannot disagree with a figure on paper.
+% Every cell in this paper is drawn from the same dot numbers the embosser
+% is sent, so a cell printed here cannot disagree with a cell on paper.
 \newcommand{\bcell}[1]{%
   \begin{tikzpicture}[baseline=-0.55ex, x=1.75mm, y=1.75mm]
-    % the six positions, faint, so an unraised dot is visible as a position
     \foreach \x/\y in {0/2, 0/1, 0/0, 1/2, 1/1, 1/0}
       {\fill[black!17] (\x,\y) circle (0.20);}
     % dot d sits in column (d>3) and row (d-1) mod 3, counting down from the top
@@ -44,11 +45,13 @@
 \newcommand{\fail}{\textbf{FAIL}}
 \newcommand{\skipped}{\textcolor{black!45}{\small skip}}
 
+\captionsetup{font=small, labelfont=bf}
+
 \input{generated}
 
 \usepackage{bidi}                      % must be loaded last
 \newcommand{\sd}[1]{{\sdfont\RL{#1}}}
-% Inside maths \RL is not available, and every Sindhi mark used in a formula
+% Inside maths \RL is unavailable, and every Sindhi mark used in a formula
 % here is a single glyph, which needs no reordering.
 \newcommand{\sdm}[1]{\text{\sdfont #1}}
 
@@ -56,11 +59,12 @@
 implementing and verifying a ratified national braille code}
 
 \author{%
-  Safeer Ali Mirani\thanks{Corresponding author. Digital implementation,
-  verification and documentation.} \and
-  Riaz Hussain Memon\thanks{Blind teacher; President, Pakistan Association of
-  the Blind (Sindh); member of the committee that authored the code. Authority
-  on what the code says.}%
+  Safeer Ali Mirani\thanks{Software implementation, verification suite,
+  documentation and evaluation design.} \and
+  Riaz Hussain Memon\thanks{Member of the committee that authored the code;
+  blind teacher; President, Pakistan Association of the Blind (Sindh).
+  Contributed the source material, the rulings recorded in
+  \S\ref{sec:reading}, and the reading by touch.}%
 }
 \date{}
 
@@ -70,115 +74,209 @@ implementing and verifying a ratified national braille code}
 \begin{abstract}
 \noindent
 Standard Sindhi Braille was ratified on 7 November 2016 by a committee of the
-Sindhi Language Authority, and has been taught in schools and read by touch in
-Sindh ever since. Until the work reported here it existed only on paper: no
-software could produce a line of it, and \texttt{liblouis}, the open braille
-library behind most screen readers and embossers, shipped no table for Sindhi in
-the Perso-Arabic script that Pakistan writes. We report the first digital
-implementation of that code. The central difficulty is structural rather than
-notational. Sindhi has \NLetters{} letters and the code must express \NMeanings{}
-distinct marks, against the 63 cells a six-dot braille cell can form, so the
-forward map is a function and its inverse is not: \NShared{} cells carry more
-than one reading and \NThreeWay{} carry three or more. We give the resolution
-procedure, which is positional for all but one case, lexical for that one, and
-we report what it costs. The implementation comprises a reference translator, a
-pair of \texttt{liblouis} tables, and an independent browser engine written to
-the same specification so that the two can be made to disagree. Verification runs
-at five levels, from the code checking itself against the committee's printed
-book to the level that actually settles the question: on 15 August 2026 the
-second author read an embossed page produced by this software, cold, by touch,
-complete and without error. We also report four points on which the printed
-standard contradicts itself, which are matters for the Authority rather than for
-us.
+Sindhi Language Authority and has been taught in schools and read by touch in
+Sindh since. Until the work reported here it had no software implementation:
+no program could produce a line of it. \texttt{liblouis}, the open braille
+translation library, does ship a table under the language code \texttt{sd}, but
+it is an unverified stub that includes a Devanagari table written for Sindhi as
+it is written in India, and it cannot render a letter of the Perso-Arabic script
+Pakistan uses. We report the first digital implementation of the ratified
+code. The central difficulty is
+structural rather than notational. Sindhi is written with \NLetters{} letters
+and the code must express \NMeanings{} distinct marks as single cells, against
+the 63 forms a six-dot cell can take, so forward translation is a function and
+its inverse is not: \NShared{} cells carry more than one reading and
+\NThreeWay{} carry three or more. We give the resolution procedure, which is
+positional in all but one case and lexical in that one, and we report its
+measured cost. The implementation comprises a reference translator, a pair of
+\texttt{liblouis} tables that compile and pass a 99-case suite, and a second,
+independent engine written to the same specification so that disagreements
+between implementations become observable. Verification runs at five levels, the
+last of which is a reading by touch: on 15 August 2026 the second author read an
+embossed page produced by this software, without prior sight of the text,
+complete and without error. We report one rule the verification design could not see, because it compared
+cells and not the spaces between them, and what we changed so that it can. We
+also report four points on which the printed standard contradicts itself, which
+are matters for the Authority rather than for us.
 \end{abstract}
 
 \section{Introduction}
 
-A braille code is not software. It is a decision, taken by people, about which
-of the sixty-three arrangements of six raised dots stands for which mark of a
-writing system. Once taken, the decision has to be implemented, or it reaches
-almost nobody: a code that no program knows cannot be produced by a screen
-reader, cannot be embossed from a file, and cannot turn a document into
+A braille code is a decision, taken by people, about which of the sixty-three
+arrangements of six raised dots stands for which mark of a writing system. Once
+taken, the decision has to be implemented in software, or it reaches few
+readers: a code no program knows cannot be produced by a screen reader, cannot
+be embossed from an electronic document, and cannot turn an arbitrary text into
 something a blind reader can hold.
 
-Sindhi is written by roughly thirty million people, principally in the Pakistani
-province of Sindh, in a Perso-Arabic script of \NLetters{} letters. Its braille
-code was settled in 2016 and is in daily use. Its implementation status, until
-this work, was nil.
+Sindhi is the third most widely reported mother tongue in Pakistan. The 2023
+census recorded 14.3\% of a population of 247{,}541{,}947, or roughly 35
+million speakers \cite{pbs2023}. It is written in a Perso-Arabic script of
+\NLetters{} letters. Its braille code was settled in 2016 and is in daily use in
+schools in Sindh. It had no implementation.
 
-This paper reports that implementation and, more importantly, how it was checked.
-We think the checking is the transferable part. A braille code for a
-low-resource language is an unusual object to implement, because it is defined
-entirely by a printed document and a small number of people who read it by
-touch, and neither a test suite nor a corpus can substitute for either. What we
-describe is a way of arranging the evidence so that each level catches a kind of
-error the others cannot.
+The absence is worth stating precisely, because at first glance it looks as
+though it has been filled. \texttt{liblouis} 3.29.0 ships \texttt{sd.tbl},
+indexed as \emph{Sindhi braille}. The file carries the maintainers' own note
+that its metadata ``hasn't been verified by the table author yet'', and its
+substance is a single \texttt{include} of \texttt{si-in-g1.utb}, a 2014 table
+from the Braille Council of India whose header describes it as Sindhi Grade 1
+and which in turn includes \texttt{devanagari.cti}. It therefore serves Sindhi
+as written in India, in Devanagari, on Bharati Braille lines. It contains
+nothing that can render the Perso-Arabic script, and it predates the 2016 code
+by two years. A user selecting ``Sindhi'' in a screen reader on a Pakistani
+Sindhi document gets a table for a different script.
+
+This paper reports that implementation and, at greater length, how it was
+checked. We take the checking to be the more transferable contribution. A
+braille code for a language in this position is an unusual object to implement:
+it is defined by a printed document and by a small number of people who read it
+by touch, and neither a held-out test set nor a large corpus can substitute for
+either. What we describe is a way of arranging evidence so that each level
+catches a class of error the others cannot.
 
 \subsection{Contributions}
 
 \begin{enumerate}
-\item The first digital implementation of Standard Sindhi Braille: a reference
+\item The first software implementation of Standard Sindhi Braille: a reference
       translator in both directions, \texttt{liblouis} tables for Grade 1 and
-      Grade 2, and an independent browser engine.
-\item A formal statement of the shared-cell problem for this code, with counts
-      derived from the tables rather than asserted, and a resolution procedure
-      whose one irreducible case we characterise exactly.
-\item A five-level verification design, and its results, including the outcome
-      of a reading by touch by a blind reader who is also an author of the code.
+      Grade 2, and a second independent engine.
+\item A formal statement of the shared-cell problem for this code, with all
+      counts derived from the implemented tables rather than asserted, and a
+      resolution procedure whose single irreducible case we characterise
+      exactly.
+\item A five-level verification design and its results, including a reading by
+      touch by a blind reader who is also an author of the code.
 \item Four self-contradictions in the printed standard, reported rather than
       silently resolved.
 \end{enumerate}
 
-\section{The code and where it comes from}
+\section{Related work}
+
+\paragraph{Braille translation infrastructure.}
+\texttt{liblouis} \cite{egli2009,liblouis} is an open braille translation
+and back-translation library. Its design is table-driven: a language is
+supported by contributing a table, which then becomes available to every
+application that links the library. This makes the table, rather than any single
+application, the artefact that determines whether a language is served, and it
+is why we treat producing a correct table as a primary contribution rather than
+a packaging step.
+
+It also means that a language can appear supported when it is not. The
+\texttt{sd.tbl} case described in \S1 is an instance: an index entry, a
+display name, and an \texttt{include} of a table for a different script. We
+mention it not as a criticism of the maintainers, whose comments in the file say
+plainly that the entry is unverified, but because it changes what an
+implementation for a language in this position has to establish. It is not
+enough to show that no table exists; one has to show what the existing entry
+actually does.
+
+\paragraph{Documentation of braille codes.}
+\emph{World Braille Usage} \cite{wbu2013} is the standard survey of braille
+codes by country and language. Its third edition lists the braille languages of
+Pakistan as Urdu and English (p.\ 103). Standard Sindhi Braille was ratified
+three years after that edition appeared, so its absence is chronological rather
+than a judgement, but it does describe the situation this work addresses: the
+code is not represented in the reference literature that implementers consult.
+
+\paragraph{Perso-Arabic braille in software.}
+Work on the neighbouring codes is closest to ours. Akram et al.\
+\cite{akram2020} report an Urdu braille editor, and note the same absence of
+support for a Perso-Arabic braille code in existing tools that motivates this
+paper. Iqbal et al.\ \cite{iqbal2017} address the other half of the problem, the
+sighted parent or teacher who does not read braille, with an interactive Urdu
+braille learning system. Sindhi differs from Urdu in ways that matter for a
+translator rather than only for a font: it has letters Urdu does not, notably
+\sd{ڪ}, and \S\ref{sec:neighbours} shows that this is precisely where the two
+codes must diverge.
+
+\paragraph{Braille codes as living standards.}
+The Rules of Unified English Braille \cite{iceb2024} illustrate that a braille
+code is revised, and that its rules are stated at a level of detail an
+implementation must respect: \S11.2 of that rulebook treats the spacing of
+operation signs and of comparison signs as separate questions. That distinction
+is directly relevant to one of the questions still open in the Sindhi code
+(\S\ref{sec:limitations}).
+
+\paragraph{Sindhi in the other tradition.}
+Sindhi is written in India in Devanagari as well as in the Perso-Arabic script,
+and Indian braille for Devanagari follows the Bharati scheme. The table
+\texttt{si-in-g1.utb} discussed above belongs to that tradition. The two
+codes are not variants of one another: they share neither the script, nor the
+alphabet, nor the cell assignments, and a reader of one cannot read the other.
+This paper concerns only the Perso-Arabic code ratified in Pakistan.
+
+\paragraph{What is not addressed here.}
+A separate literature treats the recovery of text from images of embossed
+pages. That is a different problem with different inputs, and nothing in this
+work depends on it. Our input is electronic text and our output is an
+electronic braille file.
+
+\section{The code and its provenance}
 
 Standard Sindhi Braille was given final form on 7 November 2016 under the
 patronage of the Sindhi Language Authority, an autonomous institution of the
 Government of Sindh. A committee of six agreed it unanimously: Prof.\ Dr Abdul
 Ghafoor Memon (Chairman), Shahid Ahmed Memon (Convener), Riaz Hussain Memon,
-Prof.\ Mehrab Ali Lakho, Dr Saira Saleem Khan and Shamsuddin Shaikh. The
-Government of Sindh prints school textbooks in the code through the DEPD Braille
-Press, Karachi.
+Prof.\ Mehrab Ali Lakho, Dr Saira Saleem Khan and Shamsuddin Shaikh, certified
+by Haroon Inayat Abbasi, Secretary. The Government of Sindh prints school
+textbooks in the code through the DEPD Braille Press, Karachi.
 
-The code is documented in the Authority's printed guide and in the second
-author's Grade 1 and Grade 2 teaching books. Everything implemented here comes
-from those documents. We have altered nothing: where the printed material is
-ambiguous we say so in \S\ref{sec:contradictions} rather than choosing quietly.
+The code is documented in the Authority's printed guide \cite{guide2016} and in
+the second author's Grade 1 and Grade 2 teaching books \cite{memon-g2}.
+Everything implemented here derives from those documents. We have altered
+nothing: where the printed material is ambiguous or inconsistent we report it in
+\S\ref{sec:contradictions} rather than choosing silently.
 
-\section{The gap}
+\section{The structure of the problem}
+\label{sec:problem}
 
-A braille code becomes usable at scale only when software knows it. Three things
-in particular were missing for Sindhi.
+\subsection{The cell}
 
-\emph{No table in the open braille library.} \texttt{liblouis} ships tables for
-more than a hundred languages, including Arabic, Persian and Urdu, and had none
-for Sindhi. A screen reader on a Sindhi page therefore had nothing to send to a
-braille display.
+\begin{figure}[t]
+\centering
+\begin{LTR}
+\begin{tikzpicture}[
+    lbl/.style={font=\small, align=center, text width=38mm, anchor=north}]
+  % the six positions, numbered
+  \begin{scope}[x=7mm, y=7mm]
+    \foreach \d/\x/\y in {1/0/2, 2/0/1, 3/0/0, 4/1/2, 5/1/1, 6/1/0} {
+      \draw[black!35] (\x,\y) circle (0.30);
+      \node[font=\small] at (\x,\y) {\d};
+    }
+  \end{scope}
+  \node[lbl] at (0.35,-0.75) {the six positions\\and their numbers};
+  % one cell
+  \node at (5.4,0.7) {\Large\bcell{1,3}};
+  \node[lbl] at (5.4,-0.75) {dots 1-3\\the letter \sd{ڪ}};
+  % two cells
+  \node at (10.4,0.7) {\Large\bcell{1,3}\,\Large\bcell{2,3,6}};
+  \node[lbl] at (10.4,-0.75) {dots 1-3 then 2-3-6\\the letter \sd{ک}};
+\end{tikzpicture}
+\end{LTR}
+\caption{The braille cell and its dot numbering, and the two-cell letter
+discussed in \S\ref{sec:neighbours}. Throughout this paper a raised dot is
+drawn solid and an unraised position faint, following the convention of the
+committee's printed guide.}
+\label{fig:cell}
+\end{figure}
 
-\emph{No translator.} Producing a page of Sindhi braille meant a person
-transcribing it, mark by mark.
-
-\emph{No specification a programmer could work from.} The code existed as a
-printed guide in Sindhi, which is the correct form for teachers and the wrong
-form for an implementation.
-
-\section{Why the problem is hard}
+A six-dot cell has $2^{6}-1 = 63$ non-empty forms (Figure~\ref{fig:cell}).
+Counting only those marks the code writes as a single cell standing alone, our
+implementation assigns \NMeanings{} distinct meanings across \NCellsUsed{} of
+those 63 forms. Including marks written as two cells, all 63 are used.
 
 \subsection{More to say than there are cells}
-
-A six-dot cell has $2^{6}-1 = 63$ non-empty forms. Counting only those marks the
-code writes as a single cell on its own, our implementation assigns
-\NMeanings{} distinct meanings across \NCellsUsed{} of those 63 forms. Including
-marks written as two cells, every one of the 63 is used.
 
 Let $\Sigma$ be the set of marks the code must express and $\mathcal{B}$ the set
 of cells. Forward translation is a map
 \[
 T:\Sigma^{*}\longrightarrow\mathcal{B}^{*},
 \]
-which is well defined and total. It is not injective. Because $|\Sigma| >
-|\mathcal{B}|$, the pigeonhole argument alone guarantees collisions, and the code
-has them: \NShared{} cells carry more than one reading and \NThreeWay{} carry
-three or more. The two worst are
+total and well defined. It is not injective. Since $|\Sigma| > |\mathcal{B}|$,
+collisions are forced, and the code has them: \NShared{} cells carry more than
+one reading and \NThreeWay{} carry three or more
+(Figure~\ref{fig:readings}). The two most heavily loaded are
 \[
 R(\text{dot }2)=\{\,\text{zabar},\ \sdm{،},\ \text{decimal point},\
 \text{lower }1,\ \text{pen-name mark}\,\}
@@ -188,14 +286,26 @@ R(\text{dots }2\text{-}3\text{-}6)=\{\,\sdm{ھ},\ \sdm{؟},\ \text{lower }8,\
 \text{open quote}\,\}.
 \]
 
-Back-translation is therefore not the application of an inverse function. Given
-$\beta \in \mathcal{B}^{*}$ it is the problem of finding some $w$ with
-$T(w)=\beta$, and choosing among the candidates.
+Back-translation is therefore not the application of an inverse. Given $\beta
+\in \mathcal{B}^{*}$ it is the problem of finding some $w$ with $T(w)=\beta$ and
+choosing among the candidates.
+
+\begin{figure}[t]
+\centering
+\begin{LTR}
+\ReadingsHistogram
+\end{LTR}
+\caption{How many meanings each cell carries, over the \NCellsUsed{} cells the
+code assigns as single cells. The \NThreeWay{} cells in the right-hand three
+columns are where back-translation needs more than a table.}
+\label{fig:readings}
+\end{figure}
 
 \subsection{Position resolves almost everything}
 
-The code is built so that most collisions are resolved by where a cell sits. We
-state these as predicates on the index. The clearest case is dots 3-4-5-6:
+The code is constructed so that most collisions are resolved by where a cell
+sits, and these can be stated as predicates on the index. The clearest case is
+dots 3-4-5-6:
 \[
 c = 3456 \;\longmapsto\;
 \begin{cases}
@@ -203,26 +313,24 @@ c = 3456 \;\longmapsto\;
 \sdm{ڻ} & \text{otherwise.}
 \end{cases}
 \]
-This rule is sound only if no ordinary Sindhi word begins with \sd{ڻ}. We
-tested the claim rather than assuming it, and the result is more useful than a
-bare confirmation would have been. Over 23{,}432 word tokens drawn from the
+This is sound only if no ordinary Sindhi word begins with \sd{ڻ}. We measured
+the claim rather than assuming it. Over 23{,}432 word tokens drawn from the
 committee's own publications, \sd{ڻ} occurs 604 times inside or at the end of a
-word, and 18 times at the start of a token. Seventeen of those 18 are the bare
+word and 18 times at the start of a token. Seventeen of those 18 are the bare
 letter standing alone, which is what a book about the alphabet contains rather
 than what running prose does. The eighteenth is the aspirate \sd{ڻھ}.
 
-That single exception is not a surprise waiting to be found: \sd{ڻھ} is one of
-the four spellings the round-trip check already reports as not surviving
-(\S\ref{sec:suite}), because its two cells are also the fraction $1/8$. The
-positional rule is therefore sound for prose, and its one failure is already
-counted in the fidelity figure rather than hidden behind it. We would rather
-report a rule with a measured exception than a rule with none.
+That exception is already accounted for elsewhere in our measurements:
+\sd{ڻھ} is one of the four spellings the round-trip check reports as not
+surviving (\S\ref{sec:suite}), because its two cells are also the fraction
+$1/8$. The rule is sound for prose, and its single failure is counted in the
+fidelity figure rather than excluded from it.
 
 Dots 2-5-6, 2-3-5 and 2 resolve on word-final position; dots 2-5 resolves by
 look-ahead, since a ratio is followed by a fresh number sign and a fraction
 denominator is not.
 
-\subsection{One case that position cannot resolve}
+\subsection{One case position cannot resolve}
 \label{sec:irreducible}
 
 At the end of a word, dots 2-3-6 is either the letter \sd{ھ} or the question
@@ -238,21 +346,20 @@ $W$,
 \sdm{ھ} & \text{otherwise.}
 \end{cases}
 \]
-A human reader resolves this from the sense of the sentence. A machine, lacking
-that, uses the lexicon; where the lexicon is silent it falls back on the prior,
-final \sd{ھ} being far the commoner. We report this as a limitation and not as a
-solved problem.
+A human reader resolves this from the sense of the sentence. Lacking that, the
+software uses the lexicon, and where the lexicon is silent falls back on the
+prior, final \sd{ھ} being far the commoner. We report this as a limitation, not
+as a solved case.
 
-\subsection{Some rules need the whole sentence}
+\subsection{Rules with scope beyond the character}
 
-A cell-by-cell substitution gets Sindhi most of the way and then fails, because
-several rules are not local. A repeated word is written once with a doubling
-mark. A date is not a sequence of digits with separators but a construction of
-its own. A fraction places the numerator in upper digits and the denominator in
-lower ones, which are different cells for the same digits, so the reader must
-know which half of the fraction they are in. Each of these requires the
-translator to hold state across a span longer than one character, which is why
-the implementation is a transducer rather than a table.
+Cell-by-cell substitution handles much of Sindhi and then fails, because several
+rules are not local. A repeated word is written once and marked. A date is a
+construction rather than a sequence of digits with separators. A fraction places
+the numerator in upper digits and the denominator in lower ones, which are
+different cells for the same digits, so the translator must know which half of
+the fraction it is in. Each requires state across a span longer than one
+character, which is why the implementation is a transducer rather than a table.
 
 \section{The alphabet}
 
@@ -260,42 +367,104 @@ the implementation is a transducer rather than a table.
 
 \section{The cells that carry more than one reading}
 
-Table generated from the code tables, so that it cannot drift from them.
+Table~\ref{tab:ambiguity} is generated from the implemented tables, so it cannot
+drift from them.
 
 \AmbiguityTable
 
 \section{Implementation}
 
-Three implementations exist, deliberately.
+\begin{figure}[t]
+\centering
+\begin{LTR}
+\begin{tikzpicture}[
+   font=\small,
+   impl/.style={draw, rounded corners=3pt, align=center, inner sep=5pt,
+                minimum height=11mm, minimum width=32mm, fill=white},
+   ev/.style={draw, rounded corners=3pt, align=center, inner sep=5pt,
+              minimum height=11mm, minimum width=32mm, fill=black!5},
+   cons/.style={-{Latex[length=2mm]}, black!55, dashed},
+   corr/.style={-{Latex[length=2mm]}, black!80, very thick},
+   lab/.style={font=\scriptsize, inner sep=1.5pt, fill=white}]
+
+  % the three implementations, in a row
+  \node[impl] (py)  at (0,0)      {reference translator\\{\scriptsize Python}};
+  \node[impl] (js)  at (5.4,0)    {second engine\\{\scriptsize JavaScript}};
+  \node[impl] (lou) at (10.8,0)   {\texttt{liblouis} tables\\{\scriptsize g1-core, g1, g2}};
+
+  % the evidence, below
+  \node[ev] (book)  at (0,-2.6)   {the committee's\\printed guide};
+  \node[ev] (nb)    at (5.4,-2.6) {Arabic, Persian,\\Urdu tables};
+  \node[ev] (suite) at (10.8,-2.6){\texttt{liblouis}\\test suite};
+  \node[ev] (touch) at (5.4,-4.9) {a page embossed,\\and read by touch};
+
+  \draw[cons] (py) -- node[lab]{70 cases, live} (js);
+  \draw[cons] (js) -- node[lab]{same tables} (lou);
+  \draw[corr] (book) -- node[lab]{68 examples} (py);
+  \draw[corr] (nb)   -- node[lab]{94 of 99 letters} (js);
+  \draw[cons] (suite)-- node[lab]{99 tests} (lou);
+  \draw[corr] (touch) -- node[lab]{15 Aug 2026} (js);
+
+  \node[align=left, anchor=west, font=\scriptsize] at (-1.6,-6.3)
+   {\tikz{\draw[cons](0,0)--(0.7,0);}~~consistency: two things we built agreeing\\
+    \tikz{\draw[corr](0,0)--(0.7,0);}~~correctness: something we did not write};
+\end{tikzpicture}
+\end{LTR}
+\caption{The three implementations and what checks what. The arrows from the
+printed guide are the only ones that can establish correctness rather than
+consistency; the arrow to \emph{read by touch} is the only one that leaves the
+software entirely.}
+\label{fig:arch}
+\end{figure}
+
+Three implementations exist, deliberately (Figure~\ref{fig:arch}).
 
 \paragraph{The reference translator.} Python, both directions, Grade 1 and
-Grade 2. It is the definition in the sense that the other two are checked
+Grade 2. It is the definition, in the sense that the other two are checked
 against it.
 
 \paragraph{The \texttt{liblouis} tables.} A shared core
 (\texttt{sd-pk-g1-core.uti}) with a Grade 1 table (\texttt{sd-pk-g1.utb}) and a
 Grade 2 table (\texttt{sd-pk-g2.ctb}). Both compile without error under
-\texttt{liblouis} 3.29.0, and the accompanying suite passes 99 tests with 0
-failures. This is the artefact that lets a screen reader or an embosser use the
-code without knowing anything about this project.
+\texttt{liblouis} 3.29.0, and the accompanying test suite passes 99 tests with
+0 failures. This is the artefact that lets a screen reader or an embosser use
+the code without knowing anything about this project.
 
-\paragraph{The browser engine.} An independent implementation in JavaScript, so
-that a translator runs with nothing installed and nothing uploaded. Its purpose
-in the verification design is that it can disagree with the Python. It is
-checked against it on every case in the suite, and it has disagreed, which is
-the point.
+\paragraph{The second engine.} An independent implementation in JavaScript, so
+that a translator runs with nothing installed and no text leaving the machine.
+Its role in the verification design is that it can disagree with the reference
+implementation, and it has: the disagreements it exposed are described in
+\S\ref{sec:suite}.
+
+\begin{figure}[t]
+\centering
+\begin{LTR}
+\WorkedGroups
+\end{LTR}
+\smallskip
+
+{\small reads back as \WorkedBack{}}
+\caption{One sentence carried through: \WorkedSindhi{}. Four rules fire at once.
+The second group is the sign \sd{۾}, which has no cell of its own and is written
+out as the word it stands for. The third and fifth carry the number sign. The
+sixth is the equals sign closed up to the 17, which is how the guide sets every
+one of its worked sums (\S\ref{sec:arith}). The last cell of the last group is
+dots 2-3-6, which at the end of a word is either \sd{ھ} or \sd{؟} and is
+settled here only by the lexicon (\S\ref{sec:irreducible}).}
+\label{fig:worked}
+\end{figure}
 
 \subsection{Grade 2}
 
-Grade 2 is contracted braille, and it is what Sindhi braille books actually use.
-The implementation covers 237 contractions in six prefix series plus a set of
+Grade 2 is contracted braille, and it is what Sindhi braille books use. The
+implementation covers 237 contractions in six prefix series plus a set of
 abbreviations, and six \sd{ڳانڊڙا} groups written inside a word. The six prefix
-series are Louis Braille's seventh line, $\{4,5,6,45,46,56,456\}$, of which six
-of seven head a series here.
+series correspond to Louis Braille's seventh line, $\{4,5,6,45,46,56,456\}$, of
+which six of the seven head a series here.
 
-The material states the contractions but nowhere states \emph{when} a
+The source material states the contractions but nowhere states \emph{when} a
 contraction may be used. Placement rules are therefore not implemented, and we
-record that as an omission in the source rather than in our reading of it.
+record this as an omission in the source rather than in our reading of it.
 
 \section{Verification}
 
@@ -304,169 +473,308 @@ record that as an omission in the source rather than in our reading of it.
 Five levels, each catching what the others cannot.
 
 \begin{enumerate}
-\item \textbf{The software checks itself.} Round-trip fidelity, internal
+\item \textbf{The software against itself.} Round-trip fidelity, internal
       consistency, rebuild determinism.
 \item \textbf{The software against the printed standard.} Every worked example
       the guide prints, reproduced cell for cell.
-\item \textbf{The software against codes written by other people.} Arabic,
-      Persian and Urdu \texttt{liblouis} tables, none of which have any
-      authority over Sindhi but all of which share most of its letters.
-\item \textbf{A sighted check by the author of the code.} The second author
-      reading dot numbers.
-\item \textbf{A reading by touch, from embossed paper, cold.}
+\item \textbf{The software against codes written by other people.} The Arabic,
+      Persian and Urdu \texttt{liblouis} tables, none of which have authority
+      over Sindhi but all of which share most of its letters.
+\item \textbf{A sighted check by an author of the code}, reading dot numbers.
+\item \textbf{A reading by touch, from embossed paper, without prior sight of
+      the text.}
 \end{enumerate}
 
-Levels 1 to 3 can be run by anyone in minutes. Level 5 is the only one that
-settles anything, and it consumes a person's time and goodwill, which is why the
-earlier levels exist.
+Levels 1 to 3 are automated and run in minutes. Level 5 is the only one whose
+evidence comes from outside the software, and it consumes a reader's time, which
+is why the cheaper levels exist: a fault the suite can catch should not be
+spending a person's afternoon.
 
 \subsection{What the suite reports}
 \label{sec:suite}
 
+\begin{table}[htbp]
+\centering
 \VerificationTable
+\caption{The verification suite, as run. \texttt{skip} is not \texttt{pass}:
+where \texttt{liblouis} is not installed the suite says so and reports it
+separately.}
+\label{tab:suite}
+\end{table}
 
-\NChecksPassed{} of \NChecks{} pass on a machine without \texttt{liblouis}
-installed; with it, all \NChecks{} pass. Two figures deserve comment.
+\NChecksPassed{} of \NChecks{} checks pass on a machine without
+\texttt{liblouis} installed; on one with it, all \NChecks{} pass. Two figures
+deserve comment.
 
-\paragraph{Round-trip fidelity.} For a corpus of word types $w$ with frequencies
-$f(w)$,
+\paragraph{Round-trip fidelity.} For a corpus of word types $w$ with
+frequencies $f(w)$,
 \[
 \rho = \frac{\sum_{w} f(w)\,[\,T^{-1}(T(w)) = w\,]}{\sum_{w} f(w)}.
 \]
 Measured over 23{,}432 tokens (2{,}702 types) drawn from the committee's own
 publications, $\rho = 0.9994$. The residue is four spellings, of which the
-principal one is an abbreviation whose reading provably requires sentence
-context.
+principal one is an abbreviation whose reading requires sentence context.
 
 \paragraph{Grade 2.} 238 of 243 contractions survive both directions. The five
-that do not are cells the book itself assigns to two different words. They are a
-property of the code, not a defect of the implementation, and we report them as
-such.
+that do not are cells the source assigns to two different words. They are a
+property of the code rather than a defect of the implementation.
+
+\paragraph{What the second engine caught.} Requiring two implementations to
+agree is only useful if disagreement is possible and is acted on. Two of the
+faults reported in \S\ref{sec:reading} were found this way: the two engines
+were carrying different word lists, and the download width defaulted
+differently in the two. Both were invisible to any check that consulted a single
+implementation.
 
 \subsection{Corroboration from unrelated codes}
+\label{sec:neighbours}
 
 Sindhi shares most of its letters with Arabic, Persian and Urdu, whose
 \texttt{liblouis} tables were written by other people, for other languages,
-years before this project. Where three unrelated codes independently place a
-letter in the cell we place it, a transcription slip on our part is unlikely.
+before this project. Where three unrelated codes independently place a letter in
+the cell we place it, a transcription error on our part is unlikely.
 
-Of 99 shared letters, 94 agree. Every one of the five disagreements has a reason
-visible in the alphabet. Arabic gives \sd{پ}, \sd{چ} and \sd{گ} the cells that
+Of 99 shared letters, 94 agree. Each of the five disagreements has a reason
+visible in the alphabet. Arabic assigns \sd{پ}, \sd{چ} and \sd{گ} the cells
 Sindhi has already spent on \sd{ب}, \sd{ج} and \sd{ڪ}; Arabic has no \sd{ڪ} and
-treats the other three as borrowings, while Sindhi treats them as native.
+treats the other three as borrowings, whereas Sindhi treats them as native.
 Persian and Urdu write \sd{ک} as dots 1-3, which in Sindhi is \sd{ڪ}, a letter
-neither language has; Sindhi therefore cannot reuse the cell and marks its second
-$k$ by adding \sd{ھ}, giving two cells.
+neither language has; Sindhi cannot reuse the cell and marks its second $k$ by
+adding \sd{ھ}, giving two cells (Figure~\ref{fig:cell}).
 
-That last disagreement is worth dwelling on, because \sd{ک} is the one letter
-this project got wrong. The printed guide's dots appeared on four pages to show a
-single cell. The second author's own chart and his printed Grade 2 book both give
-two. We followed the books, and Persian and Urdu braille, which neither of us
-wrote, corroborate them. The second author confirmed it directly on 15 August
-2026. The printed guide's dots on those pages are a typesetting fault, not a
-rule.
+This last case is where our implementation was once wrong. The printed guide's
+dots appeared on four pages to show a single cell. The second author's chart and
+his printed Grade 2 book both give two. We followed the books; Persian and Urdu
+braille, written by neither of us, corroborate them; and the second author
+confirmed it directly on 15 August 2026. We conclude that the dots printed on
+those four pages are a typesetting fault rather than a rule.
+
+\subsection{A spacing rule the checks could not see}
+\label{sec:arith}
+
+The suite compared cells. It did not compare where the spaces fall, and the
+distinction cost us a rule.
+
+The guide prints five worked sums. Reading them for their typography rather
+than their cells: every one of its six equals signs is set closed up to the
+number that follows, with a space before it, and never with a space after. Our
+software wrote a space on both sides. The check that should have caught this
+recorded the expected grouping from our own output rather than from the page,
+and since the file writer puts exactly one space between groups, the grouping
+\emph{is} the spacing. The expectation and the implementation agreed with each
+other and neither agreed with the book.
+
+The second author had told us the rule on 15 August 2026, in his own words and
+before any of this was checked: a sign takes a space before it and none after.
+We recorded it as an open question because we believed the guide contradicted
+him. The guide does not contradict him; we had misread it.
+
+Both engines now close a comparison sign up to the number after it, and four of
+the five printed sums reproduce exactly. The fifth does not, and we have not
+made it: the guide closes \texttt{+} up to the 9 but spaces \texttt{$-$},
+\texttt{$\times$} and \texttt{$\div$}, so on operation signs it is one against
+three with itself. We follow the three, record the one we fail in the suite
+rather than deleting it, and leave the question for the reader who can settle
+it.
+
+Two things generalise from this. A check that compares only the units of a
+notation cannot see rules about the space between them, and a stored
+expectation regenerated from the implementation it is meant to check is not a
+check at all. The second was true elsewhere in this project too: the
+cross-check between the two engines compared the browser against a file of
+answers the Python had produced on some earlier date, so the two could drift
+without the check noticing, and they had. It now computes the reference answers
+on every run.
 
 \subsection{The reading}
+\label{sec:reading}
 
 On 15 August 2026 the second author was given an embossed page produced by this
-software: a passage of Sindhi news prose he had not seen, six sentences, carrying
-proper nouns, digits, foreign names and a comma-heavy structure. He read it
-through by touch. No corrections, no hesitation, nothing skipped.
+software: a passage of Sindhi news prose he had not previously seen, six
+sentences, containing proper nouns, digits, foreign names and a comma-heavy
+structure. He read it through by touch, without correction and without omission.
 
-This is the only check in the project that comes from outside it. Everything else
-is one implementation checking another, or a machine checking a book.
+This is the only check in the project that originates outside it. Every other is
+one implementation checking another, or software checking a book.
 
 It establishes that the code as this software writes it is readable as Sindhi
-across ordinary running prose. It does not establish that every rule is right. It
-was one reader and one page, and the passage carried no verse, no arithmetic and
-no contractions.
+across ordinary running prose. It does not establish that every rule is correct.
+It was one reader and one page, and the passage contained no verse, no
+arithmetic and no contractions.
 
 \subsubsection{What the reading found}
 
-Six observations came out of it. Two were settled on the spot, two are
-implemented, two remain open.
+Six observations followed. Two were settled at once, two are implemented, two
+remain open.
 
-The most useful was not about the code at all. Words were being split across
-lines on the embossed page. The cause was that the file was written at 40 cells
-per line, the international braille-paper width, and the page was A4, which fits
-28. The embosser received lines longer than the paper and broke them itself, and
-a machine breaking a line does not know where a word ends. \textbf{A braille file
-has to be written at the width of the machine that will emboss it; there is no
-such thing as a width-neutral braille file.} We record this because it is exactly
-the class of error that no amount of self-consistency checking can catch, and it
-was found in ten seconds by a person with the paper in his hands.
+The most consequential was not about the code. Words were being split across
+lines on the embossed page. The file had been produced by the browser engine,
+whose download defaulted to 40 cells per line, the international braille-paper
+width; the page was A4, which fits 28. The embosser received lines longer than
+the paper and broke them itself, at positions bearing no relation to word
+boundaries. A braille file has to be written at the width of the machine that
+will emboss it.
 
-He also ruled on a question software cannot answer. Sindhi \sd{ک} and Urdu
-\sd{ک} are one Unicode character, worth two cells in Sindhi and one in Urdu.
-Asked whether a borrowed Urdu word should be written the Urdu way, he ruled that
-it should not: a Sindhi reader reads that letter the same way whichever language
-the word came from. One script, one value per letter, and the software never
-branches on the language of a word. The alternative would have required inferring
-a word's language in order to choose a cell, which software cannot do reliably.
+We report this because it is a class of error the verification design as it then
+stood could not reach. Every automated check in it operates on cells: which cell
+a mark becomes, and whether the cells translate back. The file was correct at
+that level and unreadable on paper, because the fault was in page geometry,
+which no cell-level check inspects. It also shows the cost of a default that
+differs between two implementations of the same specification: the round-trip
+checks compared cells and never compared page width, so the divergence survived
+every level below the fifth.
 
-\section{Where the printed standard contradicts itself}
+The second author also ruled on a question software cannot decide. Sindhi
+\sd{ک} and Urdu \sd{ک} are one Unicode character (U+06A9), worth two cells in
+Sindhi and one in Urdu, and nothing in a text records which language a borrowed
+word came from. He ruled that no distinction should be made: a Sindhi reader
+reads that letter the same way whichever language the word came from. The code
+is therefore one script with one value per letter, and the software does not
+branch on the language of a word. The alternative would have required inferring
+a word's source language in order to select a cell.
+
+\section{Where the printed standard is inconsistent}
 \label{sec:contradictions}
 
-Four points. None is ours to resolve; all are matters for the Sindhi Language
-Authority. We report them because an implementation forces them into the open and
-silence would make our choice look like the standard's.
+Four points, none of which is ours to resolve; all are matters for the Sindhi
+Language Authority. We report them because an implementation forces a choice,
+and silence would present our choice as the standard's.
 
 \paragraph{Fractions.} Pages 52 and 53 state the rule twice and work nine
-examples: numerator in upper digits, denominator in lower digits, no bar, and the
-numerator dropped when it is 1. Page 50 instead writes fractions with a slash
-cell between two upper digits, and states no rule. We implement the pp.\ 52--53
-rule.
+examples: numerator in upper digits, denominator in lower digits, no bar, and
+the numerator omitted when it is 1. Page 50 instead writes fractions with a
+slash cell between two upper digits, and states no rule. We implement the
+pp.\ 52--53 rule.
 
 \paragraph{Brackets.} Page 32 gives one set of bracket cells for prose. Page 53
-gives an entirely different set for arithmetic, and prints the open square
-bracket with the same cell as the open round bracket, which must be a slip. Prose
-and arithmetic may legitimately differ; the slip is separate.
+gives a different set for arithmetic, and prints the open square bracket with
+the same cell as the open round bracket, which appears to be an error. Prose and
+arithmetic may legitimately differ; the apparent error is a separate matter.
 
 \paragraph{One cell, two signs.} Page 31 prints dot 6 for both \sd{شد} and
 \sd{بہ زبرون}.
 
-\paragraph{Multiplication and the foreign-word mark.} Both are dots 5-6 followed
-by dots 2-3-6, on pages 49 and 46 respectively. Our translator separates them by
-spacing, since the foreign mark is attached to its word and a bare two-cell
-sequence between two numbers is therefore multiplication. That rule works on
-everything we have, but it is ours and not the standard's.
+\paragraph{Multiplication and the foreign-word mark.} Both are dots 5-6
+followed by dots 2-3-6, on pages 49 and 46 respectively. Our translator
+separates them by spacing, since the foreign mark is written attached to its
+word and a bare two-cell sequence between two numbers is therefore
+multiplication. That rule is ours and not the standard's.
 
 \section{Limitations}
+\label{sec:limitations}
 
 \paragraph{One reader.} Every confirmation in this project traces to one person,
 who is also an author of the code and of this paper. That is a strength for
 authority and a weakness for independence. A second Sindhi braille reader, at a
-different school, reading our sheets cold, is the most valuable missing evidence.
+different school, reading the test sheets without prior sight of them, is the
+most valuable evidence we do not have.
 
-\paragraph{No external corpus of braille.} Both of our implementations were
-written by the same person from the same documents, so their agreement proves
-consistency and not correctness. A body of Sindhi braille produced by somebody
-else, as a file, would break that circle. We have not obtained one.
+\paragraph{No externally produced braille.} Both of our implementations were
+written by one person from the same documents, so their agreement establishes
+consistency and not correctness. A body of Sindhi braille produced elsewhere, as
+an electronic file, would break that circle. We have not obtained one.
 
-\paragraph{Parts of the guide unseen.} We have not seen the guide's own alphabet
-table or its final pages, and cannot say what is on them.
+\paragraph{Parts of the guide unseen.} We have not seen the guide's own
+alphabet table or its final pages and cannot say what they contain.
 
-\paragraph{Grade 2 placement.} Implemented as a set of contractions, not as a
+\paragraph{Grade 2 placement.} Implemented as a set of contractions and not as a
 policy for when to contract, because the source states the former and not the
 latter.
 
-\paragraph{Points still being settled.} Four questions are with the second
-author on an embossed decision sheet: the spacing of arithmetic, the position of
-the shadda in \sd{الله}, the treatment of a line-end in verse, and the reading of
-\sd{۽}. Nothing has been changed in the software in anticipation of his answers.
+\paragraph{Not yet upstream.} The \texttt{liblouis} tables reported here
+compile and pass their suite, but they have not been submitted to the
+\texttt{liblouis} project. Until they are, a user of a stock installation still
+reaches \texttt{sd.tbl}. Submission, and the question of whether the existing
+\texttt{sd} entry should be renamed to reflect the script it serves, are matters
+for the maintainers and for the two communities concerned.
+
+\paragraph{Questions still open.} Three questions are with the second author on
+an embossed decision sheet: whether operation signs close up as the guide's
+addition example does or take a space as its other three do
+(\S\ref{sec:arith}), a distinction the current international code also draws
+between operation and comparison signs \cite[\S11.2]{iceb2024}; the position of
+the shadda in \sd{الله}; and the treatment of a line-end in verse. Nothing has
+been changed in anticipation of the answers.
 
 \section{Availability}
 
 The implementation, the tables, the verification suite and the specification in
 English and Sindhi are public under the MIT licence. The braille code itself is
-the committee's work and is not licensed by us. Every figure in this paper is
-generated from the code tables by the script that builds it, so the paper cannot
-report a number the software does not produce.
+the committee's work and is not licensed by us. Every table and figure of data
+in this paper is generated by the script that builds it, from the modules the
+software runs on, so the paper cannot report a figure the implementation does
+not produce.
 
 \section*{Acknowledgements}
 
-We thank \textbf{Mansoor Ali Kori}, who works alongside the second author on the
-composing and has been part of the meetings throughout, and the members of the
-2016 committee, whose code this is.
+We thank \textbf{Mansoor Ali Kori}, who works with the second author on
+composing and has taken part in the meetings throughout, and the members of the
+2016 committee, whose code this implements.
+
+\begin{thebibliography}{9}
+
+\bibitem{akram2020}
+Iqra Akram, Muhammad Shahab Siddiqui, and Zazilah May.
+\newblock Urdu Braille Editor.
+\newblock \emph{University of Sindh Journal of Information and Communication
+Technology}, 4(3):159--164, 2020.
+
+\bibitem{egli2009}
+Christian Egli.
+\newblock \emph{Liblouis: a universal solution for Braille transcription
+services}.
+\newblock 2009.
+\newblock \url{https://liblouis.io/presentations/liblouisPaper.pdf}
+
+\bibitem{iceb2024}
+International Council on English Braille.
+\newblock \emph{The Rules of Unified English Braille}, third edition.
+\newblock Edited by Matthew Horspool, 2024.
+\newblock \url{https://iceb.org/}
+
+\bibitem{iqbal2017}
+Muhammad Zahid Iqbal, Suleman Shahid, and Mustafa Naseem.
+\newblock Interactive Urdu Braille learning system for parents of visually
+impaired students.
+\newblock In \emph{Proceedings of the 19th International ACM SIGACCESS
+Conference on Computers and Accessibility (ASSETS '17)}, pages 327--328. ACM,
+2017.
+\newblock \url{https://doi.org/10.1145/3132525.3134809}
+
+\bibitem{liblouis}
+Liblouis: an open-source braille translator and back-translator.
+\newblock Software, version 3.29.0.
+\newblock \url{https://liblouis.io/}
+
+\bibitem{memon-g2}
+Riaz Hussain Memon.
+\newblock \emph{Sindhi Braille, Grade II} [\sd{سنڌي بريل درجو} II].
+\newblock Teaching manuscript supplied by the author.
+\newblock \textsc{[verify the title exactly as printed on the cover before
+submission]}
+
+\bibitem{pbs2023}
+Pakistan Bureau of Statistics.
+\newblock \emph{7th Population and Housing Census, 2023}: population by mother
+tongue.
+\newblock Government of Pakistan, 2023.
+\newblock \textsc{[verify the table number and the exact figure against the
+published census tables before submission]}
+
+\bibitem{guide2016}
+Sindhi Language Authority.
+\newblock \emph{Standard Sindhi Braille Guide}
+[\sd{معياري سنڌي بريل رهبر}].
+\newblock Hyderabad, Sindh, 2016.
+\newblock \textsc{[verify the imprint, place and year against the printed
+copy before submission]}
+
+\bibitem{wbu2013}
+\emph{World Braille Usage}, third edition.
+\newblock Perkins, International Council on English Braille, and National
+Library Service for the Blind and Physically Handicapped, Library of Congress,
+Washington, D.C., 2013.
+
+\end{thebibliography}
 
 \end{document}

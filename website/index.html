@@ -1372,6 +1372,24 @@ function abbreviate(words) {
   return out;
 }
 
+/* A comparison sign takes a space before it and none after. The guide prints
+   this six times out of six in its worked sums, and Riaz Hussain Memon said the
+   same independently on 15 August 2026. Both engines wrote a space on both
+   sides until August 2026; the check that should have caught it recorded the
+   grouping from our own output rather than from the page. */
+function closeComparison(toks) {
+  const eq = T.MATH['='];
+  const same = (a, b) => a.length === b.length && a.every((x, i) => x === b[i]);
+  const out = [];
+  for (let i = 0; i < toks.length; i++) {
+    if (same(toks[i], eq) && i + 1 < toks.length) {
+      out.push(toks[i].concat(toks[i + 1])); i++; continue;
+    }
+    out.push(toks[i]);
+  }
+  return out;
+}
+
 function mergeForeign(toks) {
   const fo = T.FOREIGN_OPEN, fc = T.FOREIGN_CLOSE;
   const isf = t => t.length > 4 &&
@@ -1462,6 +1480,7 @@ function translate(text, opts) {
       toks[toks.length - 1] = toks[toks.length - 1].concat([T.POETRY[0]]);
     } else if (poetry) stanzaOpen = false;
 
+    if (arith) toks = closeComparison(toks);
     lines.push(mergeForeign(toks));
   }
   if (poetry)                                   // a full stop closes the stanza
