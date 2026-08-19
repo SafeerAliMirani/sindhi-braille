@@ -186,12 +186,24 @@ c=3456 \;\longmapsto\;
 \end{cases}
 $$
 
-This rule is only sound if no Sindhi word begins with ڻ. **We tested that
-claim rather than assuming it**: over 21,445 word tokens of the committee's own
-publications, the count of word-initial ڻ is
+This rule is only sound if no ordinary Sindhi word begins with ڻ. **We tested
+that claim rather than assuming it**, and the honest result is not zero. Over
+23,432 word tokens of the committee's own publications:
 
-$$N_{\text{initial}}(\text{ڻ}) = 0,
-\qquad N_{\text{medial/final}}(\text{ڻ}) = 619 .$$
+$$N_{\text{initial}}(\text{ڻ}) = 18,
+\qquad N_{\text{medial/final}}(\text{ڻ}) = 604 .$$
+
+Seventeen of those eighteen are the **bare letter standing alone**, which is
+what a book about the alphabet contains and not what running prose does. The
+eighteenth is the aspirate **ڻھ**, and that one is already accounted for: its
+two cells are also the fraction 1/8, which is why ڻھ is one of the four
+spellings `check_all.py` reports as not surviving the round trip. The rule is
+sound for prose and its single exception is counted in the fidelity figure
+rather than hidden behind it.
+
+*(An earlier version of this document gave 0 initial and 619 elsewhere over
+21,445 tokens. That was measured before the word list was corrected for the ۾
+and ۽ signs; the figures above are from the current list.)*
 
 Similarly $256$, $235$ and $2$ resolve by word-final position, and $25$ resolves
 by look-ahead (a ratio is followed by a fresh number sign; a fraction denominator

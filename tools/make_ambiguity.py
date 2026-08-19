@@ -67,7 +67,14 @@ def pair(text, kind):
             sd if kind == 'sign' else '%s (%s)' % (sd, KIND[kind])]
 
 
-def readings():
+def all_readings():
+    """Every single-cell assignment the code makes, including the cells that
+    carry only one. The paper counts meanings from this, so the count and the
+    table of shared cells are the same universe rather than two."""
+    return _use()
+
+
+def _use():
     use = collections.defaultdict(list)
 
     def put(cell, text):
@@ -89,6 +96,11 @@ def readings():
         v = getattr(sb, name, None)
         if isinstance(v, list) and len(set(v)) == 1: put(v[0], pair(label, 'sign'))
 
+    return use
+
+
+def readings():
+    use = _use()
     return {c: v for c, v in use.items() if len(v) > 1}
 
 
