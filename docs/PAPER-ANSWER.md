@@ -22,6 +22,36 @@ the height:
 Five more lines on every page, and no offcut. Over a book that is roughly one
 page in six saved, on paper they had already bought.
 
+**This is a suggestion, not a correction.** There may be a reason they cut 12:
+an existing binding size, a folder or shelf it has to fit, or simply what the
+cutter is set to. Riaz and the press know that and I do not. The point is only
+that 14 costs nothing at the machine and saves the strip, so it is worth asking
+the question before the next batch is cut.
+
+---
+
+### It fits the machine, which I checked rather than assumed
+
+The Everest-D V5 takes cut sheets of **130 to 297 mm wide** and **120 to 590 mm
+long**. Both cuts are inside that:
+
+| cut | as the machine sees it | in spec? |
+|---|---|---|
+| 11 × 12 in | 279 mm wide × 305 mm long | yes |
+| **11 × 14 in** | **279 mm wide × 356 mm long** | **yes** |
+
+So changing from 12 to 14 costs nothing at the machine. It is the same width
+being fed, only a longer sheet, and 356 mm is well inside the 590 mm the feeder
+takes.
+
+It also confirms 11 inches is the right way round. Cutting the sheet the other
+way would give pieces 14 inches wide, and 14 in is 356 mm, which is over the
+297 mm the machine can accept. The 22 inch dimension has to be the one that is
+halved.
+
+**This assumes the press's machine is the Everest-D V5.** If it is a different
+model, send me the name and I will check its limits before anyone cuts anything.
+
 ---
 
 ## 2. The numbers at 11 inches wide
