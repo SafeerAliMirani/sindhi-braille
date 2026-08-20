@@ -139,27 +139,49 @@ def counts():
 
 
 def histogram():
-    """How many meanings each cell carries. Same universe as the shared-cell
-    table, so the picture and the table cannot disagree."""
+    """How many meanings each cell carries.
+
+    The point of the picture is the tail. The cells on the right are the ones
+    where back-translation cannot be a lookup, so they are shaded apart and
+    braced: that shape is the difficulty of the code in one glance."""
     import collections
     use = amb.all_readings()
     c = collections.Counter(len(v) for v in use.values())
-    mx = max(c.values())
-    bars = []
+    total_cells = sum(c.values())
+    total_meanings = sum(k * v for k, v in c.items())
+    hard = sum(v for k, v in c.items() if k >= 3)
+    mx, top = max(c.values()), max(c)
+    H = 40.0                                   # bar height in mm at full scale
+
+    L = [r'\newcommand{\ReadingsHistogram}{%',
+         r'\begin{tikzpicture}[x=15mm, y=1mm, font=\small]']
+    for g in range(0, mx + 1, 10):
+        y = H * g / mx
+        L.append(r'\draw[black!12] (0.55,%.2f) -- (%.2f,%.2f);' % (y, top + 0.45, y))
+        L.append(r'\node[font=\scriptsize, black!45, anchor=east] at (0.52,%.2f) {%d};'
+                 % (y, g))
     for k in sorted(c):
-        h = 3.4 * c[k] / mx
-        bars.append(r'\draw[fill=black!72, draw=none] (%d-0.32,0) rectangle (%d+0.32,%.3f);'
-                    % (k, k, h))
-        bars.append(r'\node[font=\scriptsize, anchor=south] at (%d,%.3f) {%d};'
-                    % (k, h, c[k]))
-    lines = [r'\newcommand{\ReadingsHistogram}{%',
-             r'\begin{tikzpicture}[x=13mm, y=9mm]',
-             r'\draw[black!40] (0.4,0) -- (%.1f,0);' % (max(c) + 0.6)] + bars + [
-             r'\foreach \k in {1,...,%d}{\node[font=\small, anchor=north] at (\k,-0.08) {\k};}' % max(c),
-             r'\node[font=\small, anchor=north] at (%.1f,-0.75) {meanings carried by one cell};' % ((1 + max(c)) / 2.0),
-             r'\node[font=\small, rotate=90, anchor=south] at (0.25,1.7) {cells};',
-             r'\end{tikzpicture}}']
-    return '\n'.join(lines)
+        h = H * c[k] / mx
+        shade = 'black!78' if k < 3 else 'black!42'
+        L.append(r'\draw[fill=%s, draw=none] (%d-0.28,0) rectangle (%d+0.28,%.2f);'
+                 % (shade, k, k, h))
+        L.append(r'\node[font=\small, anchor=south] at (%d,%.2f) {%d};' % (k, h, c[k]))
+        L.append(r'\node[anchor=north] at (%d,-1) {%d};' % (k, k))
+    L.append(r'\draw[black!45] (0.55,0) -- (%.2f,0);' % (top + 0.45))
+    L.append(r'\draw[decorate, decoration={brace, amplitude=4pt, raise=2pt}, black!55]'
+             r' (%d+0.30,%.2f) -- (2.70,%.2f);' % (top, H * 0.32, H * 0.32))
+    L.append(r'\node[font=\footnotesize, black!55, align=center, anchor=south, fill=white, inner sep=2pt]'
+             r' at (%.2f,%.2f) {%d cells where position, or the lexicon,\\ has to decide};'
+             % ((top + 3.0) / 2.0, H * 0.32 + 3, hard))
+    L.append(r'\node[anchor=north] at (%.2f,-7) {meanings carried by one cell};'
+             % ((1 + top) / 2.0))
+    L.append(r'\node[rotate=90, anchor=south, font=\small] at (0.16,%.2f) {cells};'
+             % (H / 2))
+    L.append(r'\node[anchor=north west, font=\footnotesize, black!55]'
+             r' at (0.55,-12) {%d meanings across %d cells};'
+             % (total_meanings, total_cells))
+    L.append(r'\end{tikzpicture}}')
+    return '\n'.join(L)
 
 
 def worked():

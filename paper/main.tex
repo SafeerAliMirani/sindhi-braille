@@ -20,7 +20,7 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{xcolor}
 \usepackage{caption}
-\usetikzlibrary{positioning, arrows.meta}
+\usetikzlibrary{positioning, arrows.meta, calc, decorations.pathreplacing}
 
 % ---- the Sindhi face -------------------------------------------------
 % Substitute Scheherazade New or Amiri if Noto Naskh Arabic is unavailable.
@@ -38,6 +38,30 @@
       \pgfmathsetmacro{\cx}{\d > 3 ? 1 : 0}%
       \pgfmathsetmacro{\cy}{2 - int(mod(\d - 1, 3))}%
       \fill (\cx,\cy) circle (0.44);}
+  \end{tikzpicture}%
+}
+
+% A cell drawn large, for Figure 1 only: the key and the examples have to be
+% the same object at the same size or the numbering teaches nothing.
+\newcommand{\bcellbig}[1]{%
+  \begin{tikzpicture}[baseline=(c.base), x=6.4mm, y=6.4mm]
+    \node (c) at (0.5,-0.9) {\vphantom{X}};
+    \foreach \x/\y in {0/2, 0/1, 0/0, 1/2, 1/1, 1/0}
+      {\fill[black!15] (\x,\y) circle (0.17);}
+    \foreach \d in {#1}{%
+      \pgfmathsetmacro{\cx}{\d > 3 ? 1 : 0}%
+      \pgfmathsetmacro{\cy}{2 - int(mod(\d - 1, 3))}%
+      \fill (\cx,\cy) circle (0.38);}
+  \end{tikzpicture}%
+}
+% the same cell with its positions numbered inside
+\newcommand{\bcellkey}{%
+  \begin{tikzpicture}[baseline=(c.base), x=6.4mm, y=6.4mm]
+    \node (c) at (0.5,-0.9) {\vphantom{X}};
+    \foreach \d/\x/\y in {1/0/2, 2/0/1, 3/0/0, 4/1/2, 5/1/1, 6/1/0} {
+      \draw[black!45, line width=0.3pt] (\x,\y) circle (0.38);
+      \node[font=\scriptsize, inner sep=0pt] at (\x,\y) {\d};
+    }
   \end{tikzpicture}%
 }
 
@@ -237,21 +261,26 @@ nothing: where the printed material is ambiguous or inconsistent we report it in
 \centering
 \begin{LTR}
 \begin{tikzpicture}[
-    lbl/.style={font=\small, align=center, text width=38mm, anchor=north}]
-  % the six positions, numbered
-  \begin{scope}[x=7mm, y=7mm]
-    \foreach \d/\x/\y in {1/0/2, 2/0/1, 3/0/0, 4/1/2, 5/1/1, 6/1/0} {
-      \draw[black!35] (\x,\y) circle (0.30);
-      \node[font=\small] at (\x,\y) {\d};
-    }
-  \end{scope}
-  \node[lbl] at (0.35,-0.75) {the six positions\\and their numbers};
-  % one cell
-  \node at (5.4,0.7) {\Large\bcell{1,3}};
-  \node[lbl] at (5.4,-0.75) {dots 1-3\\the letter \sd{ڪ}};
-  % two cells
-  \node at (10.4,0.7) {\Large\bcell{1,3}\,\Large\bcell{2,3,6}};
-  \node[lbl] at (10.4,-0.75) {dots 1-3 then 2-3-6\\the letter \sd{ک}};
+    every node/.style={inner sep=0pt},
+    fcapt/.style={font=\small, align=center, anchor=north},
+    fsub/.style={font=\scriptsize\ttfamily, anchor=north, black!60}]
+
+  % the key
+  \node (key) at (0,0) {\bcellkey};
+  \node[fcapt] at (key.south) [yshift=-1mm] {the six positions\\and their numbers};
+
+  % one cell: the letter ڪ
+  \node (k1) at (4.2,0) {\bcellbig{1,3}};
+  \node[fsub] at (k1.south) [yshift=-1mm] {1-3};
+  \node[fcapt] at (k1.south) [yshift=-6mm] {one cell\\the letter \sd{ڪ}};
+
+  % two cells: the letter ک. They must be seen to be two.
+  \node (a1) at (8.0,0) {\bcellbig{1,3}};
+  \node (a2) at (10.0,0) {\bcellbig{2,3,6}};
+  \node[fsub] at (a1.south) [yshift=-1mm] {1-3};
+  \node[fsub] at (a2.south) [yshift=-1mm] {2-3-6};
+  \node[fcapt] at ($(a1.south)!0.5!(a2.south)$) [yshift=-6mm]
+    {two cells, read as one letter\\the letter \sd{ک}};
 \end{tikzpicture}
 \end{LTR}
 \caption{The braille cell and its dot numbering, and the two-cell letter
