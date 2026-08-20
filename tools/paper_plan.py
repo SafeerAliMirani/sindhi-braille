@@ -32,15 +32,26 @@ EDGE_X   = 8.0      # mm, unprintable, each side
 EDGE_Y   = 10.0     # mm, unprintable, top and bottom
 
 
-def fits(width_mm, height_mm, bind_mm=0.0):
-    usable_w = width_mm - 2 * EDGE_X - bind_mm
+IN = 25.4
+
+
+def fits(width_mm, height_mm, bind_cells=0):
+    """Riaz asks for the binding margin in cells, not millimetres, which is the
+    right unit: it is a whole number of cells the press simply does not use."""
+    usable_w = width_mm - 2 * EDGE_X
     usable_h = height_mm - 2 * EDGE_Y
-    cells = int(usable_w // CELL_W)
+    cells = int(usable_w // CELL_W) - bind_cells
     lines = int(usable_h // LINE_H)
     return max(cells, 0), max(lines, 0)
 
 
+def inches(w_in, h_in, bind_cells=0):
+    return fits(w_in * IN, h_in * IN, bind_cells)
+
+
 SIZES = [
+    ('11 x 12 in, their cut  ', 11 * 25.4, 12 * 25.4),
+    ('11 x 14 in, true quarter', 11 * 25.4, 14 * 25.4),
     ('A4                     ', 210, 297),
     ('A5 (half of A4)        ', 148, 210),
     ('Letter                 ', 216, 279),
@@ -53,9 +64,9 @@ SIZES = [
 ]
 
 
-def table(binds=(0, 10, 12, 15, 20)):
-    head = 'paper                    size mm   ' + '  '.join(
-        'bind %2d' % b for b in binds)
+def table(binds=(0, 3, 4, 5)):
+    head = 'paper                     size mm   ' + '  '.join(
+        'bind %d cell%s' % (b, ' ' if b == 1 else 's') for b in binds)
     print(head)
     print('-' * len(head))
     for name, w, h in SIZES:
@@ -63,25 +74,25 @@ def table(binds=(0, 10, 12, 15, 20)):
         for b in binds:
             c, l = fits(w, h, b)
             cols.append('%2d x %2d' % (c, l))
-        print('%s %3d x %3d  %s' % (name, w, h, '  '.join(cols)))
+        print('%s %3.0f x %3.0f  %s' % (name, w, h, '   '.join(cols)))
     print()
     print('each cell is "cells per line x lines per page".')
     print()
-    c40, l40 = fits(279, 356, 12)
-    print('The line worth noticing is the quarter chart sheet. A 22 x 28 inch')
-    print('chart sheet cut in four gives 279 x 356 mm, which holds %d cells and'
-          % c40)
-    print('%d lines even after a 12 mm binding margin. %d cells is the' % (l40, c40))
-    print('international braille page width, so cutting to quarters gives a')
-    print('standard page on paper the press can actually buy, where cutting to')
-    print('A4 throws away twelve cells on every line.')
+    c, l = inches(11, 14, 4)
+    print('THE SHEET IS 22 x 28 INCHES. Two across and two down is 11 x 14 in,')
+    print('with nothing left over. That is the same width as the 11 x 12 they')
+    print('cut now, so no line gets shorter, and it is %d lines instead of %d,'
+          % (l, inches(11, 12, 4)[1]))
+    print('with no offcut strip to throw away.')
     print()
-    print('A4 is listed as %d cells here because that is what the paper allows.'
-          % fits(210, 297, 12)[0])
-    print('The embosser has its own margins on top of the paper\'s, and 28 is')
-    print('what actually printed on the machine in August 2026. Set the machine')
-    print('to the smaller of the two numbers, and prove it on one sheet before')
-    print('printing a hundred.')
+    print('At 11 inches wide with a %d-cell binding margin: %d cells per line.'
+          % (4, c))
+    print()
+    print('These numbers assume the machine cannot emboss within %.0f mm of the'
+          % EDGE_X)
+    print('paper edge, which is an assumption and not a measurement. Emboss')
+    print('test-sheets/print-0-ruler.brf once on the cut paper and read the')
+    print('answer off the page instead.')
 
 
 if __name__ == '__main__':
