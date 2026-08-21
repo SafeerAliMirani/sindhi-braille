@@ -63,14 +63,22 @@ Page A of each lesson teaches four letters: the letter large in print, its cells
 embossed, and one word for each. Page B is words and one sentence, using **only
 letters already taught**.
 
+> **Caveat, 21 August 2026.** The letter order below is greedy against
+> `tools/sindhi_words.txt`, and that list still carries 262 words in both the ه
+> and ھ spelling because one body of text was counted twice under two
+> conventions. Lessons 1 and 3 have been swapped by hand so that ه, the ordinary
+> he the guide prints as 1-2-5, is taught first and ھ, which occurs only in the
+> aspirate digraphs, comes later. The rest of the order should be re-derived once
+> sheet 7 comes back and the list can be merged.
+
 | lesson | pages | letters | cells | words (draft, to check) |
 |---|---|---|---|---|
-| 1 | 5–6 | ھ ن ا ي | 236 · 1345 · 1 · 24 | ھي · ھن · ان |
-| 2 | 7–8 | ج و ک ر | 245 · 2456 · 13-236 · 1235 | کير · وار · جو · ھو |
-| 3 | 9–10 | ت ه ب ل | 2345 · 125 · 12 · 123 | لال · تارو · بال · بيل |
+| 1 | 5–6 | ه ن ا ي | 125 · 1345 · 1 · 24 | هي · هن · ان |
+| 2 | 7–8 | ج و ک ر | 245 · 2456 · 13-236 · 1235 | کير · وار · جو · هو |
+| 3 | 9–10 | ت ھ ب ل | 2345 · 236 · 12 · 123 | لال · تارو · بال · بيل |
 | 4 | 11–12 | ء م س د | 3 · 134 · 234 · 145 | دل · مان · سان · مالا |
 | 5 | 13–14 | ع ڪ پ ش | 12356 · 13 · 1234 · 146 | **ڪتاب** · پير · شير · ڪن |
-| 6 | 15–16 | ٿ ڏ آ گ | 1256 · 34 · 345 · 1245 | گل · آھي · ڏند · ٿورو |
+| 6 | 15–16 | ٿ ڏ آ گ | 1256 · 34 · 345 · 1245 | گل · آهي · ڏند · ٿورو |
 | 7 | 17–18 | ڻ ڌ ڙ ق | 3456 · 1236 · 12456 · 12345 | **پاڻي** · ڌرتي · ڪڻڪ · قلم |
 | 8 | 19–20 | ٻ ف خ ط | 26 · 124 · 1346 · 23456 | **ٻلي** · ٻار · خط · فون |
 | 9 | 21–22 | ح ص ظ ٽ | 156 · 12346 · 123456 · 246 | ٽوپي · صبح · حال · ٽماٽو |

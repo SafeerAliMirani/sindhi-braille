@@ -13,42 +13,47 @@ document says so rather than choosing silently.
 
 ---
 
-## 0. Two rules settled from the sources, 20 August 2026
+## 0. Two rules settled from the sources, 21 August 2026
 
 ### ه and ھ
 
-**Sindhi writes ھ (U+06BE, dots 2-3-6). Not ه (U+0647, dots 1-2-5).** Counted in
-the two primary sources:
+**ه (U+0647, dots 1-2-5) is the ordinary Sindhi he. ھ (U+06BE, dots 2-3-6) is
+do-chashmi, and it appears only in the aspirate digraphs.** The guide's own
+worked examples settle it, because they print the dots beside the word:
 
-| word | with ه | with ھ |
-|---|---|---|
-| آهي / آھي | 0 | 149 |
-| ته / تھ | 0 | 234 |
-| گهر / گھر | 0 | 19 |
-| پڙهڻ / پڙھڻ | 0 | 18 |
-| the standard guide, whole | 80 | **2251** |
-| Riaz Hussain Memon's Grade 2 book, whole | 8 | **127** |
+| page | word | dots the guide prints | reading |
+|---|---|---|---|
+| 45 | هن | `125 1345` | ه is 1-2-5 |
+| 32 | (هڪ) | `2356 125 13 2356` | ه is 1-2-5 |
+| 32 | ڪتاب (سنڌي) آهي. | `... 345 125 24 256` | آهي takes 1-2-5 |
+| 30 | جھ گھ ڙھ لھ مھ نھ ڻھ | `... 236` | the aspirates take 2-3-6 |
+| 30 | پڙھ ، سمھ ، ڳالھيون | `... 236 ...` | word-internal and word-final aspirate |
 
-Every instance of ه in those sources is an Arabic or Persian loanword or a name
-that ends in it: علاوه، وغيره، رحمه، عليه، الله، فھميده، سائره، سنجيده, and the
-guide's own title ربهر.
+So هڪ، آهي، هن، نه، ته، پڙهڻ keep ه, and جھ، گھ، لھ، مھ، نھ، ڻھ، ڙھ are
+written with ھ because they are single letters of the fifty-two, not ه after a
+consonant.
 
-This is not a spelling preference. The two are different cells, so text written
-with ه for a native word embosses 1-2-5 where 2-3-6 belongs.
+**A counting mistake worth recording, because it nearly went into the tables.**
+Text extracted from the guide's PDF runs 2,251 ھ to 80 ه, which reads as the
+opposite rule. It is an artefact: that document is typeset in a font that emits
+U+06BE for the he key, and the extraction carries the presentation forms
+through. A corpus of ordinary Sindhi (`official-code/sindhi_letter_frequencies.csv`,
+396k letters) runs the other way, ه at 6.35% and ھ at 0.72%, which is what an
+ordinary he against a digraph-only he should look like. Counts from one
+typeset document are not evidence about spelling; the printed dots are.
 
-`tools/sindhi_words.txt` writes the ھ form and carries the ه form at frequency
-zero, so the back-translator can still read documents other people wrote.
+### ڪ followed by ھ, and why it is not a collision
 
-### ڪ followed by ھ is the same two cells as ک
+ک is 1-3 then 2-3-6, and ڪ is 1-3 while ھ is 2-3-6, so the two cells are the
+same sequence. It looks like an ambiguity and it is not, because ھ never
+follows ڪ in Sindhi: ڪ plus do-chashmi *is* ک. The he that appears in ڪهڙو،
+ڪهڙي and the rest is the ordinary ه, 1-2-5, so those words are 1-3 1-2-5 and
+share nothing with ک.
 
-ک is 1-3 then 2-3-6. ڪ is 1-3 and ھ is 2-3-6. **The sequence is identical**, so
-back-translation has to choose, and it was choosing greedily: ڪھڙو, an ordinary
-Sindhi word, came back as کڙو, which is not a word at all.
-
-Resolved the way the word-final 2-3-6 already was, by asking the lexicon: the
-aspirate reading is taken unless the two-letter reading completes a known word
-and the aspirate reading does not. This is ours, not the guide's, and the guide
-does not say how a reader tells them apart.
+This was briefly implemented as a lexicon tie-break. The tie-break was
+answering a problem that only existed because those words had been respelled
+with ھ; with the spelling right there is nothing to break, and the plain rule
+stands: 2-3-6 after ج، گ، ڪ is the aspirate.
 
 ---
 

@@ -17,18 +17,18 @@ Fourteen lessons. For each one give me:
   4. two simple questions about the piece
 
 THE FOURTEEN LESSONS
-  1. منھنجو نالو        the child's own name and self
-  2. منھنجو گھر         home and family
+  1. منهنجو نالو        the child's own name and self
+  2. منهنجو گھر         home and family
   3. اسان جو ڪلاس       the classroom
   4. پاڻي               water, and where it comes from
   5. ٻلي ۽ ڪتو          animals at home
   6. گل ۽ باغ           plants and the garden
-  7. ڏينھن ۽ رات        day and night
+  7. ڏينهن ۽ رات        day and night
   8. مان ڳڻان ٿو        counting, one to ten
   9. شڪليون             shapes: square, triangle, circle, rectangle
  10. ڳاڙهي بتي          the road and traffic lights
  11. هڪ ٻئي جي مدد      helping one another
- 12. منھنجو ڳوٺ         the village
+ 12. منهنجو ڳوٺ         the village
  13. صاف صفائي          keeping clean
  14. مان بريل پڙھان ٿو  a blind child reading braille
 
@@ -52,13 +52,20 @@ and breaking these makes the printed page and the braille page disagree.
       ی        ->  ي
       ك        ->  ڪ   (Sindhi kaf, not the Arabic one)
 
-2. DO NOT PUT VOWEL DIACRITICS on words in the lesson text. No زبر, no زير,
+2. ه AND ھ ARE TWO DIFFERENT LETTERS WITH TWO DIFFERENT BRAILLE CELLS.
+   ه (U+0647) is the ordinary he, braille 1-2-5: هي، هن، هو، هڪ، آهي، نه، ته.
+   ھ (U+06BE) is do-chashmi and belongs ONLY to the aspirate digraphs
+   جھ، گھ، ڙھ، لھ، مھ، نھ، ڻھ — for example گھر، پڙھ، ڳالھيون، سمھ.
+   Write ه wherever an ordinary he is meant. Do not substitute one for the
+   other: a word with the wrong one embosses the wrong cell.
+
+3. DO NOT PUT VOWEL DIACRITICS on words in the lesson text. No زبر, no زير,
    no پيش, no شد, no jazam. Plain letters only. Diacritics are taught in a
    separate part of the book.
 
-3. KEEP EACH SENTENCE UNDER ABOUT 40 CHARACTERS so it fits one braille line.
+4. KEEP EACH SENTENCE UNDER ABOUT 40 CHARACTERS so it fits one braille line.
 
-4. PUNCTUATION: only the full stop (.) and the comma (،) and the question mark
+5. PUNCTUATION: only the full stop (.) and the comma (،) and the question mark
    (؟). No quotation marks, no brackets, no dashes, no colons, no semicolons,
    no exclamation marks.
 
@@ -68,8 +75,8 @@ the book. For each one tell me: is it spelled correctly in standard Sindhi, and
 is it a suitable word for a six-year-old? Replace any that are not, keeping the
 same letters where you can.
 
-ھي · ھن · ان · کير · وار · جو · ھو · لال · تارو · بال · بيل · دل · مان · سان ·
-مالا · ڪتاب · پير · شير · ڪن · گل · آھي · ڏند · ٿورو · پاڻي · ڌرتي · ڪڻڪ ·
+هي · هن · ان · کير · وار · جو · هو · لال · تارو · بال · بيل · دل · مان · سان ·
+مالا · ڪتاب · پير · شير · ڪن · گل · آهي · ڏند · ٿورو · پاڻي · ڌرتي · ڪڻڪ ·
 قلم · ٻلي · ٻار · خط · فون · ٽوپي · صبح · حال · ٽماٽو · ڳوٺ · چار · زمين ·
 ٺيڪ · ڇوڪرو · چنڊ · ضرور · باغ · ڀيڻ · مثال · ذات · ڄاڻ · ڍڳو · ڦل · پڃرو · سڱ
 
@@ -78,7 +85,7 @@ Plain text only. No tables, no markdown, no bullet characters, no explanation of
 what you did. For each lesson, in this exact shape:
 
 سبق ۱
-منھنجو نالو
+منهنجو نالو
 <the sentences, one per line>
 لفظ: <the six words, separated by spaces>
 سوال: <question one>

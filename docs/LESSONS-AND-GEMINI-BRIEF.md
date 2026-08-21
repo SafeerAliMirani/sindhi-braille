@@ -66,18 +66,18 @@ ones, without copying its text:
 
 | # | title | about |
 |---|---|---|
-| 1 | منھنجو نالو | the child's own name and self |
-| 2 | منھنجو گھر | home and family |
+| 1 | منهنجو نالو | the child's own name and self |
+| 2 | منهنجو گھر | home and family |
 | 3 | اسان جو ڪلاس | the classroom |
 | 4 | پاڻي | water, and where it comes from |
 | 5 | ٻلي ۽ ڪتو | animals at home |
 | 6 | گل ۽ باغ | plants and the garden |
-| 7 | ڏينھن ۽ رات | day and night |
+| 7 | ڏينهن ۽ رات | day and night |
 | 8 | مان ڳڻان ٿو | counting, one to ten |
 | 9 | شڪليون | shapes — **and the child feels them on the page** |
 | 10 | ڳاڙهي بتي | the road and its lights |
 | 11 | هڪ ٻئي جي مدد | helping one another |
-| 12 | منھنجو ڳوٺ | the village |
+| 12 | منهنجو ڳوٺ | the village |
 | 13 | صاف صفائي | keeping clean |
 | 14 | مان بريل پڙھان ٿو | **reading braille** — the last lesson |
 
@@ -128,8 +128,8 @@ line. This is how a primer works.
 **Also please check this word list** for spelling and for whether each word suits
 a six-year-old, and replace any that do not:
 
-ھي · ھن · ان · کير · وار · جو · ھو · لال · تارو · بال · بيل · دل · مان · سان ·
-مالا · ڪتاب · پير · شير · ڪن · گل · آھي · ڏند · ٿورو · پاڻي · ڌرتي · ڪڻڪ ·
+هي · هن · ان · کير · وار · جو · هو · لال · تارو · بال · بيل · دل · مان · سان ·
+مالا · ڪتاب · پير · شير · ڪن · گل · آهي · ڏند · ٿورو · پاڻي · ڌرتي · ڪڻڪ ·
 قلم · ٻلي · ٻار · خط · فون · ٽوپي · صبح · حال · ٽماٽو · ڳوٺ · چار · زمين ·
 ٺيڪ · ڇوڪرو · چنڊ · ضرور · باغ · ڀيڻ · مثال · ذات · ڄاڻ · ڍڳو · ڦل · پڃرو · سڱ
 
