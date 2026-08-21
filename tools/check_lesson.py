@@ -50,7 +50,18 @@ def _expected_loss(src, back):
         a = a.replace(ch, str(i % 10))
     for ch in 'ئؤ':
         a = a.replace(ch, 'ء')
-    return a == b
+    if a == b:
+        return True
+    # A comparison sign takes a space before it and none after (guide p.53, and
+    # Riaz on 15 August 2026), so `= 2` is written and `=2` comes back. The
+    # cells are the guide's; only the spacing of the printed copy differs.
+    # The operation signs fold the same way, and the minus is one character in
+    # print and another in the arithmetic table.
+    for x, y in ((' = ', '='), (' + ', '+'), (' - ', '-'), (' x ', 'x')):
+        a = a.replace(x, y); b = b.replace(x, y)
+    b = b.replace('−', '-').replace('×', 'x').replace('÷', '/')
+    a = a.replace('−', '-').replace('×', 'x').replace('÷', '/')
+    return a.replace(' ', '') == b.replace(' ', '')
 
 
 def taught_upto(n):
@@ -67,6 +78,8 @@ def check(path, upto=None):
     bad_letter, bad_trip, bad_char, expected = [], [], [], []
     for lineno, line in enumerate(text.split('\n'), 1):
         s = line.strip()
+        if s.startswith('@'):
+            continue          # a marker for the page builder, not Sindhi text
         if not s or s.startswith('#'):
             continue
         for w in s.split():

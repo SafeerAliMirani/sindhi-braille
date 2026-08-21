@@ -45,9 +45,16 @@ def geometry(width_cells, bind_cells, page_w=PAGE_W, page_h=PAGE_H):
     """where everything sits on the sheet, in millimetres"""
     left = pp.EDGE_X + bind_cells * pp.CELL_W
     text_w = width_cells * pp.CELL_W
-    rows = int((page_h - 2 * pp.EDGE_Y) // ROW)
+    # The grid starts one braille line below the top edge. A laser printer
+    # cannot put ink in the first few millimetres of a sheet, and the ink for a
+    # line sits above its dots, so a grid starting at the edge loses its first
+    # sentence. The .brf pays for this with one blank line at the top of each
+    # page, which costs exactly the 10.0 mm the ink needs.
+    top = pp.EDGE_Y + pp.LINE_H
+    rows = int((page_h - top - pp.EDGE_Y) // ROW)
     return dict(left=left, text_w=text_w, rows=rows,
-                top=pp.EDGE_Y, page_w=page_w, page_h=page_h)
+                top=top, page_w=page_w, page_h=page_h,
+                shape_lines=int((page_h - top - pp.EDGE_Y) // pp.LINE_H))
 
 
 def sentences(path):
@@ -62,6 +69,9 @@ def sentences(path):
         if not s or s.startswith('#'):
             continue
         if s.startswith('@page') or s.startswith('@figure'):
+            continue
+        if s.startswith('@shape'):
+            out.append(s)            # kept as a marker; it gets a page to itself
             continue
         if s.startswith('@heading'):
             s = s[8:].strip()
@@ -92,30 +102,206 @@ def wrap(line, width):
     return rows
 
 
+# Every shape is a list of primitives in millimetres inside the drawing area,
+# so the same description draws the dots and the printed outline and the two
+# cannot drift apart.  w and h are the area; the shapes are written against
+# them rather than against fixed numbers, so a wider page draws a bigger circle.
+#
+# What survives on this grid: the dots are 2.5 mm apart inside a cell, 6.2 mm
+# between cells and 10.0 mm between lines, so a curve is felt as a curve only if
+# it is large.  These are drawn to fill the page for that reason, and the animals
+# are cut down to the outline a finger can actually trace - a fish is a body and
+# a tail, not scales and an eye.
+def _star(cx, cy, r):
+    import math
+    pts = []
+    for k in range(11):
+        ang = -math.pi / 2 + k * math.pi / 5
+        rad = r if k % 2 == 0 else r * 0.42
+        pts.append((cx + rad * math.cos(ang), cy + rad * math.sin(ang)))
+    return [('poly', pts)]
+
+
+SHAPES = {
+    # --- the four geometric shapes ---------------------------------------
+    'circle':    lambda w, h: [('circle', w/2, h/2, min(w, h)/2 - 6)],
+    'square':    lambda w, h: [('rect', w/2 - (min(w, h)/2 - 6), h/2 - (min(w, h)/2 - 6),
+                                2*(min(w, h)/2 - 6), 2*(min(w, h)/2 - 6))],
+    'rectangle': lambda w, h: [('rect', 8, h/4, w - 16, h/2)],
+    'triangle':  lambda w, h: [('tri', w/2, 8, w - 16, h - 16)],
+    # --- things a six-year-old can name ----------------------------------
+    'house':     lambda w, h: [('rect', w/2 - w*0.30, h*0.42, w*0.60, h*0.48),
+                               ('tri', w/2, h*0.08, w*0.76, h*0.34),
+                               ('rect', w/2 - w*0.09, h*0.66, w*0.18, h*0.24)],
+    # the trunk starts inside the crown, not below it: a gap of even a few
+    # millimetres reads under a finger as two separate objects
+    'tree':      lambda w, h: [('circle', w/2, h*0.30, min(w*0.36, h*0.26)),
+                               ('rect', w/2 - w*0.07,
+                                h*0.30 + min(w*0.36, h*0.26) - 6,
+                                w*0.14,
+                                h*0.92 - (h*0.30 + min(w*0.36, h*0.26) - 6))],
+    # the tail joins the body along an edge, not at a point: two triangles
+    # meeting at one dot feel like a bow tie, which is not a fish
+    'fish':      lambda w, h: [('poly', [(w*0.06, h*0.50), (w*0.26, h*0.24),
+                                         (w*0.60, h*0.24), (w*0.70, h*0.40),
+                                         (w*0.70, h*0.60), (w*0.60, h*0.76),
+                                         (w*0.26, h*0.76), (w*0.06, h*0.50)]),
+                               ('poly', [(w*0.70, h*0.40), (w*0.94, h*0.22),
+                                         (w*0.94, h*0.78), (w*0.70, h*0.60)])],
+    'star':      lambda w, h: _star(w/2, h/2, min(w, h)/2 - 6),
+    'boat':      lambda w, h: [('poly', [(w*0.10, h*0.62), (w*0.90, h*0.62),
+                                         (w*0.74, h*0.88), (w*0.26, h*0.88),
+                                         (w*0.10, h*0.62)]),
+                               ('poly', [(w/2, h*0.10), (w/2, h*0.62)]),
+                               ('poly', [(w/2, h*0.14), (w*0.82, h*0.56),
+                                         (w/2, h*0.56)])],
+    # the handle starts and ends on the cup's own wall, for the same reason
+    'cup':       lambda w, h: [('poly', [(w*0.24, h*0.28), (w*0.66, h*0.28),
+                                         (w*0.58, h*0.84), (w*0.32, h*0.84),
+                                         (w*0.24, h*0.28)]),
+                               ('poly', [(w*0.643, h*0.40), (w*0.86, h*0.44),
+                                         (w*0.86, h*0.62), (w*0.606, h*0.66)])],
+}
+
+
+def _draw(prims, width, lines_avail):
+    """one shape description -> the raised dots, and the same curve as SVG"""
+    import tactile as t
+    on, svg, parts = set(), [], []
+    for p in prims:
+        k = p[0]
+        if k == 'circle':
+            _, cx, cy, r = p
+            d = t.circle(cx, cy, r, width, lines_avail); on |= d; parts.append(d)
+            svg.append('<circle cx="%.2f" cy="%.2f" r="%.2f"/>' % (cx, cy, r))
+        elif k == 'rect':
+            _, x, y, w, h = p
+            d = t.rectangle(x, y, w, h, width, lines_avail); on |= d; parts.append(d)
+            svg.append('<rect x="%.2f" y="%.2f" width="%.2f" height="%.2f"/>'
+                       % (x, y, w, h))
+        elif k == 'tri':
+            _, x, y, base, height = p
+            d = t.triangle(x, y, base, height, width, lines_avail); on |= d; parts.append(d)
+            svg.append('<polygon points="%.2f,%.2f %.2f,%.2f %.2f,%.2f"/>'
+                       % (x, y, x - base/2, y + height, x + base/2, y + height))
+        else:
+            _, pts = p
+            d = t.path(pts, width, lines_avail); on |= d; parts.append(d)
+            svg.append('<polyline points="%s"/>'
+                       % ' '.join('%.2f,%.2f' % q for q in pts))
+    return on, ''.join(svg), parts
+
+
+# The tactile graphics standard asks for 1/8 inch, 3 mm, between a component
+# and any other, because two lines closer than that are felt as one. On a
+# braille cell grid the finest step is 2.5 mm, so two lines are either adjacent
+# dots - which reads as one line, and is what you want where a roof meets a
+# wall - or at least two steps apart. There is no way to draw 3 mm on this
+# grid. So the rule enforced here is the grid's version of the standard's:
+#
+#   parts that are meant to join must adjoin      (<= 2.5 mm, one dot step)
+#   parts that are meant to be separate must be   (>= 5.0 mm, two dot steps)
+#
+# and anything landing between the two is the ambiguous case the standard is
+# warning about. A gap of 2.5 mm between a cup and its handle is not a handle.
+JOIN_MM  = 2.5       # one dot step: the parts touch
+CLEAR_MM = 5.0       # two dot steps: the parts read as separate
+
+
+def separation(parts):
+    """the closest approach between two different parts of one shape, in mm"""
+    import tactile as t
+    worst = None
+    for i in range(len(parts)):
+        for j in range(i + 1, len(parts)):
+            for (c1, r1) in parts[i]:
+                x1, y1 = t.dot_mm(c1, r1)
+                for (c2, r2) in parts[j]:
+                    x2, y2 = t.dot_mm(c2, r2)
+                    d = ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5
+                    if worst is None or d < worst:
+                        worst = d
+    return worst
+
+
+def shape_page(kind, label, width, g):
+    """one shape, embossed and printed on the same sheet, on the same curve.
+
+    Text has to be interlined because dots on top of letters destroy both. A
+    shape is the opposite case: the printed outline and the embossed outline are
+    the same line, so they are drawn at the same millimetres and the finger
+    follows exactly what the eye sees.
+
+    The shape is drawn at the ordinary 10.0 mm line pitch, not the 20.0 mm of
+    the text pages, because vertical resolution is what a curve needs most."""
+    import tactile as t
+    if kind not in SHAPES:
+        raise SystemExit('unknown shape %r; have: %s'
+                         % (kind, ' '.join(sorted(SHAPES))))
+    # Page format follows the tactile graphics standard: the name on the first
+    # line, a blank line, then the graphic, and nothing else on the sheet. The
+    # standard requires a blank line before and after a tactile graphic and caps
+    # it at 40 cells by 25 lines; this is 26 by 24 at most.
+    lines_avail = min(g['shape_lines'] - 2, 25)
+    area_w = width * pp.CELL_W
+    area_h = lines_avail * pp.LINE_H
+    on, svg, parts = _draw(SHAPES[kind](area_w, area_h), width, lines_avail)
+    body = t.to_lines(on, width, lines_avail)
+    while len(body) < lines_avail:
+        body.append('')
+    cells = sb.word_to_cells(label)
+    pad = max(0, (width - len(cells)) // 2)
+    rows = [' ' * pad + ''.join(sb.cell_to_ascii(c) for c in cells), ''] + body
+    sep = separation(parts)
+    if sep is not None and JOIN_MM < sep < CLEAR_MM:
+        print('  WARNING  %-10s two parts sit %.1f mm apart: too far to feel '
+              'joined, too close to feel separate. Move them together or at '
+              'least %.1f mm apart.' % (kind, sep, CLEAR_MM))
+    return rows, svg, label, (sep if sep is not None else float('inf'))
+
+
 def build(src, width, bind, out_dir, title):
     g = geometry(width, bind)
-    lines = []                                  # (sindhi text, [cells])
+    lines, shapes = [], []                      # (sindhi text, [cells])
+    pages, cur = [], []
     for s in sentences(src):
+        if s.startswith('@shape'):
+            p = s.split(None, 2)
+            kind, label = p[1], (p[2] if len(p) > 2 else '')
+            if cur:
+                pages.append(('text', cur)); cur = []
+            pages.append(('shape', shape_page(kind, label, width, g)))
+            continue
         for parts, _ in wrap(s, width):
             txt = ''.join(w for w, _ in parts)
             cells = [c for _, cs in parts for c in cs]
             lines.append((txt, cells))
-
-    pages = [lines[i:i + g['rows']] for i in range(0, len(lines), g['rows'])] or [[]]
+            cur.append((txt, cells))
+            if len(cur) == g['rows']:
+                pages.append(('text', cur)); cur = []
+    if cur:
+        pages.append(('text', cur))
+    if not pages:
+        pages = [('text', [])]
 
     # ---- the braille file -------------------------------------------------
     brf = []
     # Page one is the registration target: every line a solid bar of full cells,
     # to be embossed onto the printed test sheet. If every bar sits inside its
     # printed band, the two machines agree and the book can be run.
+    brf.append('')                              # the top margin the ink needs
     for _ in range(g['rows']):
         brf.append('=' * width)
         brf.append('')
     brf.append('\f')
-    for pg in pages:
-        for txt, cells in pg:
-            brf.append(''.join(sb.cell_to_ascii(c) if c else ' ' for c in cells))
-            brf.append('')                      # the blank line the ink sits in
+    for kind, pg in pages:
+        brf.append('')                          # same top margin on every page
+        if kind == 'shape':
+            brf.extend(pg[0])
+        else:
+            for txt, cells in pg:
+                brf.append(''.join(sb.cell_to_ascii(c) if c else ' ' for c in cells))
+                brf.append('')                  # the blank line the ink sits in
         brf.append('\f')
     body = '\r\n'.join(brf)
     io.open(os.path.join(out_dir, 'twin.brf'), 'w',
@@ -177,12 +363,28 @@ body { font-family:"Noto Naskh Arabic","Segoe UI","Times New Roman",serif;
                  'background:#c8c8c8"></div>' % (g['left'], y + 5.0, g['text_w']))
     h.append('</section>')
 
-    for pg in pages:
+    for kind, pg in pages:
         h.append('<section class="page">')
-        for k, (txt, _) in enumerate(pg):
-            y = g['top'] + k * ROW - INK_ABOVE
-            h.append('<div class="ln" style="left:%.2fmm;top:%.2fmm;width:%.2fmm">%s</div>'
-                     % (g['left'], y, g['text_w'], html.escape(txt)))
+        if kind == 'shape':
+            rows, svg, label, _sep = pg
+            lines_avail = min(g['shape_lines'] - 2, 25)
+            area_h = lines_avail * pp.LINE_H
+            top = g['top'] + 2 * pp.LINE_H          # label line, then blank
+            h.append('<div class="ln" style="left:%.2fmm;top:%.2fmm;width:%.2fmm;'
+                     'text-align:center">%s</div>'
+                     % (g['left'], g['top'] - INK_ABOVE + pp.LINE_H,
+                        g['text_w'], html.escape(label)))
+            h.append('<svg class="shp" xmlns="http://www.w3.org/2000/svg" '
+                     'style="position:absolute;left:%.2fmm;top:%.2fmm;'
+                     'width:%.2fmm;height:%.2fmm" viewBox="0 0 %.2f %.2f">'
+                     '<g fill="none" stroke="#000" stroke-width="0.8">%s</g></svg>'
+                     % (g['left'], top, g['text_w'], area_h,
+                        g['text_w'], area_h, svg))
+        else:
+            for k, (txt, _) in enumerate(pg):
+                y = g['top'] + k * ROW - INK_ABOVE
+                h.append('<div class="ln" style="left:%.2fmm;top:%.2fmm;width:%.2fmm">%s</div>'
+                         % (g['left'], y, g['text_w'], html.escape(txt)))
         h.append('</section>')
     h.append('</body></html>')
     io.open(os.path.join(out_dir, 'twin-ink.html'), 'w', encoding='utf-8').write('\n'.join(h))
