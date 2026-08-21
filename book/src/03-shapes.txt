@@ -1,0 +1,18 @@
+@heading سبق
+شڪليون
+@shape circle گول
+@shape square چورس
+@shape triangle ٽڪنڊو
+@shape rectangle مستطيل
+@heading سبق
+شيون
+@shape house گھر
+@shape tree وڻ
+@shape fish مڇي
+@shape star تارو
+@shape boat ٻيڙي
+@shape cup پيالو
+@heading سبق
+منهنجو جسم ۽ جھنڊو
+@shape body جسم
+@shape flag جھنڊو

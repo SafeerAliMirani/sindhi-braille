@@ -114,7 +114,17 @@ def readable(w):
     return bool(w) and all(c in sb.LETTER or c in SKIP for c in w)
 
 
-def order(n_lessons, per_lesson):
+def order(n_lessons, per_lesson, pinned=None):
+    """pinned: {lesson_number: 'letters'} forced before the greedy runs.
+
+    The greedy maximises words unlocked, and left to itself it puts آ in lesson
+    seven, because آ appears in few distinct words. But one of those words is
+    آهي, which ends almost every sentence a beginner will ever read, so a primer
+    that withholds آ withholds sentences. Pinning آ and ڪ early costs a little
+    coverage and buys the child a real sentence in lesson three instead of
+    lesson seven. That is a teaching decision, and it is written here rather
+    than hidden in a hand-edited table."""
+    pinned = pinned or {}
     ws = [(w, f) for w, f in words() if readable(w)]
     known, plan = set(), []
     pool = collections.Counter()
@@ -123,8 +133,8 @@ def order(n_lessons, per_lesson):
             pool[c] += f
 
     for lesson in range(n_lessons):
-        picked = []
-        for _ in range(per_lesson):
+        picked = [c for c in pinned.get(lesson + 1, '') if c not in known]
+        for _ in range(per_lesson - len(picked)):
             best, gain = None, -1
             for c in sb.LETTER:
                 if c in known or c in picked:
@@ -149,7 +159,12 @@ def main():
     a = sys.argv[1:]
     n = int(a[a.index('--lessons') + 1]) if '--lessons' in a else 12
     per = int(a[a.index('--per') + 1]) if '--per' in a else 4
-    plan, ws = order(n, per)
+    pinned = {}
+    if '--pin' in a:
+        for part in a[a.index('--pin') + 1].split(','):
+            k, v = part.split(':')
+            pinned[int(k)] = v
+    plan, ws = order(n, per, pinned)
     total = sum(f for _, f in ws)
     seen = set()
     print('%-3s %-22s %6s %8s   %s' % ('#', 'letters taught', 'words', 'corpus', 'new words this lesson'))

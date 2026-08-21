@@ -37,8 +37,16 @@ import paper_plan as pp
 
 PAGE_W, PAGE_H = 210.0, 297.0        # A4 in mm
 ROW = 2 * pp.LINE_H                  # 20.0 mm: one braille line plus one blank
-INK_ABOVE = 8.5                     # mm from the top of the ink to its dots
-INK_PT    = 16                      # a class 1 primer is not set in 11 point
+PER_SHEET = 2                        # shapes to a sheet
+# A braille line's dots are 5.0 mm deep, so between one line's dots and the
+# next line's there are 15.0 mm of blank paper. The ink for a sentence lives in
+# that gap, in a box of its own with clearance at both ends, and the box is
+# clipped so that a deep Naskh descender cannot reach down into the dots it is
+# supposed to sit above. Without the clearance the tails of ۾ and ن landed in
+# the band and the embossed dots came down on top of them.
+INK_BOX   = 9.5                     # mm, the height the ink is given
+INK_CLEAR = 5.0                     # mm of blank paper between ink and dots
+INK_PT    = 15                      # a class 1 primer is not set in 11 point
 
 
 def geometry(width_cells, bind_cells, page_w=PAGE_W, page_h=PAGE_H):
@@ -122,45 +130,93 @@ def _star(cx, cy, r):
     return [('poly', pts)]
 
 
+def _arc(cx, cy, r, a0, a1, steps=64):
+    import math
+    return [(cx + r * math.cos(a0 + (a1 - a0) * k / steps),
+             cy + r * math.sin(a0 + (a1 - a0) * k / steps)) for k in range(steps + 1)]
+
+
+def _crescent(cx, cy, r):
+    """the moon of the flag: one closed outline, not two overlapping circles.
+
+    A crescent is the outer disc with a second disc bitten out of it, so its
+    boundary is the part of the outer circle that lies OUTSIDE the biting
+    circle, joined to the part of the biting circle that lies INSIDE the outer
+    one. Taking the wrong half of the second arc - which is easy, and which I
+    did first - gives a circle with a chord across it, and under a finger that
+    is a circle with a line in it, not a moon."""
+    import math
+    R = r
+    r2 = R * 0.86
+    d = R * 0.42                              # how far the bite is offset
+    ox = cx + d
+    x = (d * d - r2 * r2 + R * R) / (2 * d)   # where the two circles cross
+    y = math.sqrt(max(R * R - x * x, 0.0))
+    a_out = math.atan2(y, x)                  # measured from the outer centre
+    a_in = math.atan2(y, x - d)               # measured from the biting centre
+    outer = _arc(cx, cy, R, a_out, 2 * math.pi - a_out)      # convex, the back
+    inner = _arc(ox, cy, r2, a_in, 2 * math.pi - a_in)       # concave, the belly
+    return [('poly', outer + inner[::-1] + [outer[0]])]
+
+
 SHAPES = {
     # --- the four geometric shapes ---------------------------------------
-    'circle':    lambda w, h: [('circle', w/2, h/2, min(w, h)/2 - 6)],
-    'square':    lambda w, h: [('rect', w/2 - (min(w, h)/2 - 6), h/2 - (min(w, h)/2 - 6),
-                                2*(min(w, h)/2 - 6), 2*(min(w, h)/2 - 6))],
-    'rectangle': lambda w, h: [('rect', 8, h/4, w - 16, h/2)],
-    'triangle':  lambda w, h: [('tri', w/2, 8, w - 16, h - 16)],
+    'circle':    lambda w, h: [('circle', w/2, h/2, min(w, h)/2 - 4)],
+    'square':    lambda w, h: [('rect', w/2 - (min(w, h)/2 - 4), h/2 - (min(w, h)/2 - 4),
+                                2*(min(w, h)/2 - 4), 2*(min(w, h)/2 - 4))],
+    'rectangle': lambda w, h: [('rect', 6, h/4, w - 12, h/2)],
+    'triangle':  lambda w, h: [('tri', w/2, 6, w - 12, h - 12)],
     # --- things a six-year-old can name ----------------------------------
-    'house':     lambda w, h: [('rect', w/2 - w*0.30, h*0.42, w*0.60, h*0.48),
-                               ('tri', w/2, h*0.08, w*0.76, h*0.34),
-                               ('rect', w/2 - w*0.09, h*0.66, w*0.18, h*0.24)],
-    # the trunk starts inside the crown, not below it: a gap of even a few
-    # millimetres reads under a finger as two separate objects
-    'tree':      lambda w, h: [('circle', w/2, h*0.30, min(w*0.36, h*0.26)),
-                               ('rect', w/2 - w*0.07,
-                                h*0.30 + min(w*0.36, h*0.26) - 6,
-                                w*0.14,
-                                h*0.92 - (h*0.30 + min(w*0.36, h*0.26) - 6))],
-    # the tail joins the body along an edge, not at a point: two triangles
-    # meeting at one dot feel like a bow tie, which is not a fish
-    'fish':      lambda w, h: [('poly', [(w*0.06, h*0.50), (w*0.26, h*0.24),
-                                         (w*0.60, h*0.24), (w*0.70, h*0.40),
-                                         (w*0.70, h*0.60), (w*0.60, h*0.76),
-                                         (w*0.26, h*0.76), (w*0.06, h*0.50)]),
-                               ('poly', [(w*0.70, h*0.40), (w*0.94, h*0.22),
-                                         (w*0.94, h*0.78), (w*0.70, h*0.60)])],
-    'star':      lambda w, h: _star(w/2, h/2, min(w, h)/2 - 6),
-    'boat':      lambda w, h: [('poly', [(w*0.10, h*0.62), (w*0.90, h*0.62),
-                                         (w*0.74, h*0.88), (w*0.26, h*0.88),
-                                         (w*0.10, h*0.62)]),
-                               ('poly', [(w/2, h*0.10), (w/2, h*0.62)]),
-                               ('poly', [(w/2, h*0.14), (w*0.82, h*0.56),
-                                         (w/2, h*0.56)])],
-    # the handle starts and ends on the cup's own wall, for the same reason
-    'cup':       lambda w, h: [('poly', [(w*0.24, h*0.28), (w*0.66, h*0.28),
-                                         (w*0.58, h*0.84), (w*0.32, h*0.84),
-                                         (w*0.24, h*0.28)]),
-                               ('poly', [(w*0.643, h*0.40), (w*0.86, h*0.44),
-                                         (w*0.86, h*0.62), (w*0.606, h*0.66)])],
+    'house':     lambda w, h: [('rect', w/2 - w*0.30, h*0.42, w*0.60, h*0.52),
+                               ('tri', w/2, h*0.06, w*0.76, h*0.36),
+                               ('rect', w/2 - w*0.09, h*0.70, w*0.18, h*0.24)],
+    # A crown made of a circle on a stick is a lollipop under a finger. A tree
+    # is a triangle on a trunk, which is also how a child draws one.
+    'tree':      lambda w, h: [('tri', w/2, h*0.04, w*0.72, h*0.70),
+                               ('rect', w/2 - w*0.08, h*0.74 - 2, w*0.16, h*0.24)],
+    # A hexagon with a triangle stuck on it is not a fish. This is a body that
+    # narrows to a waist and a tail cut from the same outline, one closed curve.
+    'fish':      lambda w, h: [('poly', [(w*0.05, h*0.50), (w*0.16, h*0.30),
+                                         (w*0.36, h*0.20), (w*0.56, h*0.26),
+                                         (w*0.66, h*0.42),
+                                         (w*0.92, h*0.16), (w*0.86, h*0.50),
+                                         (w*0.92, h*0.84), (w*0.66, h*0.58),
+                                         (w*0.56, h*0.74), (w*0.36, h*0.80),
+                                         (w*0.16, h*0.70), (w*0.05, h*0.50)])],
+    # A cup with a straight-sided handle reads as a box with a flap. This one
+    # has a round handle, joined to the wall at both ends.
+    'cup':       lambda w, h: [('poly', [(w*0.22, h*0.26), (w*0.62, h*0.26),
+                                         (w*0.56, h*0.82), (w*0.28, h*0.82),
+                                         (w*0.22, h*0.26)]),
+                               ('poly', [(w*0.607, h*0.38), (w*0.78, h*0.41),
+                                         (w*0.84, h*0.50), (w*0.78, h*0.59),
+                                         (w*0.581, h*0.62)])],
+    'star':      lambda w, h: _star(w/2, h/2, min(w, h)/2 - 4),
+    'boat':      lambda w, h: [('poly', [(w*0.08, h*0.60), (w*0.92, h*0.60),
+                                         (w*0.74, h*0.90), (w*0.26, h*0.90),
+                                         (w*0.08, h*0.60)]),
+                               ('poly', [(w/2, h*0.06), (w/2, h*0.60)]),
+                               ('poly', [(w/2, h*0.10), (w*0.84, h*0.54),
+                                         (w/2, h*0.54)])],
+    # --- Pakistan --------------------------------------------------------
+    # The hoist strip, the crescent and the star. The green and the white are
+    # not felt, so the strip is drawn as a line and the rest is the emblem.
+    'flag':      lambda w, h: [('rect', 4, h*0.18, w - 8, h*0.64),
+                               ('poly', [(4 + (w - 8)*0.25, h*0.18),
+                                         (4 + (w - 8)*0.25, h*0.82)])]
+                              + _crescent(4 + (w - 8)*0.60, h*0.50, min(h*0.22, w*0.16))
+                              + _star(4 + (w - 8)*0.80, h*0.34, min(h*0.10, w*0.07)),
+    # --- the body --------------------------------------------------------
+    # Head, body, two arms, two legs, joined into one figure. Naming the parts
+    # on the drawing would need lead lines and 3 mm clearances the grid cannot
+    # give, so the parts are named in the sentences, not on the picture.
+    'body':      lambda w, h: [('circle', w/2, h*0.13, min(h*0.11, w*0.13)),
+                               ('poly', [(w/2, h*0.13 + min(h*0.11, w*0.13)),
+                                         (w/2, h*0.56)]),
+                               ('poly', [(w*0.20, h*0.46), (w/2, h*0.28),
+                                         (w*0.80, h*0.46)]),
+                               ('poly', [(w*0.26, h*0.94), (w/2, h*0.56),
+                                         (w*0.74, h*0.94)])],
 }
 
 
@@ -224,7 +280,7 @@ def separation(parts):
     return worst
 
 
-def shape_page(kind, label, width, g):
+def shape_block(kind, label, width, lines_avail):
     """one shape, embossed and printed on the same sheet, on the same curve.
 
     Text has to be interlined because dots on top of letters destroy both. A
@@ -238,11 +294,9 @@ def shape_page(kind, label, width, g):
     if kind not in SHAPES:
         raise SystemExit('unknown shape %r; have: %s'
                          % (kind, ' '.join(sorted(SHAPES))))
-    # Page format follows the tactile graphics standard: the name on the first
-    # line, a blank line, then the graphic, and nothing else on the sheet. The
-    # standard requires a blank line before and after a tactile graphic and caps
-    # it at 40 cells by 25 lines; this is 26 by 24 at most.
-    lines_avail = min(g['shape_lines'] - 2, 25)
+    # Page format follows the tactile graphics standard: the name on its own
+    # line, a blank line, then the graphic, and a blank line after it. The
+    # standard caps a graphic at 40 cells by 25 lines; these are 26 by 21.
     area_w = width * pp.CELL_W
     area_h = lines_avail * pp.LINE_H
     on, svg, parts = _draw(SHAPES[kind](area_w, area_h), width, lines_avail)
@@ -260,17 +314,38 @@ def shape_page(kind, label, width, g):
     return rows, svg, label, (sep if sep is not None else float('inf'))
 
 
-def build(src, width, bind, out_dir, title):
+def shape_page(shapes, width, g):
+    """one sheet carrying one or two shapes.
+
+    Two to a page halves the paper, and at 26 cells by 10 lines a shape is still
+    100 mm by 161 mm, far above anything the standard calls small. The two are
+    separated by a blank line, and each keeps its own name on the line above it,
+    so a finger running down the page meets name, shape, blank, name, shape."""
+    n = len(shapes)
+    per = (g['shape_lines'] - 1) // n - 2      # name + blank belong to each
+    per = min(per, 25)
+    blocks = [shape_block(k, l, width, per) for k, l in shapes]
+    rows = []
+    for i, (r, _, _, _) in enumerate(blocks):
+        if i:
+            rows.append('')
+        rows.extend(r)
+    return rows, blocks, per
+
+
+def build(src, width, bind, out_dir, title, back_shift=0.0):
     g = geometry(width, bind)
-    lines, shapes = [], []                      # (sindhi text, [cells])
-    pages, cur = [], []
+    lines = []                                  # (sindhi text, [cells])
+    pages, cur, pending = [], [], []
     for s in sentences(src):
         if s.startswith('@shape'):
             p = s.split(None, 2)
-            kind, label = p[1], (p[2] if len(p) > 2 else '')
+            pending.append((p[1], p[2] if len(p) > 2 else ''))
             if cur:
                 pages.append(('text', cur)); cur = []
-            pages.append(('shape', shape_page(kind, label, width, g)))
+            if len(pending) == PER_SHEET:
+                pages.append(('shape', shape_page(pending, width, g)))
+                pending = []
             continue
         for parts, _ in wrap(s, width):
             txt = ''.join(w for w, _ in parts)
@@ -279,6 +354,8 @@ def build(src, width, bind, out_dir, title):
             cur.append((txt, cells))
             if len(cur) == g['rows']:
                 pages.append(('text', cur)); cur = []
+    if pending:
+        pages.append(('shape', shape_page(pending, width, g)))
     if cur:
         pages.append(('text', cur))
     if not pages:
@@ -317,7 +394,8 @@ body { font-family:"Noto Naskh Arabic","Segoe UI","Times New Roman",serif;
         page-break-after:always; break-after:page }
 .page:last-child { page-break-after:auto; break-after:auto }
 .ln { position:absolute; direction:rtl; text-align:right; white-space:nowrap;
-      font-size:%dpt; line-height:1; color:#000 }
+      font-size:%dpt; line-height:1.15; color:#000; overflow:hidden;
+      display:flex; align-items:center; justify-content:flex-start }
 .band { position:absolute; border-bottom:0 }
 .tick { position:absolute; background:#000 }
 .rule { position:absolute; height:0.3mm; background:#000 }
@@ -363,28 +441,45 @@ body { font-family:"Noto Naskh Arabic","Segoe UI","Times New Roman",serif;
                  'background:#c8c8c8"></div>' % (g['left'], y + 5.0, g['text_w']))
     h.append('</section>')
 
-    for kind, pg in pages:
+    for pageno, (kind, pg) in enumerate(pages):
+        # The book is printed on both sides, so the binding margin has to be on
+        # the outside of each leaf: left on the front, right on the back. The
+        # braille itself never moves - the embosser writes from the same left
+        # edge on both sides - so only the ink swaps, and on a back page the
+        # text area starts at the sheet's own left edge instead.
+        left = g['left'] if pageno % 2 == 0 else pp.EDGE_X
+        # Some interpoint embossers drop the reverse side by half a line pitch
+        # so its dots interleave with the front's. If yours does, the ink on the
+        # back has to move with it: measure the test sheet and pass
+        # --back-shift 5. On a machine that keeps the lines level this is 0.
+        dy = 0.0 if pageno % 2 == 0 else back_shift
         h.append('<section class="page">')
         if kind == 'shape':
-            rows, svg, label, _sep = pg
-            lines_avail = min(g['shape_lines'] - 2, 25)
-            area_h = lines_avail * pp.LINE_H
-            top = g['top'] + 2 * pp.LINE_H          # label line, then blank
-            h.append('<div class="ln" style="left:%.2fmm;top:%.2fmm;width:%.2fmm;'
-                     'text-align:center">%s</div>'
-                     % (g['left'], g['top'] - INK_ABOVE + pp.LINE_H,
-                        g['text_w'], html.escape(label)))
-            h.append('<svg class="shp" xmlns="http://www.w3.org/2000/svg" '
-                     'style="position:absolute;left:%.2fmm;top:%.2fmm;'
-                     'width:%.2fmm;height:%.2fmm" viewBox="0 0 %.2f %.2f">'
-                     '<g fill="none" stroke="#000" stroke-width="0.8">%s</g></svg>'
-                     % (g['left'], top, g['text_w'], area_h,
-                        g['text_w'], area_h, svg))
+            rows, blocks, per = pg
+            area_h = per * pp.LINE_H
+            line0 = 0
+            for i, (r, svg, label, _sep) in enumerate(blocks):
+                if i:
+                    line0 += 1              # the blank line between two shapes
+                ytop = g['top'] + dy + line0 * pp.LINE_H
+                h.append('<div class="ln" style="left:%.2fmm;top:%.2fmm;'
+                         'width:%.2fmm;height:%.2fmm;justify-content:center">%s</div>'
+                         % (left, ytop + pp.LINE_H - INK_CLEAR - INK_BOX,
+                            g['text_w'], INK_BOX, html.escape(label)))
+                h.append('<svg class="shp" xmlns="http://www.w3.org/2000/svg" '
+                         'style="position:absolute;left:%.2fmm;top:%.2fmm;'
+                         'width:%.2fmm;height:%.2fmm" viewBox="0 0 %.2f %.2f">'
+                         '<g fill="none" stroke="#000" stroke-width="0.8">%s</g>'
+                         '</svg>'
+                         % (left, ytop + 2 * pp.LINE_H, g['text_w'], area_h,
+                            g['text_w'], area_h, svg))
+                line0 += 2 + per
         else:
             for k, (txt, _) in enumerate(pg):
-                y = g['top'] + k * ROW - INK_ABOVE
-                h.append('<div class="ln" style="left:%.2fmm;top:%.2fmm;width:%.2fmm">%s</div>'
-                         % (g['left'], y, g['text_w'], html.escape(txt)))
+                y = g['top'] + dy + k * ROW - INK_CLEAR - INK_BOX
+                h.append('<div class="ln" style="left:%.2fmm;top:%.2fmm;width:%.2fmm;'
+                         'height:%.2fmm">%s</div>'
+                         % (left, y, g['text_w'], INK_BOX, html.escape(txt)))
         h.append('</section>')
     h.append('</body></html>')
     io.open(os.path.join(out_dir, 'twin-ink.html'), 'w', encoding='utf-8').write('\n'.join(h))
