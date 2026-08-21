@@ -38,6 +38,33 @@ import paper_plan as pp
 PAGE_W, PAGE_H = 210.0, 297.0        # A4 in mm
 ROW = 2 * pp.LINE_H                  # 20.0 mm: one braille line plus one blank
 PER_SHEET = 2                        # shapes to a sheet
+GUTTER    = 4                        # cells kept at the left of every line for
+                                     # its number: three for the number itself
+                                     # and one blank before the text
+SD_DIGITS = '۰۱۲۳۴۵۶۷۸۹'
+
+
+def sd_num(n):
+    return ''.join(SD_DIGITS[int(d)] for d in str(n))
+
+
+def num_cells(n):
+    """a number in braille: the number sign, then its digits"""
+    out = [sb.NUMSIGN]
+    for d in str(n):
+        out.append(sb.DIGIT[d])
+    return out
+
+
+def gutter_cells(n):
+    """the line number, in a fixed three cells, with one blank after it.
+
+    Every line of the book carries its number on the left in braille and the
+    same number in ink, so a sighted teacher and a blind child can say line
+    five and mean the same line. It costs four cells of a twenty-six cell page,
+    which is the price of the two of them being able to talk about the text."""
+    c = num_cells(n)
+    return (c + [''] * (GUTTER - len(c)))[:GUTTER]
 # A braille line's dots are 5.0 mm deep, so between one line's dots and the
 # next line's there are 15.0 mm of blank paper. The ink for a sentence lives in
 # that gap, in a box of its own with clearance at both ends, and the box is
@@ -78,8 +105,8 @@ def sentences(path):
             continue
         if s.startswith('@page') or s.startswith('@figure'):
             continue
-        if s.startswith('@shape'):
-            out.append(s)            # kept as a marker; it gets a page to itself
+        if s.startswith('@shape') or s.startswith('@table'):
+            out.append(s)            # markers, expanded by the page builder
             continue
         if s.startswith('@heading'):
             s = s[8:].strip()
@@ -201,11 +228,15 @@ SHAPES = {
     # --- Pakistan --------------------------------------------------------
     # The hoist strip, the crescent and the star. The green and the white are
     # not felt, so the strip is drawn as a line and the rest is the emblem.
-    'flag':      lambda w, h: [('rect', 4, h*0.18, w - 8, h*0.64),
-                               ('poly', [(4 + (w - 8)*0.25, h*0.18),
-                                         (4 + (w - 8)*0.25, h*0.82)])]
-                              + _crescent(4 + (w - 8)*0.60, h*0.50, min(h*0.22, w*0.16))
-                              + _star(4 + (w - 8)*0.80, h*0.34, min(h*0.10, w*0.07)),
+    # The star sits in the crescent's opening, clear of it. On the first try it
+    # was drawn beside the moon and its lower point ran into the moon's back;
+    # two lines that cross are one line under a finger.
+    'flag':      lambda w, h: (lambda x0, fw, cx, cy, R: [
+                     ('rect', 4, h*0.18, w - 8, h*0.64),
+                     ('poly', [(x0 + fw*0.25, h*0.18), (x0 + fw*0.25, h*0.82)])]
+                     + _crescent(cx, cy, R)
+                     + _star(cx + R*1.05, cy - R*0.55, R*0.42)
+                 )(4, w - 8, 4 + (w - 8)*0.52, h*0.50, min(h*0.22, w*0.15)),
     # --- the body --------------------------------------------------------
     # Head, body, two arms, two legs, joined into one figure. Naming the parts
     # on the drawing would need lead lines and 3 mm clearances the grid cannot
@@ -218,6 +249,42 @@ SHAPES = {
                                ('poly', [(w*0.26, h*0.94), (w/2, h*0.56),
                                          (w*0.74, h*0.94)])],
 }
+
+
+def table_lines(kind, per_line=4):
+    """the alphabet and the digits, as the front of the book.
+
+    Both readers need the chart, and they need the same chart: the blind child
+    feels the letter itself, the sighted teacher reads the letter and the dots
+    that make it. So each line carries the letters in braille, and the ink over
+    it names the same letters with their dot numbers, in the order the website
+    prints them.
+
+    Returns a list of (ink text, [cells]) - ordinary lines, so they page and
+    number like any other."""
+    out = []
+    if kind == 'numbers':
+        items = [(d, sb.DIGIT[d]) for d in '1234567890']
+        out.append(('عدد جو نشان: ' + ''.join(SD_DIGITS[int(c)] for c in sb.NUMSIGN),
+                    [sb.NUMSIGN]))
+        per_line = 5
+        pairs = [(sd_num(int(d)), [c]) for d, c in items]
+    else:
+        pairs = []
+        for L, cells in sb.LETTER.items():
+            pairs.append((L, list(cells)))
+    for i in range(0, len(pairs), per_line):
+        chunk = pairs[i:i + per_line]
+        ink = ' · '.join('%s (%s)' % (name, '-'.join(
+            ''.join(SD_DIGITS[int(d)] for d in c) for c in cells))
+            for name, cells in chunk)
+        cells = []
+        for j, (_, cs) in enumerate(chunk):
+            if j:
+                cells.append('')
+            cells.extend(cs)
+        out.append((ink, cells))
+    return out
 
 
 def _draw(prims, width, lines_avail):
@@ -337,7 +404,17 @@ def build(src, width, bind, out_dir, title, back_shift=0.0):
     g = geometry(width, bind)
     lines = []                                  # (sindhi text, [cells])
     pages, cur, pending = [], [], []
+    textw = width - GUTTER                      # cells left for the text itself
+    rows_per_page = g['rows'] - 1               # one row goes to the page number
     for s in sentences(src):
+        if s.startswith('@table'):
+            kind = s.split(None, 1)[1].strip() if ' ' in s else 'letters'
+            for ink, cells in table_lines(kind):
+                lines.append((ink, cells))
+                cur.append((ink, cells))
+                if len(cur) == rows_per_page:
+                    pages.append(('text', cur)); cur = []
+            continue
         if s.startswith('@shape'):
             p = s.split(None, 2)
             pending.append((p[1], p[2] if len(p) > 2 else ''))
@@ -347,12 +424,12 @@ def build(src, width, bind, out_dir, title, back_shift=0.0):
                 pages.append(('shape', shape_page(pending, width, g)))
                 pending = []
             continue
-        for parts, _ in wrap(s, width):
+        for parts, _ in wrap(s, textw):
             txt = ''.join(w for w, _ in parts)
             cells = [c for _, cs in parts for c in cs]
             lines.append((txt, cells))
             cur.append((txt, cells))
-            if len(cur) == g['rows']:
+            if len(cur) == rows_per_page:
                 pages.append(('text', cur)); cur = []
     if pending:
         pages.append(('shape', shape_page(pending, width, g)))
@@ -371,13 +448,23 @@ def build(src, width, bind, out_dir, title, back_shift=0.0):
         brf.append('=' * width)
         brf.append('')
     brf.append('\f')
+    pageno_brl = 0
+    def row(cells):
+        return ''.join(sb.cell_to_ascii(c) if c else ' ' for c in cells)
+
     for kind, pg in pages:
         brf.append('')                          # same top margin on every page
+        pageno_brl += 1
+        # The page number goes on a line of its own at the top, pushed to the
+        # right margin, which is where a braille book puts it.
+        pn = num_cells(pageno_brl)
+        brf.append(row([''] * (width - len(pn)) + pn))
+        brf.append('')
         if kind == 'shape':
             brf.extend(pg[0])
         else:
-            for txt, cells in pg:
-                brf.append(''.join(sb.cell_to_ascii(c) if c else ' ' for c in cells))
+            for i, (txt, cells) in enumerate(pg, 1):
+                brf.append(row(gutter_cells(i) + cells))
                 brf.append('')                  # the blank line the ink sits in
         brf.append('\f')
     body = '\r\n'.join(brf)
@@ -399,6 +486,12 @@ body { font-family:"Noto Naskh Arabic","Segoe UI","Times New Roman",serif;
 .band { position:absolute; border-bottom:0 }
 .tick { position:absolute; background:#000 }
 .rule { position:absolute; height:0.3mm; background:#000 }
+.pn   { position:absolute; direction:ltr; font-size:11pt; color:#000;
+        display:flex; align-items:center; justify-content:flex-end;
+        overflow:hidden }
+.lnum { position:absolute; direction:ltr; font-size:10pt; color:#000;
+        display:flex; align-items:center; justify-content:flex-start;
+        overflow:hidden }
 .note { position:absolute; direction:rtl; font-size:8pt; color:#444 }
 .en   { position:absolute; direction:ltr; font-size:8pt; color:#444;
         font-family:"Segoe UI",sans-serif }
@@ -441,6 +534,7 @@ body { font-family:"Noto Naskh Arabic","Segoe UI","Times New Roman",serif;
                  'background:#c8c8c8"></div>' % (g['left'], y + 5.0, g['text_w']))
     h.append('</section>')
 
+    pageno_ink = 1
     for pageno, (kind, pg) in enumerate(pages):
         # The book is printed on both sides, so the binding margin has to be on
         # the outside of each leaf: left on the front, right on the back. The
@@ -454,10 +548,15 @@ body { font-family:"Noto Naskh Arabic","Segoe UI","Times New Roman",serif;
         # --back-shift 5. On a machine that keeps the lines level this is 0.
         dy = 0.0 if pageno % 2 == 0 else back_shift
         h.append('<section class="page">')
+        h.append('<div class="pn" style="left:%.2fmm;top:%.2fmm;width:%.2fmm;'
+                 'height:%.2fmm">%s</div>'
+                 % (left, g['top'] + dy - INK_CLEAR - INK_BOX,
+                    g['text_w'], INK_BOX, html.escape(sd_num(pageno_ink))))
+        body_top = g['top'] + dy + ROW          # the page number takes row nought
         if kind == 'shape':
             rows, blocks, per = pg
             area_h = per * pp.LINE_H
-            line0 = 0
+            line0 = 2                           # page number line, then blank
             for i, (r, svg, label, _sep) in enumerate(blocks):
                 if i:
                     line0 += 1              # the blank line between two shapes
@@ -476,10 +575,18 @@ body { font-family:"Noto Naskh Arabic","Segoe UI","Times New Roman",serif;
                 line0 += 2 + per
         else:
             for k, (txt, _) in enumerate(pg):
-                y = g['top'] + dy + k * ROW - INK_CLEAR - INK_BOX
+                y = body_top + k * ROW - INK_CLEAR - INK_BOX
+                # the line number, in the gutter the braille keeps for it
+                h.append('<div class="lnum" style="left:%.2fmm;top:%.2fmm;'
+                         'width:%.2fmm;height:%.2fmm">%s</div>'
+                         % (left, y, GUTTER * pp.CELL_W - 2, INK_BOX,
+                            html.escape(sd_num(k + 1))))
                 h.append('<div class="ln" style="left:%.2fmm;top:%.2fmm;width:%.2fmm;'
                          'height:%.2fmm">%s</div>'
-                         % (left, y, g['text_w'], INK_BOX, html.escape(txt)))
+                         % (left + GUTTER * pp.CELL_W, y,
+                            g['text_w'] - GUTTER * pp.CELL_W, INK_BOX,
+                            html.escape(txt)))
+        pageno_ink += 1
         h.append('</section>')
     h.append('</body></html>')
     io.open(os.path.join(out_dir, 'twin-ink.html'), 'w', encoding='utf-8').write('\n'.join(h))

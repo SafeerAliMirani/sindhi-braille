@@ -17,7 +17,7 @@ import io, os, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(os.path.dirname(HERE), 'book', 'src')
-PARTS = ['01-letters.txt', '02-numbers.txt', '03-shapes.txt',
+PARTS = ['00-front.txt', '01-letters.txt', '02-numbers.txt', '03-shapes.txt',
          '04-reading.txt', '05-topics.txt']
 SD = '۰۱۲۳۴۵۶۷۸۹'
 

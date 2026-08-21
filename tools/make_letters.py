@@ -27,12 +27,12 @@ PIN = {2: 'آ', 3: 'ڪت'}
 # lesson -> (four words, one for each letter taught) and a sentence, or None
 CONTENT = [
     (['هي', 'هن', 'ان', 'ناني'],              None),
-    (['آهي', 'جو', 'هو', 'نو'],               None),
+    (['آهي', 'جو', 'هو', 'کان'],             None),
     (['هڪ', 'ڪتاب', 'ته', 'بار'],             'هي ڪتاب آهي.'),
     (['مان', 'سان', 'لال', 'ماء'],            'هي لال ڪتاب آهي.'),
-    (['در', 'پير', 'شير', 'دم'],              'هي در آهي.'),
+    (['در', 'پير', 'شير', 'علي'],            'هي در آهي.'),
     (['گل', 'ڏند', 'پاڻي', 'ٿورو'],           'هي گل آهي.'),
-    (['قلم', 'ٻلي', 'ٻار', 'ڌوپ'],           'هي ٻلي آهي.'),
+    (['قلم', 'ٻلي', 'ڪپڙا', 'ڌرتي'],         'هي ٻلي آهي.'),
     (['فون', 'خط', 'حال', 'طوطو'],            'هي خط آهي.'),
     (['ٽوپي', 'صاف', 'ڳڻ', 'حافظ'],           'هي ٽوپي آهي.'),
     (['چار', 'زمين', 'ٺيڪ', 'ڊوڙ'],           'هي چار ڪتاب آهن.'),
@@ -69,6 +69,12 @@ def main():
                     sys.stderr.write('LESSON %d: %s uses %s, not taught yet\n'
                                      % (i, w, ch))
                     bad += 1
+        shown = ' '.join(words + ([sentence] if sentence else []))
+        for ch in picked:
+            if ch not in shown:
+                sys.stderr.write('LESSON %d: teaches %s and never shows it in a '
+                                 'word\n' % (i, ch))
+                bad += 1
         out.extend(words)
         if sentence:
             out.append(sentence)

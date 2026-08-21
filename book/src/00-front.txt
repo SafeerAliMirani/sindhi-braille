@@ -1,0 +1,6 @@
+@heading سنڌي بريل: پهريون ڪتاب
+ڊاڪٽر صفير علي ميراڻي
+@heading باونجاھ اکر
+@table letters
+@heading انگ
+@table numbers
