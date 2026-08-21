@@ -35,6 +35,20 @@ REWRITTEN = dict(sb.NORMALISE)
 
 EASTERN = '٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹'
 
+# ھ, do-chashmi, is not a letter that stands on its own in a Sindhi word: it is
+# the second half of one of the seven digraphs the guide names on p.30, so it
+# only ever follows ج، گ، ڙ، ل، م، ن or ڻ. A ھ anywhere else is 2-3-6 embossed
+# where 1-2-5 belongs, and it is invisible in print - the two letters look
+# nearly alike. This check exists because a language model returned سھڻو for
+# سهڻو, reasoning that ڻھ is a digraph. It is, but the word has هڻ, not ڻھ.
+DIGRAPH_BASE = set('جگڙلمنڻ')
+
+
+def stray_hehdo(word):
+    """positions where ھ does not follow a digraph base"""
+    return [i for i, c in enumerate(word)
+            if c == 'ھ' and (i == 0 or word[i-1] not in DIGRAPH_BASE)]
+
 
 def _expected_loss(src, back):
     """True when the difference is something braille does not carry at all,
@@ -75,11 +89,15 @@ def check(path, upto=None):
     sb.load_words()
     allowed = taught_upto(upto) if upto else set(sb.LETTER)
     text = io.open(path, encoding='utf-8').read()
-    bad_letter, bad_trip, bad_char, expected = [], [], [], []
+    bad_letter, bad_trip, bad_char, expected, bad_heh = [], [], [], [], []
     for lineno, line in enumerate(text.split('\n'), 1):
         s = line.strip()
         if s.startswith('@'):
             continue          # a marker for the page builder, not Sindhi text
+        for w in s.split():
+            core = ''.join(c for c in w if c not in '.،؟!؛:')
+            if len(core) > 1 and stray_hehdo(core):
+                bad_heh.append((lineno, core))
         if not s or s.startswith('#'):
             continue
         for w in s.split():
@@ -99,6 +117,11 @@ def check(path, upto=None):
 
     n = len([l for l in text.split('\n') if l.strip() and not l.startswith('#')])
     print('%s — %d lines, letters allowed: %d' % (path, n, len(allowed)))
+    if bad_heh:
+        print('\n  ھ where the digraph rule does not allow it (%d):' % len(bad_heh))
+        for lineno, w in bad_heh[:12]:
+            print('    line %-5d %-14s ھ follows a letter that forms no digraph;'
+                  ' it should be ه' % (lineno, w))
     if bad_char:
         print('\n  characters the translator rewrites (%d):' % len(bad_char))
         for ln, w, c, to in bad_char:
@@ -123,10 +146,10 @@ def check(path, upto=None):
         print('    Braille has one set of digits and one hamza. The cells on '
               'the page are\n    right; only the journey back into print loses '
               'the distinction.')
-    if not (bad_char or bad_letter or bad_trip):
+    if not (bad_char or bad_letter or bad_trip or bad_heh):
         print('\n  no errors.%s'
               % ('' if not expected else ' The differences above are expected.'))
-    return 1 if (bad_char or bad_letter or bad_trip) else 0
+    return 1 if (bad_char or bad_letter or bad_trip or bad_heh) else 0
 
 
 if __name__ == '__main__':

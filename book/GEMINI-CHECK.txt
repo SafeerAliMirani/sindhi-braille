@@ -16,6 +16,12 @@ WHAT I NEED YOU TO CHECK
 2. Is every word right for a six-year-old who is meeting it for the first time?
    Replace anything too abstract, keeping the same letters where you can.
 
+2a. IMPORTANT, from the last round. Do not shorten a line by deleting a word
+   the grammar needs. ٿو، ٿي، ٿا، آهي and postpositions like تي stay. If a line
+   is too long, say so and suggest a shorter sentence that is still whole,
+   rather than removing the auxiliary. And do not remove a sentence: the line
+   about حضرت محمد ﷺ and the line naming the colours of the flag are wanted.
+
 3. Spelling, and one rule in particular. ه (U+0647) and ھ (U+06BE) are two
    different letters with two different braille cells: ه is dots 1-2-5 and ھ is
    dots 2-3-6. ھ belongs ONLY to the aspirate digraphs جھ گھ ڙھ لھ مھ نھ ڻھ, so
@@ -45,7 +51,7 @@ THE BOOK
 
 @heading سنڌي بريل: پهريون ڪتاب
 ڊاڪٽر سفير علي ميراڻي
-@heading باونجاھ اکر
+@heading ۵۲ اکر
 @table letters
 @heading انگ
 @table numbers
@@ -150,7 +156,7 @@ THE BOOK
 ۸ اٺ
 ۹ نو
 ۱۰ ڏهه
-مان هڪ کان ڏهه تائين ڳڻان ٿو.
+مان هڪ کان ڏهه ڳڻان ٿو.
 منهنجا ٻه هٿ آهن.
 هڪ هٿ ۾ پنج آڱريون آهن.
 @heading سبق ۱۵
@@ -161,7 +167,7 @@ THE BOOK
 ۳ + ۲ = ۵
 ۵ + ۵ = ۱۰
 @heading سبق ۱۶
-ڪٽ
+گھٽائڻ
 ۳ - ۱ = ۲
 ۵ - ۲ = ۳
 ۱۰ - ۵ = ۵
@@ -189,8 +195,8 @@ THE BOOK
 هي منهنجو نالو آهي.
 منهنجو نالو سٺو آهي.
 توهان جو نالو ڇا آهي؟
-مان پنهنجو نالو لکان ٿو.
-توهان پنهنجو نالو لکو.
+مان نالو لکان ٿو.
+توهان نالو لکو.
 لفظ: هتي نالو سٺو
 توهان لکان لکو
 سوال: ڇا منهنجو نالو سٺو آهي؟
@@ -290,9 +296,9 @@ THE BOOK
 مان امان جي مدد ڪريان ٿو.
 بابا سامان کڻي ٿو.
 مان بابا سان گڏ آهيان.
-مدد ڪرڻ سٺي ڳالھ آهي.
+مدد ڪرڻ سٺو ڪم آهي.
 لفظ: مدد امان بابا
-سامان گڏ ڳالھ
+سامان گڏ ڪم
 سوال: توهان ڪنهن جي مدد ڪندا آهيو؟
 سوال: ڇا مدد ڪرڻ سٺو آهي؟
 @heading سبق ۲۹
