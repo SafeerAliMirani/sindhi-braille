@@ -179,6 +179,45 @@ Confirmed in print: السَّلام = ا ل **شد** س ز ب ر ل ا م.
 بہ زبرون. Either the two really share a cell, or one of the two table entries is
 a misprint. Unresolved.
 
+### الله, and what the neighbouring codes do with it
+
+Riaz Hussain Memon gave the spelling on 15 August 2026: **ا · ل · شد · ل ·
+ڪڙا زبر · ه**, dots `1 · 123 · 6 · 123 · 4 · 125`, the shadda falling between
+the two lams. That is the guide's own p.31 rule applied to the word, and both
+neighbouring codes were run to check it rather than taken on trust:
+
+| code | input | liblouis output |
+|---|---|---|
+| Urdu `ur-pk-g1.utb` | اللّٰه | `1 123 6 123 4 125` |
+| Arabic `ar-ar-g1.utb` | اللّٰه | `ا ل` · shadda · `ل` · … · `ه` — shadda before the lam |
+| Urdu, the ligature ﷲ | ﷲ | `1 6 123 4 125` — one lam |
+| Persian `fa-ir-g1.utb` | اللّٰه | shadda written **after** the lam |
+
+So Urdu agrees with him cell for cell on the spelled-out word. The Arabic table
+states the rule outright in a comment — the shadda "should be written before the
+character in Arabic braille code" — and has a rule per letter to enforce it.
+Persian is the outlier and does not implement the rule at all.
+
+The single divergence is Urdu's entry for the one-codepoint ligature ﷲ, which
+drops the first lam and writes five cells. Its own handling of the same word
+spelled out gives six. We write six for both, which is self-consistent and is
+what Riaz described.
+
+**The marks are supplied whether or not they were typed.** Ordinary Sindhi text
+writes الله bare. All eight spellings a keyboard can produce — with or without
+the shadda, with or without the khari zabar, ending ه or ہ or ھ — give the same
+six cells, as does ﷲ.
+
+### The other Arabic ligatures
+
+U+FDF0 to U+FDFD are single codepoints standing for whole phrases. Two have a
+sign in the guide: ﷲ above, and ﷺ, which is صلعم, `12346 · 256` (p.54). The
+rest were being **dropped in silence** — ﷻ and ﷽ went in and no cells came out
+at all, which is the one outcome a braille file must never have. They are now
+expanded to the text Unicode says they stand for and translated as ordinary
+words: ﷻ to جل جلاله, ﷴ to محمد, ﷽ to بسم الله الرحمٰن الرحيم. Nothing is
+invented; the expansion is Unicode's own.
+
 ---
 
 ## 4. Punctuation, brackets and quotation marks

@@ -152,11 +152,44 @@ COLONDASH = ['25','36','36']   # the :- of a heading (guide p.32)
 # U+FDF2 as 1-6-123-4-125, putting the khari zabar after the lam and before the
 # ه.  Urdu collapses the two lams into one; this keeps both, as he described.
 # Every cell here is the same cell in Sindhi as it is in Urdu.
-ALWAYS_MARKED = {
-    'الله':  ['1','123','6','123','4','125'],   # ا  ل  shadda  ل  khari zabar  ه
-    'اللہ':  ['1','123','6','123','4','125'],
-    '\ufdfa'[:0] or 'ﷲ': ['1','123','6','123','4','125'],
-}
+_ALLAH_CELLS = ['1','123','6','123','4','125']  # ا  ل  shadda  ل  khari zabar  ه
+
+def _allah_spellings():
+    """every way the name is actually typed, all mapping to the same cells.
+
+    A typist may write it bare (الله), or with the shadda, or with the shadda
+    and the khari zabar, or as the single ligature ﷲ; and the final letter may
+    be ه, the Urdu ہ, or ھ from a keyboard that emits do-chashmi. The marks are
+    obligatory in braille whether or not they were typed, so all of these give
+    the same six cells. Before this, the bare form gave six and the properly
+    marked form gave four, because the marks were stripped as ordinary
+    diacritics on the way through - the one spelling most likely to be right
+    was the one that came out wrong."""
+    out = {}
+    for heh in ('\u0647', '\u06c1', '\u06be'):          # ه   ہ   ھ
+        for shadda in ('', '\u0651'):                     # ّ
+            for khari in ('', '\u0670'):                  # ٰ
+                out['\u0627\u0644\u0644' + shadda + khari + heh] = list(_ALLAH_CELLS)
+    out['\ufdf2'] = list(_ALLAH_CELLS)                    # ﷲ
+    return out
+
+ALWAYS_MARKED = _allah_spellings()
+
+# The Arabic presentation ligatures, U+FDF0 to U+FDFD.  Two of them the guide
+# gives a sign of its own - ﷲ above, and ﷺ in ABBREV - and those win.  The rest
+# were being dropped in silence: ﷻ and ﷽ went in and nothing at all came out.
+# Unicode already says what each one stands for, so they are expanded to that
+# text and translated like any other words.  Nothing here is invented.
+LIGATURE = {}
+for _cp in range(0xFDF0, 0xFDFE):
+    _ch = chr(_cp)
+    if _ch in ALWAYS_MARKED or _ch == '\ufdfa':
+        continue
+    _ex = unicodedata.normalize('NFKC', _ch)
+    if _ex != _ch:
+        LIGATURE[_ch] = _ex
+LIGATURE['\ufdfd'] = 'بسم الله الرحمٰن الرحيم'   # ﷽ has no decomposition
+
 
 DOUBLING = ['3','3']                 # word repeated: write once + dot 3 twice
 WAW_ATF  = '36'                      # word و word  ->  word + dots 3 6 + word
@@ -390,6 +423,8 @@ def translate(text, diacritics=False, doubling=True, waw=True,
     """
     lines = []
     stanza_open = False
+    if LIGATURE:
+        text = ''.join(LIGATURE.get(c, c) for c in text)
     for para in text.split('\n'):
         words = _abbreviate([w for w in para.split(' ') if w])
         arith = _is_arithmetic(words)
@@ -786,6 +821,7 @@ TESTS = [
  'لاڙڪاڻي جي پبلڪ لائبريري.',
  'اسين سنڌ ۾ رهون ٿا.',
  'رات ۽ ڏينهن.',
+ 'الله جو نالو.',
 ]
 def normalised(t):
     """The spelling the braille can actually represent. Applying this to the

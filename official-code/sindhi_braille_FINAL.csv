@@ -1,4 +1,4 @@
-﻿#,letter,char,dots,braille,status
+#,letter,char,dots,braille,status
 1,ا,a,1,⠁,from his chart; unchanged
 2,ب,b,12,⠃,from his chart; unchanged
 3,ٻ,B,26,⠢,"Riaz — CONFIRM: he said ""2 6"" first, ""2 3"" second; 2 3 is ڀ"
@@ -73,7 +73,7 @@
 ,SHARED CELLS — how the computer tells them apart,,,,
 ,dots,rule,evidence,,
 ,3456,number sign at the start of a word; ڻ everywhere else,"No ordinary Sindhi word begins with ڻ. The aspirate ڻھ does, and its cells are also the fraction 1/8. The 21,445 figure once quoted here was wrong: the list holds 2,704 spellings, 23,432 counting how often each occurs.",,
-,2,زبر when it follows a letter inside a word; ڪاما after a completed word,"Riaz: ""a letter written first and then zer, zabar or pesh"" — diacritics always follow their letter. OPEN: this conflicts with his 15 Aug 2026 instruction that the shadda in الله falls between the two lams, and with Urdu braille, which writes the shadda before the letter it doubles. On sheet 4.",,
+,2,زبر when it follows a letter inside a word; ڪاما after a completed word,"Riaz: ""a letter written first and then zer, zabar or pesh"" — diacritics follow their letter, and the shadda is the one exception: guide p.31 says it is written before the letter that carries it. RESOLVED 21 Aug 2026, not a conflict. His الله spelling is that rule applied, and Urdu liblouis gives the same six cells for the spelled-out word.",,
 ,256,ڍ inside a word; full stop at the end of a sentence,Riaz confirmed both,,
 ,235,ڦ inside a word; ندائيه at the end,Riaz confirmed both,,
 ,236,ھ when it follows a consonant (جھ گھ ک); سواليه at the end,Riaz confirmed both,,

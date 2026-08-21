@@ -1281,11 +1281,40 @@ function roman(tok) {
    lams, which agrees with the Arabic braille convention of writing the shadda
    before the letter it doubles.  The khari zabar sits after the lam and before
    the ه, as Urdu braille writes the whole ligature. */
-const ALWAYS_MARKED = {
-  'الله': ['1','123','6','123','4','125'],
-  'اللہ': ['1','123','6','123','4','125'],
-  'ﷲ':   ['1','123','6','123','4','125'],
-};
+const ALLAH_CELLS = ['1','123','6','123','4','125'];
+const ALWAYS_MARKED = (() => {
+  /* Every way the name is actually typed, all giving the same six cells: bare,
+     with the shadda, with the shadda and the khari zabar, or as the single
+     ligature; and ending in ه, the Urdu ہ, or ھ from a keyboard that emits
+     do-chashmi.  The marks are obligatory in braille whether or not they were
+     typed.  Before this the bare spelling gave six cells and the properly
+     marked one gave four, because the marks were stripped on the way through:
+     the spelling most likely to be right was the one that came out wrong. */
+  const out = {};
+  for (const heh of ['\u0647', '\u06c1', '\u06be'])
+    for (const shadda of ['', '\u0651'])
+      for (const khari of ['', '\u0670'])
+        out['\u0627\u0644\u0644' + shadda + khari + heh] = ALLAH_CELLS.slice();
+  out['\ufdf2'] = ALLAH_CELLS.slice();
+  return out;
+})();
+
+/* The Arabic presentation ligatures U+FDF0..U+FDFD.  Two have a sign of their
+   own - ﷲ above and ﷺ in ABBREV - and those win.  The rest were dropped in
+   silence: ﷻ and ﷽ went in and nothing came out.  Unicode already says what
+   each stands for, so they expand to that text and translate as ordinary
+   words.  Nothing here is invented. */
+const LIGATURE = (() => {
+  const out = {};
+  for (let cp = 0xFDF0; cp <= 0xFDFD; cp++) {
+    const ch = String.fromCharCode(cp);
+    if (ch in ALWAYS_MARKED || cp === 0xFDFA) continue;
+    const ex = ch.normalize('NFKC');
+    if (ex !== ch) out[ch] = ex;
+  }
+  out['\ufdfd'] = 'بسم الله الرحمٰن الرحيم';   // ﷽ has no decomposition
+  return out;
+})();
 
 function wordToCells(w, diacritics, arithmetic, grade2) {
   if (w in ALWAYS_MARKED) return ALWAYS_MARKED[w].slice();
@@ -1426,6 +1455,7 @@ function translate(text, opts) {
   const takhallus = opts.takhallus || null;
   const lines = [];
   let stanzaOpen = false;
+  text = [...text].map(c => LIGATURE[c] || c).join('');
   for (const para of text.split('\n')) {
     const words = abbreviate(para.split(' ').filter(x => x.length));
     const arith = isArithmetic(words);
