@@ -33,6 +33,26 @@ ORDER = [
 REWRITTEN = dict(sb.NORMALISE)
 
 
+EASTERN = '٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹'
+
+
+def _expected_loss(src, back):
+    """True when the difference is something braille does not carry at all,
+    rather than something we got wrong.
+
+    Braille has one set of digits, so a Sindhi numeral comes back as an ASCII
+    one. Braille has one hamza, so ئ and ؤ come back as ء without the carrier
+    letter that print uses. Neither is an error: the cells on the page are
+    right, and only the journey back into print loses the distinction. They are
+    reported separately so a real fault is not buried among them."""
+    a, b = src, back
+    for i, ch in enumerate(EASTERN):
+        a = a.replace(ch, str(i % 10))
+    for ch in 'ئؤ':
+        a = a.replace(ch, 'ء')
+    return a == b
+
+
 def taught_upto(n):
     out = set()
     for grp in ORDER[:n]:
@@ -44,7 +64,7 @@ def check(path, upto=None):
     sb.load_words()
     allowed = taught_upto(upto) if upto else set(sb.LETTER)
     text = io.open(path, encoding='utf-8').read()
-    bad_letter, bad_trip, bad_char = [], [], []
+    bad_letter, bad_trip, bad_char, expected = [], [], [], []
     for lineno, line in enumerate(text.split('\n'), 1):
         s = line.strip()
         if not s or s.startswith('#'):
@@ -59,7 +79,10 @@ def check(path, upto=None):
                 bad_letter.append((lineno, w, ''.join(sorted(early))))
         rt = sb.back(sb.translate(s))
         if rt != s:
-            bad_trip.append((lineno, s, rt))
+            if _expected_loss(s, rt):
+                expected.append((lineno, s, rt))
+            else:
+                bad_trip.append((lineno, s, rt))
 
     n = len([l for l in text.split('\n') if l.strip() and not l.startswith('#')])
     print('%s — %d lines, letters allowed: %d' % (path, n, len(allowed)))
@@ -77,8 +100,19 @@ def check(path, upto=None):
             print('    line %-3d' % ln)
             print('       written  %s' % s)
             print('       reads as %s' % rt)
+    if expected:
+        print('\n  %d lines differ only in what braille does not carry '
+              '(not errors):' % len(expected))
+        for ln, s2, rt in expected[:4]:
+            print('    line %-3d %s  ->  %s' % (ln, s2, rt))
+        if len(expected) > 4:
+            print('    and %d more of the same kind' % (len(expected) - 4))
+        print('    Braille has one set of digits and one hamza. The cells on '
+              'the page are\n    right; only the journey back into print loses '
+              'the distinction.')
     if not (bad_char or bad_letter or bad_trip):
-        print('\n  clean. every line uses taught letters and round trips exactly.')
+        print('\n  no errors.%s'
+              % ('' if not expected else ' The differences above are expected.'))
     return 1 if (bad_char or bad_letter or bad_trip) else 0
 
 

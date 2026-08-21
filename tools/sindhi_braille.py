@@ -54,8 +54,15 @@ DIACRITIC = {'َ':'2', 'ِ':'15', 'ُ':'136', 'ّ':'6', 'ْ':'25',
              'ٍ':'35', 'ٌ':'26', 'ٰ':'4'}    # double zer, double pesh, ڪڙا زبر
 DIGIT = {'1':'1','2':'12','3':'14','4':'145','5':'15',
          '6':'124','7':'1245','8':'125','9':'24','0':'245'}
+# Two sets of eastern digits reach us, and Sindhi uses the second.
+#   U+0660-0669  Arabic-Indic          ٠١٢٣٤٥٦٧٨٩
+#   U+06F0-06F9  Extended Arabic-Indic ۰۱۲۳۴۵۶۷۸۹   <- Sindhi, Urdu, Persian
+# Only the first was here until a lesson written in ordinary Sindhi arrived and
+# the translator raised KeyError on ۱. Both map to the same braille digits.
 ARABIC_DIGIT = {'٠':'0','١':'1','٢':'2','٣':'3','٤':'4',
-                '٥':'5','٦':'6','٧':'7','٨':'8','٩':'9'}
+                '٥':'5','٦':'6','٧':'7','٨':'8','٩':'9',
+                '۰':'0','۱':'1','۲':'2','۳':'3','۴':'4',
+                '۵':'5','۶':'6','۷':'7','۸':'8','۹':'9'}
 NUMSIGN, NUMEND = '3456', '6'        # dot 6 closes numeric mode before punctuation
 # guide p.35. Semicolon is dots 23, not 25 — 25 is the colon.
 PUNCT = {'.':'256', '،':'2', ',':'2', '؟':'236', '?':'236',
@@ -173,6 +180,8 @@ def _digits(tok, i, out):
     while i < len(tok):
         d = ARABIC_DIGIT.get(tok[i], tok[i])
         if d.isdigit():
+            if d not in DIGIT:        # a digit-shaped character we do not know:
+                i += 1; continue      # skip it, let unknown_chars report it
             out.append(DIGIT[d]); i += 1; continue
         nxt = ARABIC_DIGIT.get(tok[i+1:i+2], tok[i+1:i+2])
         if tok[i] == '.' and nxt.isdigit():
