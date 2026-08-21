@@ -587,6 +587,23 @@ def _degrade2(cells):
         out += letter; i += 1
     return out + tail if used else None
 
+def _completes(stem, rest):
+    """could `stem` plus the letters of `rest` be a word we know?
+
+    Used only to break the tie between an aspirate and the two letters that
+    share its cells. Cheap on purpose: it reads the remaining cells as plain
+    letters, which is what they are in the words this has to separate."""
+    if not WORDS:
+        return False
+    tail = ''
+    for c in rest:
+        L = CELL2LET.get(c)
+        if L is None:
+            break
+        tail += L
+    return (stem + tail) in WORDS
+
+
 def back(lines, poetry=False, grade2=False):
     """cells -> Sindhi text, applying the shared-cell rules.
 
@@ -689,8 +706,19 @@ def back(lines, poetry=False, grade2=False):
                         continue
                     if i < len(cells) and cells[i] == NUMEND: i += 1
                     continue
-                if c == '236' and s and s[-1] in ASPIRATE:  # aspirate digraph
-                    s = s[:-1] + ASPIRATE[s[-1]]; i += 1; continue
+                if c == '236' and s and s[-1] in ASPIRATE:
+                    # ڪ then ھ is the same two cells as ک, so this is a choice
+                    # and not a rule. Take the aspirate unless the two-letter
+                    # reading is a word we know and the aspirate one is not:
+                    # ڪھڙو is ordinary Sindhi and کڙو is not a word at all.
+                    asp  = s[:-1] + ASPIRATE[s[-1]]
+                    pair = s + CELL2LET.get(c, '')
+                    rest = cells[i+1:]
+                    if WORDS and _completes(pair, rest) and not _completes(asp, rest):
+                        s = pair
+                    else:
+                        s = asp
+                    i += 1; continue
                 last = (i == len(cells)-1)
                 if last:                                    # word-final: letter or punctuation?
                     mark = {'256':'.', '236':'؟', '235':'!', '2':'،',

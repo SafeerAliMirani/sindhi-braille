@@ -13,6 +13,45 @@ document says so rather than choosing silently.
 
 ---
 
+## 0. Two rules settled from the sources, 20 August 2026
+
+### ه and ھ
+
+**Sindhi writes ھ (U+06BE, dots 2-3-6). Not ه (U+0647, dots 1-2-5).** Counted in
+the two primary sources:
+
+| word | with ه | with ھ |
+|---|---|---|
+| آهي / آھي | 0 | 149 |
+| ته / تھ | 0 | 234 |
+| گهر / گھر | 0 | 19 |
+| پڙهڻ / پڙھڻ | 0 | 18 |
+| the standard guide, whole | 80 | **2251** |
+| Riaz Hussain Memon's Grade 2 book, whole | 8 | **127** |
+
+Every instance of ه in those sources is an Arabic or Persian loanword or a name
+that ends in it: علاوه، وغيره، رحمه، عليه، الله، فھميده، سائره، سنجيده, and the
+guide's own title ربهر.
+
+This is not a spelling preference. The two are different cells, so text written
+with ه for a native word embosses 1-2-5 where 2-3-6 belongs.
+
+`tools/sindhi_words.txt` writes the ھ form and carries the ه form at frequency
+zero, so the back-translator can still read documents other people wrote.
+
+### ڪ followed by ھ is the same two cells as ک
+
+ک is 1-3 then 2-3-6. ڪ is 1-3 and ھ is 2-3-6. **The sequence is identical**, so
+back-translation has to choose, and it was choosing greedily: ڪھڙو, an ordinary
+Sindhi word, came back as کڙو, which is not a word at all.
+
+Resolved the way the word-final 2-3-6 already was, by asking the lexicon: the
+aspirate reading is taken unless the two-letter reading completes a known word
+and the aspirate reading does not. This is ours, not the guide's, and the guide
+does not say how a reader tells them apart.
+
+---
+
 ## 1. Where the code comes from
 
 Standard Sindhi Braille was given final form on **7 November 2016** under the
