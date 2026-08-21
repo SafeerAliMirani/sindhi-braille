@@ -1,0 +1,87 @@
+I need Sindhi text written for a grade 1 reading book.
+
+CONTEXT
+The book is a primer for six-year-old children in Sindh, Pakistan. Every page
+will be printed in ink and embossed in Standard Sindhi Braille at the same time,
+so a blind child and a sighted child can read the same book together. I need the
+Sindhi text for the lessons.
+
+WRITE IN SINDHI, in the Perso-Arabic script used in Pakistan. Not Devanagari,
+not Urdu, not transliteration.
+
+WHAT TO WRITE
+Fourteen lessons. For each one give me:
+  1. the title, three words or fewer
+  2. a reading piece of 4 to 8 short sentences
+  3. six words from that piece, as a word list
+  4. two simple questions about the piece
+
+THE FOURTEEN LESSONS
+  1. منھنجو نالو        the child's own name and self
+  2. منھنجو گھر         home and family
+  3. اسان جو ڪلاس       the classroom
+  4. پاڻي               water, and where it comes from
+  5. ٻلي ۽ ڪتو          animals at home
+  6. گل ۽ باغ           plants and the garden
+  7. ڏينھن ۽ رات        day and night
+  8. مان ڳڻان ٿو        counting, one to ten
+  9. شڪليون             shapes: square, triangle, circle, rectangle
+ 10. ڳاڙهي بتي          the road and traffic lights
+ 11. هڪ ٻئي جي مدد      helping one another
+ 12. منھنجو ڳوٺ         the village
+ 13. صاف صفائي          keeping clean
+ 14. مان بريل پڙھان ٿو  a blind child reading braille
+
+STYLE
+Age six, first year of school. Short sentences. Concrete nouns a child can
+touch or see. Repetition is good, not bad: a beginner should be able to guess
+the next line. Warm and plain. No moral lectures.
+
+HARD CONSTRAINTS
+These are not style preferences. The text is converted to braille by software,
+and breaking these makes the printed page and the braille page disagree.
+
+1. DO NOT USE THESE CHARACTERS AT ALL:
+      ئ  ؤ  أ  إ  ٱ  ة  ہ  ی  ك
+   The braille converter rewrites each of them, so a word containing one would
+   be spelled differently in braille than in print. Use the standard Sindhi
+   equivalents instead:
+      ئ and ؤ  ->  ء
+      أ إ ٱ    ->  ا
+      ة and ہ  ->  ه
+      ی        ->  ي
+      ك        ->  ڪ   (Sindhi kaf, not the Arabic one)
+
+2. DO NOT PUT VOWEL DIACRITICS on words in the lesson text. No زبر, no زير,
+   no پيش, no شد, no jazam. Plain letters only. Diacritics are taught in a
+   separate part of the book.
+
+3. KEEP EACH SENTENCE UNDER ABOUT 40 CHARACTERS so it fits one braille line.
+
+4. PUNCTUATION: only the full stop (.) and the comma (،) and the question mark
+   (؟). No quotation marks, no brackets, no dashes, no colons, no semicolons,
+   no exclamation marks.
+
+ALSO CHECK THIS WORD LIST
+These are words I intend to teach, four per lesson, through the alphabet part of
+the book. For each one tell me: is it spelled correctly in standard Sindhi, and
+is it a suitable word for a six-year-old? Replace any that are not, keeping the
+same letters where you can.
+
+ھي · ھن · ان · کير · وار · جو · ھو · لال · تارو · بال · بيل · دل · مان · سان ·
+مالا · ڪتاب · پير · شير · ڪن · گل · آھي · ڏند · ٿورو · پاڻي · ڌرتي · ڪڻڪ ·
+قلم · ٻلي · ٻار · خط · فون · ٽوپي · صبح · حال · ٽماٽو · ڳوٺ · چار · زمين ·
+ٺيڪ · ڇوڪرو · چنڊ · ضرور · باغ · ڀيڻ · مثال · ذات · ڄاڻ · ڍڳو · ڦل · پڃرو · سڱ
+
+OUTPUT FORMAT
+Plain text only. No tables, no markdown, no bullet characters, no explanation of
+what you did. For each lesson, in this exact shape:
+
+سبق ۱
+منھنجو نالو
+<the sentences, one per line>
+لفظ: <the six words, separated by spaces>
+سوال: <question one>
+سوال: <question two>
+
+Then the corrected word list at the end, under the heading لفظن جي فهرست.
