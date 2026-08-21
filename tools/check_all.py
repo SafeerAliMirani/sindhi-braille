@@ -95,6 +95,38 @@ def check_words():
     record('words', pct >= 99.9,
            '%.2f%% of %d words survive the round trip (%d spellings do not: %s)'
            % (pct, total, len(fails), '، '.join(fails[:6])))
+    return total, pct
+
+
+def check_site_numbers(total, pct):
+    """the three numbers the front page claims, against the ones just measured.
+
+    The site's whole argument is that every claim on it can be checked, so a
+    figure that has drifted from the suite is worse there than anywhere else. It
+    said 69 of 69 and 23,432 at 99.94% while the suite said 68, 23,668 and
+    99.93%. Nobody had written anything untrue; the page had simply stopped
+    being updated when the numbers moved, which is how a verifiable claim turns
+    into an unverifiable one."""
+    import re
+    import verify_guide
+    page = io.open(os.path.join(ROOT, 'website', 'src', 'page.html'),
+                   encoding='utf-8').read()
+    want = len(verify_guide.CASES)
+    bad = []
+    m = re.search(r'<b>(\d+) of (\d+)</b>', page)
+    if not m or int(m.group(1)) != want:
+        bad.append('printed examples: the page says %s, the suite says %d'
+                   % (m.group(0) if m else 'nothing', want))
+    m = re.search(r'<b>([\d,]+)</b>\s*\n\s*<p class="en-only">Sindhi words', page)
+    if not m or int(m.group(1).replace(',', '')) != total:
+        bad.append('word count: the page says %s, the suite says %d'
+                   % (m.group(1) if m else 'nothing', total))
+    if ('%.2f%%' % pct) not in page:
+        bad.append('the page does not say %.2f%%' % pct)
+    record('site', not bad,
+           '; '.join(bad) if bad else
+           'the three numbers on the front page are the ones measured here: '
+           '%d examples, %d words, %.2f%%' % (want, total, pct))
 
 
 def check_grade2():
@@ -281,13 +313,20 @@ def _which(prog):
 
 def main():
     sb.load_words()
-    for fn in (check_guide, check_selftest, check_words, check_grade2,
+    words_result = [None]
+
+    def words_then_site():
+        words_result[0] = check_words()
+        check_site_numbers(*words_result[0])
+
+    for fn in (check_guide, check_selftest, words_then_site, check_grade2,
                check_sheets, check_neighbours, check_ambiguity, check_wordlist,
                check_liblouis, check_browser):
         try:
             fn()
         except Exception as e:                       # a broken check is a failure
-            record(fn.__name__.replace('check_', ''), False,
+            record(fn.__name__.replace('check_', '').replace('words_then_site',
+                                                              'words'), False,
                    '%s: %s' % (type(e).__name__, e))
 
     width = max(len(n) for n, _, _ in results)

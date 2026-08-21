@@ -371,7 +371,7 @@
 
 #A  SBQ #AF
 
-#B  G8[A'#
+#B  KA[
 
 #C  #C ;- #A ;7 #B
 
@@ -625,9 +625,9 @@ _        _                          _
 
 #AJ TWHAN LK8AN LK8W
 
-#AA SWAL3 *A MNHNJW NALW SOW >HI8
+#AA SWAL3 NALW SOW >HI8
 
-#AB SWAL3 TWHAN JW NALW *A >HI8
+#AB SWAL3 TWHAN JW NALW8
 
 
 
@@ -771,7 +771,7 @@ _        _                          _
 
 #AB SWAL3 BA< MIN *A >HN8
 
-#AC SWAL3 GL KH]I RNG JA >HN8
+#AC SWAL3 GL JA RNG KH]A8
 
 
 
@@ -801,7 +801,7 @@ _        _                          _
 
 #AB SWAL3 /INHN JW *A >HI8
 
-#AC SWAL3 RAT JW >SMAN MIN *A >HN8
+#AC SWAL3 >SMAN MIN *A >HN8
 
 
 
@@ -829,7 +829,7 @@ _        _                          _
 
 #AA BIHW GA/IWN PAR
 
-#AB SWAL3 TWHAN KH]I BTI TI BIHW \A8
+#AB SWAL3 K\I BIHWN \A8
 
 #AC SWAL3 RW+ TI *A >HN8
 
@@ -845,7 +845,7 @@ _        _                          _
 
 #D  AMAN KM KRI \I4
 
-#E  MAN AMAN JI MDD KRIAN \W4
+#E  AMAN JI MDD KRIAN \W4
 
 #F  BABA SAMAN K8#I \W4
 
@@ -857,11 +857,9 @@ _        _                          _
 
 #AJ SAMAN G/ KM
 
-#AA SWAL3 TWHAN KNHN JI MDD KNDA
+#AA SWAL3 MDD KIR \W KRI8
 
-#AB >HIW8
-
-#AC SWAL3 *A MDD KR# SOW >HI8
+#AB SWAL3 MDD KR# SOW >HI8
 
 
 
@@ -873,7 +871,7 @@ _        _                          _
 
 #C  HI MNHNJW YWO >HI4
 
-#D  MNHNJW YWO TMAM SH#W >HI4
+#D  MNHNJW YWO SH#W >HI4
 
 #E  YWO MIN G8R >HN4
 
@@ -891,7 +889,7 @@ _        _                          _
 
 #AB SWAL3 YWO MIN *A >HN8
 
-#AC SWAL3 *A TWHAN K8I YWO W#I \W8
+#AC SWAL3 *A YWO W#I \W8
 
 
 
@@ -907,9 +905,9 @@ _        _                          _
 
 #E  MAN >7RIN SAN P]8AN \W4
 
-#F  >7RIWN NQ)N TI RK8WN \A4
+#F  H\ NQ)N TI RK8WN \A4
 
-#G  MAN NQ)A M:SWS KRIAN \W4
+#G  NQ)A M:SWS KRIAN \W4
 
 #H  BRIL MWN K8I (LM /I \W4
 
@@ -919,9 +917,9 @@ _        _                          _
 
 #AA NQ)N M:SWS P]8#
 
-#AB SWAL3 TWHAN KH]W KTAB P]8W \A8
+#AB SWAL3 *A P]8W \A8
 
-#AC SWAL3 TWHAN KI'N P]8W \A8
+#AC SWAL3 *A SAN P]8W \A8
 
 
 
@@ -937,7 +935,7 @@ _        _                          _
 
 #E  HI MNHNJA 5H PIR >HN4
 
-#F  MNHNJIWN /HH >7RIWN >HN4
+#F  H\ MIN /HH >7RIWN >HN4
 
 #G  MAN >7RIN SAN P]8AN \W4
 
@@ -953,15 +951,15 @@ _        _                          _
 
 #C  ASAN JW DIN ASLAM >HI4
 
-#D  ASAN AL,L@H TI AIMAN >#IWN \A4
+#D  AL,L@H TI AIMAN >HI4
 
-#E  :$RT M:MD  ASAN JA >XRI NBI >HN4
+#E  :$RT M:MD  >XRI NBI >HN4
 
 #F  ASAN NMAZ P]8WN \A4
 
 #G  ASAN QR>N P]8WN \A4
 
-#H  SC YAL8AIW A'IN SOW KM KRIW4
+#H  ASAN SC YAL8AIWN \A4
 
 
 
@@ -971,17 +969,15 @@ _        _                          _
 
 #B  ASAN JW W)N
 
-#C  ASAN JW W)N PAKSTAN >HI4
+#C  MNHNJW W)N PAKSTAN >HI4
 
-#D  PAKSTAN JW J8N+W SA'W A'IN A*W
+#D  J8N+W SA'W A'IN A*W >HI4
 
-#E  >HI4
+#E  J8N+I MIN CN+ A'IN TARW >HI4
 
-#F  J8N+I MIN CN+ A'IN TARW >HI4
+#F  ASAN SNV MIN RHWN \A4
 
-#G  ASAN SNV MIN RHWN \A4
-
-#H  ASAN JI 5WLI SNVI >HI4
+#G  ASAN JI 5WLI SNVI >HI4
 
 
 
@@ -991,13 +987,13 @@ _        _                          _
 
 #B  AMAN A'IN BABA
 
-#C  AMAN MWN K8I PIAR KRI \I4
+#C  AMAN PIAR KRI \I4
 
-#D  BABA MWN LA' KM KRI \W4
+#D  BABA M:NT KRI \W4
 
-#E  MAN ANHN JI (ZT KRIAN \W4
+#E  MAN (ZT KRIAN \W4
 
-#F  MAN ANHN JW CIW M9IAN \W4
+#F  MAN CIW M9IAN \W4
 
 #G  G8R MIN S2 G/ RHWN \A4
 
@@ -1027,11 +1023,11 @@ _        _                          _
 
 #B  JANWR
 
-#C  5LI K8IR PI'I \I4
+#C  5LI K8IR PI \I4
 
-#D  KTW G8R JI RK8WALI KRI \W4
+#D  KTW RK8WALI KRI \W4
 
-#E  Y'WN K8IR /'I \I4
+#E  Y'WN K8IR /I \I4
 
 #F  M*I PA#I MIN RHI \I4
 
