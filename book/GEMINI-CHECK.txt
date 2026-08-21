@@ -1,3 +1,48 @@
+You are checking the Sindhi of a book for blind and sighted children to read
+together. It is an original book by Dr Safeer Ali Mirani, for Sindhi class 1,
+for a child who cannot yet read. Every page is printed in ink and embossed in
+Standard Sindhi Braille on the same sheet.
+
+Check the Sindhi and return the whole text back to me corrected, in exactly the
+same shape, changing nothing else. Then, after the text, list what you changed
+and why, briefly.
+
+WHAT I NEED YOU TO CHECK
+
+1. Is every sentence natural Sindhi that a Sindhi adult would actually say?
+   Some of it was drafted by someone who is not a native speaker. Two I already
+   doubt: ڪٽ as the heading for subtraction, and مدد ڪرڻ سٺي ڳالھ آهي.
+
+2. Is every word right for a six-year-old who is meeting it for the first time?
+   Replace anything too abstract, keeping the same letters where you can.
+
+3. Spelling, and one rule in particular. ه (U+0647) and ھ (U+06BE) are two
+   different letters with two different braille cells: ه is dots 1-2-5 and ھ is
+   dots 2-3-6. ھ belongs ONLY to the aspirate digraphs جھ گھ ڙھ لھ مھ نھ ڻھ, so
+   گھر، پڙھو، ڳالھ، جھنڊو، ڳاڙھو take ھ, and هڪ، آهي، هن، نه، ته take ه. Getting
+   this wrong embosses the wrong cell. Mark any word where you think I have
+   chosen wrongly.
+
+4. Do not use these characters at all: ئ ؤ أ إ ٱ ة ہ ی ك. Write ء for ئ and ؤ,
+   ا for أ إ ٱ, ه for ة and ہ, ي for ی, ڪ for ك. There are eight ئ left in the
+   text; tell me the correct Sindhi spelling of each without it, if there is
+   one.
+
+5. No vowel diacritics anywhere: no زبر، زير، پيش، شد، جزم.
+
+6. KEEP EVERY LINE SHORT. A line must fit 22 braille cells, which is roughly 22
+   Sindhi letters counting spaces. Lines longer than that break across two lines
+   of braille and a beginner loses the sentence. Shorten anything longer.
+
+WHAT NOT TO CHANGE
+
+Leave every line beginning with @ exactly as it is. @heading is a lesson
+heading, @table is a chart the software fills in, @shape is a raised drawing.
+Do not renumber the lessons. Do not add or remove lessons. Keep one thought per
+line.
+
+THE BOOK
+
 @heading سنڌي بريل: پهريون ڪتاب
 ڊاڪٽر سفير علي ميراڻي
 @heading باونجاھ اکر

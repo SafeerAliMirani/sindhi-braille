@@ -76,8 +76,10 @@ INK_CLEAR = 5.0                     # mm of blank paper between ink and dots
 INK_PT    = 15                      # a class 1 primer is not set in 11 point
 
 
-def geometry(width_cells, bind_cells, page_w=PAGE_W, page_h=PAGE_H):
+def geometry(width_cells, bind_cells, page_w=None, page_h=None):
     """where everything sits on the sheet, in millimetres"""
+    page_w = PAGE_W if page_w is None else page_w
+    page_h = PAGE_H if page_h is None else page_h
     left = pp.EDGE_X + bind_cells * pp.CELL_W
     text_w = width_cells * pp.CELL_W
     # The grid starts one braille line below the top edge. A laser printer
@@ -105,11 +107,10 @@ def sentences(path):
             continue
         if s.startswith('@page') or s.startswith('@figure'):
             continue
-        if s.startswith('@shape') or s.startswith('@table'):
+        if s.startswith('@shape') or s.startswith('@table') \
+                or s.startswith('@heading'):
             out.append(s)            # markers, expanded by the page builder
             continue
-        if s.startswith('@heading'):
-            s = s[8:].strip()
         elif s.startswith('@exercise'):
             s = s[9:].strip()
         out.append(s)
@@ -389,7 +390,9 @@ def shape_page(shapes, width, g):
     separated by a blank line, and each keeps its own name on the line above it,
     so a finger running down the page meets name, shape, blank, name, shape."""
     n = len(shapes)
-    per = (g['shape_lines'] - 1) // n - 2      # name + blank belong to each
+    # two lines at the top of every page belong to the page number and its
+    # blank, and each shape carries its own name line and a blank
+    per = (g['shape_lines'] - 3) // n - 2
     per = min(per, 25)
     blocks = [shape_block(k, l, width, per) for k, l in shapes]
     rows = []
@@ -424,6 +427,14 @@ def build(src, width, bind, out_dir, title, back_shift=0.0):
                 pages.append(('shape', shape_page(pending, width, g)))
                 pending = []
             continue
+        if s.startswith('@heading'):
+            # A lesson starts on a new page. A child who has learnt to feel for
+            # the top of a page to find the start of a lesson can then find any
+            # lesson without being read to, and a short lesson is never split
+            # across a turn of the sheet.
+            if cur:
+                pages.append(('text', cur)); cur = []
+            s = s[8:].strip()
         for parts, _ in wrap(s, textw):
             txt = ''.join(w for w, _ in parts)
             cells = [c for _, cs in parts for c in cs]
@@ -473,11 +484,11 @@ def build(src, width, bind, out_dir, title, back_shift=0.0):
 
     # ---- the ink page -----------------------------------------------------
     css = """
-@page { size: 210mm 297mm; margin: 0 }
+@page { size: %.1fmm %.1fmm; margin: 0 }
 html,body { margin:0; padding:0 }
 body { font-family:"Noto Naskh Arabic","Segoe UI","Times New Roman",serif;
        -webkit-print-color-adjust:exact; print-color-adjust:exact }
-.page { position:relative; width:210mm; height:297mm; overflow:hidden;
+.page { position:relative; width:%.1fmm; height:%.1fmm; overflow:hidden;
         page-break-after:always; break-after:page }
 .page:last-child { page-break-after:auto; break-after:auto }
 .ln { position:absolute; direction:rtl; text-align:right; white-space:nowrap;
@@ -498,7 +509,8 @@ body { font-family:"Noto Naskh Arabic","Segoe UI","Times New Roman",serif;
 """
     h = ['<!doctype html><html lang="sd" dir="rtl"><head><meta charset="utf-8">',
          '<title>%s</title><style>%s</style></head><body>'
-         % (html.escape(title), css % INK_PT)]
+         % (html.escape(title),
+            css % (g['page_w'], g['page_h'], g['page_w'], g['page_h'], INK_PT))]
 
     # Test sheet one: the scale check. A laser printer asked to fit-to-page
     # shrinks the sheet a few per cent, which is invisible and fatal.
@@ -600,15 +612,24 @@ def main():
     ap.add_argument('--width', type=int, default=0, help='cells per line')
     ap.add_argument('--bind', type=int, default=5, help='binding margin in cells')
     ap.add_argument('--out', default=os.path.join(ROOT, 'book', 'out'))
+    ap.add_argument('--page', default='a4',
+                    help="a4, or WIDTHxHEIGHT in mm, or 11x14 in inches")
     ap.add_argument('--title', default='سنڌي بريل: پهريون ڪتاب')
     a = ap.parse_args()
+    global PAGE_W, PAGE_H
+    if a.page.lower() != 'a4':
+        w, h = a.page.lower().split('x')
+        w, h = float(w), float(h)
+        if w < 40:                              # given in inches
+            w, h = w * 25.4, h * 25.4
+        PAGE_W, PAGE_H = w, h
     if not a.width:
         a.width = pp.fits(PAGE_W, PAGE_H, a.bind)[0]
     os.makedirs(a.out, exist_ok=True)
     sb.load_words()
     g, n, pages = build(a.source, a.width, a.bind, a.out, a.title)
-    print('A4 %d cells x %d twin rows, binding %d cells'
-          % (a.width, g['rows'], a.bind))
+    print('%.0f x %.0f mm, %d cells x %d twin rows, binding %d cells'
+          % (PAGE_W, PAGE_H, a.width, g['rows'], a.bind))
     print('%d lines of text over %d sheets' % (n, pages))
     print('  %s' % os.path.join(a.out, 'twin-ink.html'))
     print('  %s' % os.path.join(a.out, 'twin.brf'))

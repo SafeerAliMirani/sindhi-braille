@@ -13,6 +13,6 @@
 @shape boat ٻيڙي
 @shape cup پيالو
 @heading سبق
-منهنجو جسم ۽ جھنڊو
+جسم ۽ جھنڊو
 @shape body جسم
 @shape flag جھنڊو

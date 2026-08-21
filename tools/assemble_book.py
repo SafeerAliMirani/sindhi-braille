@@ -35,7 +35,11 @@ def main():
             continue
         for line in io.open(p, encoding='utf-8'):
             s = line.rstrip('\n')
-            if s.strip().startswith('@heading سبق'):
+            if s.strip().startswith('@title'):
+                # front matter: a heading that is not a lesson and takes no
+                # number. The title page and the two charts come before سبق ۱.
+                out.append('@heading ' + s.strip()[6:].strip())
+            elif s.strip().startswith('@heading سبق'):
                 n += 1
                 out.append('@heading سبق %s' % sd_num(n))
             elif s.strip():
