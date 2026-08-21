@@ -1,0 +1,14 @@
+# A sample lesson, written by hand to prove the format works.
+# It is NOT from the Sindh Textbook Board book. Replace it with the real text.
+@page 7
+@heading سبق پهريون
+@figure هڪ ٻلي
+هي ٻلي آهي.
+ٻلي ننڍي آهي.
+@blank
+@page 8
+@exercise 1 هيٺيان لفظ پڙهو
+ٻلي
+ڪتاب
+پاڻي
+@figure ٽي شيون: ٻلي، ڪتاب، پاڻي
