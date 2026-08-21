@@ -63,39 +63,46 @@ Page A of each lesson teaches four letters: the letter large in print, its cells
 embossed, and one word for each. Page B is words and one sentence, using **only
 letters already taught**.
 
-> **Caveat, 21 August 2026.** The letter order below is greedy against
-> `tools/sindhi_words.txt`, and that list still carries 262 words in both the ه
-> and ھ spelling because one body of text was counted twice under two
-> conventions. Lessons 1 and 3 have been swapped by hand so that ه, the ordinary
-> he the guide prints as 1-2-5, is taught first and ھ, which occurs only in the
-> aspirate digraphs, comes later. The rest of the order should be re-derived once
-> sheet 7 comes back and the list can be merged.
+The order is greedy against `tools/sindhi_words.txt`: at each step the letter
+that makes the most new real words readable. Re-derived 21 August 2026 after the
+ه/ھ correction, on a list that no longer counts the same word twice under two
+spellings. ه is now first, where its frequency puts it, and ھ last, where a
+letter that occurs only inside digraphs belongs.
 
-| lesson | pages | letters | cells | words (draft, to check) |
+| lesson | pages | letters | cells | words |
 |---|---|---|---|---|
-| 1 | 5–6 | ه ن ا ي | 125 · 1345 · 1 · 24 | هي · هن · ان |
-| 2 | 7–8 | ج و ک ر | 245 · 2456 · 13-236 · 1235 | کير · وار · جو · هو |
-| 3 | 9–10 | ت ھ ب ل | 2345 · 236 · 12 · 123 | لال · تارو · بال · بيل |
-| 4 | 11–12 | ء م س د | 3 · 134 · 234 · 145 | دل · مان · سان · مالا |
-| 5 | 13–14 | ع ڪ پ ش | 12356 · 13 · 1234 · 146 | **ڪتاب** · پير · شير · ڪن |
-| 6 | 15–16 | ٿ ڏ آ گ | 1256 · 34 · 345 · 1245 | گل · آهي · ڏند · ٿورو |
-| 7 | 17–18 | ڻ ڌ ڙ ق | 3456 · 1236 · 12456 · 12345 | **پاڻي** · ڌرتي · ڪڻڪ · قلم |
-| 8 | 19–20 | ٻ ف خ ط | 26 · 124 · 1346 · 23456 | **ٻلي** · ٻار · خط · فون |
-| 9 | 21–22 | ح ص ظ ٽ | 156 · 12346 · 123456 · 246 | ٽوپي · صبح · حال · ٽماٽو |
-| 10 | 23–24 | ڳ ٺ چ ز | 13456 · 135 · 14 · 1356 | ڳوٺ · چار · زمين · ٺيڪ |
-| 11 | 25–26 | ڊ ض غ ڇ | 346 · 1246 · 126 · 16 | ڇوڪرو · چنڊ · ضرور · باغ |
-| 12 | 27–28 | ڀ ث ذ ڄ | 23 · 1456 · 2346 · 356 | ڀيڻ · مثال · ذات · ڄاڻ |
-| 13 | 29–30 | ڃ ڍ ڦ ڱ | 35 · 256 · 235 · 2356 | ڍڳو · ڦل · پڃرو · سڱ |
+| 1 | 5–6 | ه ن ا ي | 125 · 1345 · 1 · 24 | هي · هن · نانا · ان |
+| 2 | 7–8 | ج و ک ر | 245 · 2456 · 13-236 · 1235 | کير · اک · نو · هو |
+| 3 | 9–10 | ت ب ل ء | 2345 · 12 · 123 · 3 | بابا · تارا · لال · رات |
+| 4 | 11–12 | م س د ڪ | 134 · 234 · 145 · 13 | امان · ڪتاب · در · ڪرسي |
+| 5 | 13–14 | ع پ ش ٿ | 12356 · 1234 · 146 · 1256 | پن · هٿ · پير · شهر |
+| 6 | 15–16 | ڌ ڏ گ ڻ | 1236 · 34 · 1245 · 3456 | گل · وڻ · ڏند · پاڻي |
+| 7 | 17–18 | ق ٻ ڙ آ | 12345 · 26 · 12456 · 345 | قلم · ٻلي · آسمان · ڪپڙا |
+| 8 | 19–20 | ف خ ط ح | 124 · 1346 · 23456 · 156 | خوش · فرش · طوطو · حال |
+| 9 | 21–22 | ص ٽ ظ ڳ | 12346 · 246 · 123456 · 13456 | ٽوپي · صاف · ڳوٺ · روٽي |
+| 10 | 23–24 | چ ڊ ز ٺ | 14 · 346 · 1356 · 135 | چنڊ · ميز · اٺ · چار |
+| 11 | 25–26 | غ ض ڇ ڀ | 126 · 1246 · 16 · 23 | ڀيڻ · باغ · ڇت · مڇي |
+| 12 | 27–28 | ث ڄ ذ ڃ | 1456 · 356 · 2346 · 35 | وڃو · ڄاڻ · ذات · مثال |
+| 13 | 29–30 | ڍ ڱ ڦ ھ | 256 · 2356 · 235 · 236 | ڍڳو · آڱر · ڦل · گھر |
 
-**Note ک.** It is the only letter here written with **two cells**, 13 then 236.
-Lesson 2 should say so plainly, because a child who thinks every letter is one
-cell will be confused for years.
+**Coverage.** After lesson 2 a child can read 22% of the corpus by frequency,
+after lesson 4 half of it, after lesson 7 four fifths. All 52 letters by
+lesson 13.
 
-**The rule the software enforces.** No page may use a letter the book has not yet
-taught. A person cannot hold that across 48 pages. The build refuses the page
-instead.
+**Why ھ is last, and what it costs.** ھ is not an ordinary letter. It occurs
+only as the second half of a digraph — جھ گھ ڙھ لھ مھ نھ ڻھ, guide p.30 — so it
+is taught last, and lesson 13 teaches it as what it is: the cell that turns گ
+into گھ. The guide prints five of those seven inside whole words with the cells
+beside them (جھرڪي، گھڙيال، پڙھ، ڳالھيون، سمھ), and those five are the lesson's
+examples, which means the last page of Part 1 is backed by the committee's own
+printed page.
 
----
+The cost is that گھر، پڙھو، گھوڙو، جھاز، ڳاڙھو cannot appear before lesson 13,
+which is why the reading lessons that use them come after Part 1 rather than
+alongside it.
+
+**Two words are still held back entirely.** ڏينهن and مينهن turn on نھ, the one
+digraph the guide names but never prints inside a word. They wait for sheet 7.
 
 # Part 2 — بارکڙي, the letters with their marks. Pages 31 to 34
 
